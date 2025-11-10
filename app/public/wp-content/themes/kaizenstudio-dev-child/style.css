@@ -1,0 +1,44 @@
+/*
+Theme Name: kaizenstudio-dev-child
+Theme URI: 
+Author: Benjamin
+Author URI: 
+Description: 
+Requires at least: 6.8
+Tested up to: 6.8
+Requires PHP: 5.7
+Version: 
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Template: twentytwentyfive
+Text Domain: kaizenstudio-dev-child
+Tags: 
+*/
+h1, h2, h3, h4, h5, h6, blockquote, caption, figcaption, p {
+	/* Base font: */
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    margin-bottom: 0;
+}
+/*
+.wp-block-template-part:has(>.is-position-sticky) {
+	--wp-admin--admin-bar--position-offset: var( --wp-admin--admin-bar--height, 0px !important);
+	position: sticky;
+	top: calc( 0px + var( --wp-admin--admin-bar--position-offset, 0px ) );
+	z-index: 10;
+}*/
+
+/*
+body.home header {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #1458E4;
+}
+*/
+
+/* Custom classes for KaizenStudio*/
+.kzs_underline_offset a{
+  text-underline-offset: .8em;
+}

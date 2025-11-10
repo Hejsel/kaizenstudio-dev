@@ -1,0 +1,140 @@
+{
+	"$schema": "https://schemas.wp.org/wp/6.8/theme.json",
+	"version": 3,
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"color": "#1458E4",
+					"name": "Base",
+					"slug": "base"
+				},
+				{
+					"color": "#E6F2FF",
+					"name": "Contrast",
+					"slug": "contrast"
+				},
+				{
+					"color": "#3B7CFF",
+					"name": "Accent 1",
+					"slug": "accent-1"
+				},
+				{
+					"color": "#1D2423",
+					"name": "Accent 2",
+					"slug": "accent-2"
+				},
+				{
+					"color": "#46EBBF",
+					"name": "Accent 3",
+					"slug": "accent-3"
+				},
+				{
+                    "color": "color-mix(in srgb, currentColor 20%, transparent)",
+                    "name": "Accent 6",
+                    "slug": "accent-6"
+                }
+			]
+		},
+		"layout": {
+            "contentSize": "90vw",
+            "wideSize": "98vw",
+			"allowCustomContentAndWideSize": false
+        },
+		"spacing": {
+			"units": [
+				"px",
+				"em",
+				"rem",
+				"vh",
+				"dvh",
+				"vw",
+				"%"
+			]
+		},
+		"typography": {
+			"fontFamilies": [
+                {
+                    "name": "Bricolage Grotesque",
+                    "slug": "bricolage-grotesque",
+                    "fontFamily": "\"Bricolage Grotesque\", sans-serif",
+                    "fontFace": [
+                        {
+                            "fontFamily": "Bricolage Grotesque",
+                            "fontStyle": "normal",
+                            "fontWeight": "100 900",
+                            "src": [
+                                "file:./assets/fonts/bricolage-grotesque/BricolageGrotesque-VariableFont_opsz,wdth,wght.woff2"
+                            ]
+                        }
+                    ]
+                }
+            ]
+		}
+	},
+	"styles": {
+		"blocks": {
+			"core/quote": {
+
+			}
+		},
+		"spacing": {
+			"padding": {
+				"left": "var:preset|spacing|none",
+				"right": "var:preset|spacing|none"
+			}
+		},
+		"typography": {
+            "fontFamily": "var:preset|font-family|bricolage-grotesque",
+            "fontWeight": "200",
+            "fontSize": "var:preset|font-size|medium",
+            "lineHeight": "1.5",
+			"letterSpacing": "0.03625rem"
+        },
+		"elements": {
+			"button": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|bricolage-grotesque",
+					"fontWeight": "400"
+				},
+				"border": {
+					"radius": "0"
+				}
+			},
+			 "caption": {
+                "typography": {
+					"fontFamily": "var:preset|font-family|bricolage-grotesque",
+					"fontWeight": "400"
+                }
+            },
+			"heading": {
+				"typography": {
+					"fontWeight": "300"
+				}
+			},
+			"link": {
+				"css": "text-decoration-thickness: 1.4px !important; text-underline-offset: .3em",
+				"typography": {
+					"textDecoration": "underline dotted"
+				},
+				":hover": {
+                    "typography": {
+                        "textDecoration": "underline"
+                    }
+                }
+			}
+		}
+	},
+	"templateParts": [
+		{
+			"area": "header",
+			"name": "header-benjamin",
+			"title": "Header Benjamin"
+		},
+		{
+			"area": "hero-section-benjamin",
+			"name": "hero-benjamin",
+			"title": "Hero Benjamin"
+		}
+	]
+}
