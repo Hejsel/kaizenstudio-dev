@@ -33,6 +33,11 @@ import {
 import './editor.scss';
 
 /**
+ * Import block metadata for accessing default attribute values
+ */
+import metadata from './block.json';
+
+/**
  * The edit function describes the structure of your block in the context of the
  * editor. This represents what the editor will render when the block is used.
  *
@@ -42,7 +47,7 @@ import './editor.scss';
  */
 export default function Edit({ attributes, setAttributes }) {
 
-	const { width } = attributes;
+	const { width = metadata.attributes.width.default } = attributes;
 
 	return (
 		<>
@@ -62,7 +67,9 @@ export default function Edit({ attributes, setAttributes }) {
                         <UnitControl
                             label={__("Width", "rive-block")}
                             value={width}
-                            onChange={(value) => setAttributes({ width: value })}
+                            onChange={(value) => setAttributes({
+								width: value || undefined
+							})}
 							units={[
 								{ value: 'px', label: 'px' },
 								{ value: '%', label: '%' },
@@ -87,10 +94,12 @@ export default function Edit({ attributes, setAttributes }) {
 				</PanelBody>
 			</InspectorControls>
 
-			<div { ...useBlockProps() }>
-				<canvas className='rive-block-canvas' ></canvas>
+			<canvas { ...useBlockProps({
+				className: 'rive-block-canvas',
+				style: { width: width }
+			}) }>
 				{ __( 'Rive Block – hello from the editor!', 'rive-block' ) }
-			</div>
+			</canvas>
 		</>
 	);
 }

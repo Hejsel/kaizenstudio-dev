@@ -9,8 +9,13 @@
 	"description": "Import and use your Rive assets to add animated graphics, epic hero sections, and interactive product demos to your website.",
 	"example": {},
 	"attributes": {
+		"height": {
+			"type": "string",
+			"default": "auto"
+		},
 		"width": {
-			"type": "string"
+			"type": "string",
+			"default": "100%"
 		}
 	},
 	"supports": {

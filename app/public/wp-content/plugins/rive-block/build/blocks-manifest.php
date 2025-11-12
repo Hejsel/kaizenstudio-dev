@@ -14,8 +14,13 @@ return array(
 			
 		),
 		'attributes' => array(
+			'height' => array(
+				'type' => 'string',
+				'default' => 'auto'
+			),
 			'width' => array(
-				'type' => 'string'
+				'type' => 'string',
+				'default' => '100%'
 			)
 		),
 		'supports' => array(

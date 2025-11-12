@@ -9,7 +9,12 @@
  *
  * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
  */
+
+$width = $attributes['width'];
 ?>
-<p <?php echo get_block_wrapper_attributes(); ?>>
-	<?php esc_html_e( 'Rive Block – hello from a dynamic block!', 'rive-block' ); ?>
-</p>
+<canvas 
+	<?php echo get_block_wrapper_attributes([
+		'class' => 'rive-block-canvas',
+		'style' => 'width: ' . esc_attr($width) . ';'
+	]); ?>>
+</canvas>
