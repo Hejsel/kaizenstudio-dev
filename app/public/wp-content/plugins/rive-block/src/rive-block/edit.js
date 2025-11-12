@@ -11,7 +11,18 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { 
+	InspectorControls,
+	useBlockProps
+} from '@wordpress/block-editor';
+
+import { 
+	PanelBody,
+	FormFileUpload,
+	__experimentalToolsPanel as ToolsPanel,
+  	__experimentalToolsPanelItem as ToolsPanelItem,
+  	__experimentalUnitControl as UnitControl
+} from '@wordpress/components';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -29,10 +40,57 @@ import './editor.scss';
  *
  * @return {Element} Element to render.
  */
-export default function Edit() {
+export default function Edit({ attributes, setAttributes }) {
+
+	const { width } = attributes;
+
 	return (
-		<p { ...useBlockProps() }>
-			{ __( 'Rive Block – hello from the editor!', 'rive-block' ) }
-		</p>
+		<>
+			<InspectorControls>
+				<ToolsPanel
+                    label={__("Settings", "rive-block")}
+                    resetAll={() => {
+                        setAttributes({ width: undefined });
+                    }}
+                >
+                    <ToolsPanelItem
+                        hasValue={() => !!width}
+                        label={__("Width", "rive-block")}
+                        onDeselect={() => setAttributes({ width: undefined })}
+                        isShownByDefault
+                    >
+                        <UnitControl
+                            label={__("Width", "rive-block")}
+                            value={width}
+                            onChange={(value) => setAttributes({ width: value })}
+							units={[
+								{ value: 'px', label: 'px' },
+								{ value: '%', label: '%' },
+								{ value: 'em', label: 'em' },
+								{ value: 'rem', label: 'rem' },
+								{ value: 'vw', label: 'vw' },
+								{ value: 'vh', label: 'vh' },
+								{ value: 'dvh', label: 'dvh' }  // ← Din custom unit!
+							]}
+                        />
+                    </ToolsPanelItem>
+                </ToolsPanel>
+				<PanelBody>
+					<FormFileUpload
+						__next40pxDefaultSize
+						icon={"upload"}
+						accept="image/*"
+						onChange={ ( event ) => console.log( event.currentTarget.files ) }
+					>
+						Upload .riv file
+					</FormFileUpload>
+				</PanelBody>
+			</InspectorControls>
+
+			<div { ...useBlockProps() }>
+				<canvas className='rive-block-canvas' ></canvas>
+				{ __( 'Rive Block – hello from the editor!', 'rive-block' ) }
+			</div>
+		</>
 	);
 }

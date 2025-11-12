@@ -8,13 +8,25 @@ return array(
 		'version' => '0.1.0',
 		'title' => 'Rive Block',
 		'category' => 'widgets',
-		'icon' => 'smiley',
-		'description' => 'Example block scaffolded with Create Block tool.',
+		'icon' => 'format-video',
+		'description' => 'Import and use your Rive assets to add animated graphics, epic hero sections, and interactive product demos to your website.',
 		'example' => array(
 			
 		),
+		'attributes' => array(
+			'width' => array(
+				'type' => 'string'
+			)
+		),
 		'supports' => array(
-			'html' => false
+			'html' => false,
+			'position' => array(
+				'sticky' => true
+			),
+			'color' => array(
+				'background' => true,
+				'text' => false
+			)
 		),
 		'textdomain' => 'rive-block',
 		'editorScript' => 'file:./index.js',
