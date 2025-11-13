@@ -57,3 +57,28 @@ function create_block_rive_block_block_init() {
 	}
 }
 add_action( 'init', 'create_block_rive_block_block_init' );
+
+/**
+ * Allow .riv file uploads to WordPress Media Library
+ */
+function rive_block_allow_riv_uploads( $mimes ) {
+	// Add .riv to allowed MIME types
+	$mimes['riv'] = 'application/octet-stream';
+	return $mimes;
+}
+add_filter( 'upload_mimes', 'rive_block_allow_riv_uploads' );
+
+/**
+ * Fix MIME type check for .riv files
+ */
+function rive_block_fix_riv_mime_type( $data, $file, $filename, $mimes ) {
+	$ext = pathinfo( $filename, PATHINFO_EXTENSION );
+
+	if ( $ext === 'riv' ) {
+		$data['ext']  = 'riv';
+		$data['type'] = 'application/octet-stream';
+	}
+
+	return $data;
+}
+add_filter( 'wp_check_filetype_and_ext', 'rive_block_fix_riv_mime_type', 10, 4 );

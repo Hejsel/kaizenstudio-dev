@@ -21,6 +21,12 @@ return array(
 			'width' => array(
 				'type' => 'string',
 				'default' => '100%'
+			),
+			'riveFileUrl' => array(
+				'type' => 'string'
+			),
+			'riveFileId' => array(
+				'type' => 'number'
 			)
 		),
 		'supports' => array(

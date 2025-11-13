@@ -8,7 +8,7 @@
   \***********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/rive-block","version":"0.1.0","title":"Rive Block","category":"widgets","icon":"format-video","description":"Import and use your Rive assets to add animated graphics, epic hero sections, and interactive product demos to your website.","example":{},"attributes":{"height":{"type":"string","default":"auto"},"width":{"type":"string","default":"100%"}},"supports":{"html":false,"position":{"sticky":true},"color":{"background":true,"text":false}},"textdomain":"rive-block","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/rive-block","version":"0.1.0","title":"Rive Block","category":"widgets","icon":"format-video","description":"Import and use your Rive assets to add animated graphics, epic hero sections, and interactive product demos to your website.","example":{},"attributes":{"height":{"type":"string","default":"auto"},"width":{"type":"string","default":"100%"},"riveFileUrl":{"type":"string"},"riveFileId":{"type":"number"}},"supports":{"html":false,"position":{"sticky":true},"color":{"background":true,"text":false}},"textdomain":"rive-block","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -30,8 +30,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/rive-block/editor.scss");
 /* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./src/rive-block/block.json");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./icon */ "./src/rive-block/icon.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 /**
  * Retrieves the translation of text.
  *
@@ -57,8 +58,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * Import block metadata for accessing default attribute values
+ * Internal dependencies
  */
+
 
 
 /**
@@ -75,25 +77,65 @@ function Edit({
   setAttributes
 }) {
   const {
-    width = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.width.default
+    riveFileUrl,
+    riveFileId,
+    width = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.width.default,
+    height = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.height.default
   } = attributes;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanel, {
+
+  // Handle Rive file selection from Media Library or Upload
+  const onSelectRiveFile = media => {
+    if (!media || !media.url) {
+      setAttributes({
+        riveFileUrl: undefined,
+        riveFileId: undefined
+      });
+      return;
+    }
+    setAttributes({
+      riveFileUrl: media.url,
+      riveFileId: media.id
+    });
+  };
+
+  // Show placeholder if no Rive file is selected
+  if (!riveFileUrl) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaPlaceholder, {
+        icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockIcon, {
+          icon: _icon__WEBPACK_IMPORTED_MODULE_5__["default"]
+        }),
+        onSelect: onSelectRiveFile,
+        accept: ".riv",
+        allowedTypes: ['application/octet-stream'],
+        labels: {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose Rive Asset', 'rive-block'),
+          instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Upload a Rive file or choose from your Media Library.', 'rive-block')
+        }
+      })
+    });
+  }
+
+  // Show canvas with Rive animation when file is selected
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanel, {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Settings", "rive-block"),
         resetAll: () => {
           setAttributes({
-            width: undefined
+            width: undefined,
+            height: undefined
           });
         },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
-          hasValue: () => !!width,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
+          hasValue: () => width !== undefined && width !== _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.width.default,
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Width", "rive-block"),
           onDeselect: () => setAttributes({
             width: undefined
           }),
           isShownByDefault: true,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Width", "rive-block"),
             value: width,
             onChange: value => setAttributes({
@@ -112,35 +154,85 @@ function Edit({
               value: 'rem',
               label: 'rem'
             }, {
-              value: 'vw',
-              label: 'vw'
+              value: 'vh',
+              label: 'vh'
+            }, {
+              value: 'dvh',
+              label: 'dvw'
+            } // ← Din custom unit!
+            ]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
+          hasValue: () => height !== undefined && height !== _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.height.default,
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Height", "rive-block"),
+          onDeselect: () => setAttributes({
+            height: undefined
+          }),
+          isShownByDefault: true,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Height", "rive-block"),
+            value: height,
+            onChange: value => setAttributes({
+              height: value || undefined
+            }),
+            units: [{
+              value: 'px',
+              label: 'px'
+            }, {
+              value: '%',
+              label: '%'
+            }, {
+              value: 'em',
+              label: 'em'
+            }, {
+              value: 'rem',
+              label: 'rem'
             }, {
               value: 'vh',
               label: 'vh'
             }, {
               value: 'dvh',
               label: 'dvh'
-            } // ← Din custom unit!
-            ]
+            }]
           })
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FormFileUpload, {
-          __next40pxDefaultSize: true,
-          icon: "upload",
-          accept: "image/*",
-          onChange: event => console.log(event.currentTarget.files),
-          children: "Upload .riv file"
-        })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rive File', 'rive-block'),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("strong", {
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Current file:', 'rive-block')
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+          style: {
+            wordBreak: 'break-all',
+            fontSize: '12px',
+            color: '#757575'
+          },
+          children: riveFileUrl
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+            onSelect: onSelectRiveFile,
+            allowedTypes: ['application/octet-stream'],
+            value: riveFileId,
+            render: ({
+              open
+            }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+              onClick: open,
+              variant: "secondary",
+              __next40pxDefaultSize: true,
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Replace Rive File', 'rive-block')
+            })
+          })
+        })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("canvas", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("canvas", {
       ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
         className: 'rive-block-canvas',
         style: {
-          width: width
+          width: width,
+          height: height
         }
-      }),
-      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rive Block – hello from the editor!', 'rive-block')
+      })
     })]
   });
 }
@@ -159,6 +251,39 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/rive-block/icon.js":
+/*!********************************!*\
+  !*** ./src/rive-block/icon.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * Rive block icon
+ *
+ * Single source of truth for the Rive block icon.
+ * Import this wherever the icon is needed.
+ */
+
+const riveIcon = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 150 150",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("path", {
+    fillRule: "evenodd",
+    d: "M19.18,23.33a7.46,7.46,0,0,0,7.5,7.42H88.84c20.52-1.39,33.1,24.78,17.5,38.65q-6.87,5.88-17.5,5.87h-27a7.43,7.43,0,1,0,0,14.85c.94,0,30.07,0,29.83,0l26.87,42.66a7.92,7.92,0,0,0,7,3.87c6.85.23,10-6.88,6.25-12.37l-23.9-38c37.3-17.51,21.54-71.94-19.07-70.34H26.68A7.47,7.47,0,0,0,19.18,23.33Z",
+    transform: "translate(0 -0.2)"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (riveIcon);
+
+/***/ }),
+
 /***/ "./src/rive-block/index.js":
 /*!*********************************!*\
   !*** ./src/rive-block/index.js ***!
@@ -171,8 +296,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/rive-block/style.scss");
 /* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/rive-block/edit.js");
 /* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/rive-block/block.json");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon */ "./src/rive-block/icon.js");
 /**
  * Registers a new block provided a unique name and an object defining its behavior.
  *
@@ -195,17 +319,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// Custom Rive icon
-
-const riveIcon = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 150 150",
-  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
-    fillRule: "evenodd",
-    d: "M19.18,23.33a7.46,7.46,0,0,0,7.5,7.42H88.84c20.52-1.39,33.1,24.78,17.5,38.65q-6.87,5.88-17.5,5.87h-27a7.43,7.43,0,1,0,0,14.85c.94,0,30.07,0,29.83,0l26.87,42.66a7.92,7.92,0,0,0,7,3.87c6.85.23,10-6.88,6.25-12.37l-23.9-38c37.3-17.51,21.54-71.94-19.07-70.34H26.68A7.47,7.47,0,0,0,19.18,23.33Z",
-    transform: "translate(0 -0.2)"
-  })
-});
 
 /**
  * Every block starts by registering a new block type definition.
@@ -216,7 +329,7 @@ const riveIcon = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.
   /**
    * @see ./edit.js
    */
-  icon: riveIcon,
+  icon: _icon__WEBPACK_IMPORTED_MODULE_4__["default"],
   edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
 

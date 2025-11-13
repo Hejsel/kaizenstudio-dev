@@ -16,6 +16,12 @@
 		"width": {
 			"type": "string",
 			"default": "100%"
+		},
+		"riveFileUrl": {
+			"type": "string"
+		},
+		"riveFileId": {
+			"type": "number"
 		}
 	},
 	"supports": {

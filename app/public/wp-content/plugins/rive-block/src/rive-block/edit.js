@@ -11,17 +11,21 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { 
+import {
 	InspectorControls,
-	useBlockProps
+	useBlockProps,
+	MediaPlaceholder,
+	BlockIcon,
+	MediaUpload,
+	MediaUploadCheck
 } from '@wordpress/block-editor';
 
-import { 
+import {
 	PanelBody,
-	FormFileUpload,
+	Button,
 	__experimentalToolsPanel as ToolsPanel,
-  	__experimentalToolsPanelItem as ToolsPanelItem,
-  	__experimentalUnitControl as UnitControl
+	__experimentalToolsPanelItem as ToolsPanelItem,
+	__experimentalUnitControl as UnitControl
 } from '@wordpress/components';
 
 /**
@@ -33,9 +37,10 @@ import {
 import './editor.scss';
 
 /**
- * Import block metadata for accessing default attribute values
+ * Internal dependencies
  */
 import metadata from './block.json';
+import riveIcon from './icon';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -47,19 +52,62 @@ import metadata from './block.json';
  */
 export default function Edit({ attributes, setAttributes }) {
 
-	const { width = metadata.attributes.width.default } = attributes;
+	const {
+		riveFileUrl,
+		riveFileId,
+		width = metadata.attributes.width.default,
+		height = metadata.attributes.height.default
+	} = attributes;
 
+	// Handle Rive file selection from Media Library or Upload
+	const onSelectRiveFile = (media) => {
+		if (!media || !media.url) {
+			setAttributes({
+				riveFileUrl: undefined,
+				riveFileId: undefined
+			});
+			return;
+		}
+
+		setAttributes({
+			riveFileUrl: media.url,
+			riveFileId: media.id
+		});
+	};
+
+	// Show placeholder if no Rive file is selected
+	if (!riveFileUrl) {
+		return (
+			<div {...useBlockProps()}>
+				<MediaPlaceholder
+					icon={<BlockIcon icon={riveIcon} />}
+					onSelect={onSelectRiveFile}
+					accept=".riv"
+					allowedTypes={['application/octet-stream']}
+					labels={{
+						title: __('Choose Rive Asset', 'rive-block'),
+						instructions: __('Upload a Rive file or choose from your Media Library.', 'rive-block')
+					}}
+				/>
+			</div>
+		);
+	}
+
+	// Show canvas with Rive animation when file is selected
 	return (
 		<>
 			<InspectorControls>
 				<ToolsPanel
                     label={__("Settings", "rive-block")}
                     resetAll={() => {
-                        setAttributes({ width: undefined });
+                        setAttributes({
+							width: undefined,
+							height: undefined
+						});
                     }}
                 >
                     <ToolsPanelItem
-                        hasValue={() => !!width}
+                        hasValue={() => width !== undefined && width !== metadata.attributes.width.default}
                         label={__("Width", "rive-block")}
                         onDeselect={() => setAttributes({ width: undefined })}
                         isShownByDefault
@@ -75,31 +123,65 @@ export default function Edit({ attributes, setAttributes }) {
 								{ value: '%', label: '%' },
 								{ value: 'em', label: 'em' },
 								{ value: 'rem', label: 'rem' },
-								{ value: 'vw', label: 'vw' },
 								{ value: 'vh', label: 'vh' },
-								{ value: 'dvh', label: 'dvh' }  // ← Din custom unit!
+								{ value: 'dvh', label: 'dvw' }  // ← Din custom unit!
+							]}
+                        />
+                    </ToolsPanelItem>
+                    <ToolsPanelItem
+                        hasValue={() => height !== undefined && height !== metadata.attributes.height.default}
+                        label={__("Height", "rive-block")}
+                        onDeselect={() => setAttributes({ height: undefined })}
+                        isShownByDefault
+                    >
+                        <UnitControl
+                            label={__("Height", "rive-block")}
+                            value={height}
+                            onChange={(value) => setAttributes({
+								height: value || undefined
+							})}
+							units={[
+								{ value: 'px', label: 'px' },
+								{ value: '%', label: '%' },
+								{ value: 'em', label: 'em' },
+								{ value: 'rem', label: 'rem' },
+								{ value: 'vh', label: 'vh' },
+								{ value: 'dvh', label: 'dvh' }
 							]}
                         />
                     </ToolsPanelItem>
                 </ToolsPanel>
-				<PanelBody>
-					<FormFileUpload
-						__next40pxDefaultSize
-						icon={"upload"}
-						accept="image/*"
-						onChange={ ( event ) => console.log( event.currentTarget.files ) }
-					>
-						Upload .riv file
-					</FormFileUpload>
+				<PanelBody title={__('Rive File', 'rive-block')}>
+					<p><strong>{__('Current file:', 'rive-block')}</strong></p>
+					<p style={{ wordBreak: 'break-all', fontSize: '12px', color: '#757575' }}>
+						{riveFileUrl}
+					</p>
+					<MediaUploadCheck>
+						<MediaUpload
+							onSelect={onSelectRiveFile}
+							allowedTypes={['application/octet-stream']}
+							value={riveFileId}
+							render={({ open }) => (
+								<Button
+									onClick={open}
+									variant="secondary"
+									__next40pxDefaultSize
+								>
+									{__('Replace Rive File', 'rive-block')}
+								</Button>
+							)}
+						/>
+					</MediaUploadCheck>
 				</PanelBody>
 			</InspectorControls>
 
 			<canvas { ...useBlockProps({
 				className: 'rive-block-canvas',
-				style: { width: width }
-			}) }>
-				{ __( 'Rive Block – hello from the editor!', 'rive-block' ) }
-			</canvas>
+				style: {
+					width: width,
+					height: height
+				}
+			}) }></canvas>
 		</>
 	);
 }
