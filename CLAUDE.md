@@ -132,6 +132,139 @@ wp_register_block_types_from_metadata_collection(
 
 This provides better performance by registering blocks via manifest file generated during build.
 
+## Plugin Architecture
+
+### rive-block (Rive Animation Block Plugin)
+Located at: `app/public/wp-content/plugins/rive-block/`
+
+A custom WordPress block plugin that enables users to embed and display Rive animations (.riv files) in the WordPress editor and frontend.
+
+**Key Features:**
+- MediaPlaceholder workflow for uploading/selecting .riv files from Media Library
+- Width and height controls with support for multiple CSS units (px, %, em, rem, vh, dvh)
+- Separate implementations for editor (React) and frontend (vanilla JavaScript)
+- Loading states and error handling
+- Support for multiple Rive blocks on a single page via offscreen rendering
+
+**Architecture Decisions:**
+- **Editor (edit.js)**: Uses `@rive-app/react-canvas` for React integration
+- **Frontend (view.js)**: Uses `@rive-app/canvas` for vanilla JavaScript
+- **Data Flow**: PHP render.php → data attributes → JavaScript initialization
+- **Isolation**: RiveCanvas wrapper component ensures proper cleanup when file URL changes
+
+**File Structure:**
+```
+rive-block/
+├── src/
+│   └── rive-block/
+│       ├── block.json          # Block metadata and attributes
+│       ├── index.js            # Block registration
+│       ├── edit.js             # Editor component with MediaPlaceholder
+│       ├── render.php          # Server-side rendering with data attributes
+│       ├── view.js             # Frontend Rive initialization
+│       ├── icon.js             # Block icon (SVG)
+│       ├── components/
+│       │   └── RiveCanvas.js   # React wrapper for Rive in editor
+│       ├── editor.scss         # Editor-specific styles
+│       └── style.scss          # Frontend and editor shared styles
+├── build/                      # Production build output
+├── rive-block.php              # Main plugin file with MIME type support
+└── package.json                # Dependencies and scripts
+```
+
+**Build System:**
+```bash
+cd app/public/wp-content/plugins/rive-block
+npm install
+npm run start    # Development with live reload
+npm run build    # Production build
+```
+
+**Block Attributes (block.json):**
+```json
+{
+  "riveFileUrl": {"type": "string"},
+  "riveFileId": {"type": "number"},
+  "width": {"type": "string", "default": "100%"},
+  "height": {"type": "string", "default": "auto"}
+}
+```
+
+**Data Flow Pattern:**
+1. User uploads/selects .riv file via MediaPlaceholder
+2. File URL and ID stored in block attributes
+3. **Editor**: RiveCanvas component uses useRive hook to display animation
+4. **Frontend**: render.php outputs canvas with `data-rive-src` attribute
+5. view.js reads data attribute and initializes vanilla Rive instance
+
+**Key Implementation Details:**
+
+*Editor (RiveCanvas.js):*
+```javascript
+import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
+
+const { rive, RiveComponent } = useRive({
+  src: riveFileUrl,
+  autoplay: true,
+  useOffscreenRenderer: true,
+  layout: new Layout({
+    fit: Fit.Contain,
+    alignment: Alignment.Center
+  })
+});
+```
+
+*Frontend (view.js):*
+```javascript
+import { Rive } from '@rive-app/canvas';
+
+const canvases = document.querySelectorAll('canvas.wp-block-create-block-rive-block');
+canvases.forEach((canvas) => {
+  const riveSrc = canvas.dataset.riveSrc;
+  const riveInstance = new Rive({
+    canvas: canvas,
+    src: riveSrc,
+    autoplay: true,
+    useOffscreenRenderer: true
+  });
+});
+```
+
+*Server-side Rendering (render.php):*
+```php
+<canvas
+  <?php echo get_block_wrapper_attributes([
+    'class' => 'rive-block-canvas',
+    'style' => 'width: ' . esc_attr($width) . '; height: ' . esc_attr($height) . ';',
+    'data-rive-src' => esc_url($rive_file_url)
+  ]); ?>>
+</canvas>
+```
+
+**MIME Type Support:**
+The plugin adds support for .riv file uploads in WordPress:
+
+```php
+// rive-block.php
+function rive_block_allow_riv_uploads( $mimes ) {
+  $mimes['riv'] = 'application/octet-stream';
+  return $mimes;
+}
+add_filter( 'upload_mimes', 'rive_block_allow_riv_uploads' );
+```
+
+**Important Configurations:**
+- `useOffscreenRenderer: true` - Critical for supporting multiple Rive instances on one page
+- `Layout` with `Fit.Contain` and `Alignment.Center` - Ensures consistent sizing between editor and frontend
+- Reset functionality uses default values from block.json (single source of truth)
+- Canvas selector: `'canvas.wp-block-create-block-rive-block'` (class directly on canvas element)
+
+**Known Patterns:**
+- Loading states managed via useState hooks in editor
+- Error handling with WordPress Notice component
+- RiveCanvas wrapper component ensures proper cleanup when riveFileUrl changes
+- Width/height controls use UnitControl with multiple CSS unit support
+
 ## Custom Conventions
 
 ### Block Naming

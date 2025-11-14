@@ -22,6 +22,7 @@ $rive_file_url = $attributes['riveFileUrl'];
 <canvas
 	<?php echo get_block_wrapper_attributes([
 		'class' => 'rive-block-canvas',
-		'style' => 'width: ' . esc_attr($width) . '; height: ' . esc_attr($height) . ';'
+		'style' => 'width: ' . esc_attr($width) . '; height: ' . esc_attr($height) . ';',
+		'data-rive-src' => esc_url($rive_file_url)
 	]); ?>>
 </canvas>

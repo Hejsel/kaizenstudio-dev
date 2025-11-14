@@ -20,6 +20,51 @@
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
  */
 
-/* eslint-disable no-console */
-console.log( 'Hello World! (from create-block-rive-block block)' );
-/* eslint-enable no-console */
+import { Rive } from '@rive-app/canvas';
+
+/**
+ * Initialize all Rive animations on the page
+ */
+function initRiveAnimations() {
+	// Find all Rive block canvas elements
+	const canvases = document.querySelectorAll('canvas.wp-block-create-block-rive-block');
+
+	if (canvases.length === 0) {
+		return;
+	}
+
+	canvases.forEach((canvas) => {
+		const riveSrc = canvas.dataset.riveSrc;
+
+		// Skip if no Rive source URL is provided
+		if (!riveSrc) {
+			console.warn('[Rive Block] Canvas missing data-rive-src attribute');
+			return;
+		}
+
+		try {
+			// Initialize Rive instance
+			const riveInstance = new Rive({
+				canvas: canvas,
+				src: riveSrc,
+				autoplay: true,
+				useOffscreenRenderer: true, // Critical for multiple instances
+				onLoadError: () => {
+					console.warn(`[Rive Block] Failed to load file: ${riveSrc}`);
+				}
+			});
+
+			// Store instance reference for potential cleanup
+			canvas._riveInstance = riveInstance;
+		} catch (error) {
+			console.error('[Rive Block] Error initializing Rive:', error);
+		}
+	});
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', initRiveAnimations);
+} else {
+	initRiveAnimations();
+}

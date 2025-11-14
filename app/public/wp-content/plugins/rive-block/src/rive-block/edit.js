@@ -41,6 +41,7 @@ import './editor.scss';
  */
 import metadata from './block.json';
 import riveIcon from './icon';
+import RiveCanvas from './components/RiveCanvas';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -175,13 +176,13 @@ export default function Edit({ attributes, setAttributes }) {
 				</PanelBody>
 			</InspectorControls>
 
-			<canvas { ...useBlockProps({
-				className: 'rive-block-canvas',
-				style: {
-					width: width,
-					height: height
-				}
-			}) }></canvas>
+			<div {...useBlockProps()}>
+				<RiveCanvas
+					riveFileUrl={riveFileUrl}
+					width={width}
+					height={height}
+				/>
+			</div>
 		</>
 	);
 }
