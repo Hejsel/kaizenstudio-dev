@@ -265,6 +265,238 @@ add_filter( 'upload_mimes', 'rive_block_allow_riv_uploads' );
 - RiveCanvas wrapper component ensures proper cleanup when riveFileUrl changes
 - Width/height controls use UnitControl with multiple CSS unit support
 
+### CRITICAL: Rive Accessibility Guidelines (HIGHEST PRIORITY)
+
+**Context:** With the European Accessibility Act in effect (2025), accessible design is both a legal requirement and best practice. All Rive implementations MUST prioritize accessibility from the start, not as an afterthought.
+
+**WCAG Compliance Targets:**
+- Minimum: AA level (recommended standard)
+- Goal: AAA level where achievable
+- Reference: Web Content Accessibility Guidelines (WCAG 2.x)
+
+#### 1. Color Contrast (WCAG 2.3.2, 2.3.3)
+
+**CRITICAL REQUIREMENTS:**
+- Use Data Binding for all colors in Rive animations
+- Bind colors to Color Properties in View Models for easy runtime control
+- Test all text/background combinations with color contrast checkers
+- Target: AA minimum (4.5:1 for normal text, 3:1 for large text)
+- Goal: AAA level (7:1 for normal text, 4.5:1 for large text)
+
+**Implementation Pattern:**
+```javascript
+// In Rive: Bind fill colors to ViewModel Color Properties
+// In WordPress: Add color controls that update data-bound values
+const riveInstance = new Rive({
+  canvas: canvas,
+  src: riveSrc,
+  autoplay: true,
+  onLoad: () => {
+    // Update colors via Data Binding for contrast
+    const inputs = riveInstance.stateMachineInputs('StateMachineName');
+    const bgColor = inputs.find(i => i.name === 'backgroundColor');
+    const textColor = inputs.find(i => i.name === 'textColor');
+    // Set AAA-compliant colors
+  }
+});
+```
+
+**Tools:** Bookmark multiple color contrast checkers (e.g., WebAIM, Coolors, Adobe Color)
+
+#### 2. Text Accessibility
+
+**CRITICAL REQUIREMENTS:**
+- Minimum font size: 14pt (18.5px)
+- Text alignment: Left-aligned (primary), center-aligned (acceptable), NEVER fully justified
+- Wrap all text in Rive Layouts with background colors for contrast flexibility
+- Use Rive Text with Data Binding for localization support (RTL languages, etc.)
+- Layouts auto-scale with text, maintaining readability at all zoom levels
+
+**Layout Pattern:**
+- Create Layout container around text elements
+- Add background color to Layout (not directly to text)
+- Layout automatically fits text regardless of zoom/resolution
+- Supports dynamic text changes via Data Binding
+
+#### 3. Draw Order for Visual Hierarchy
+
+**Purpose:** Prevent important content from being obscured by animations
+
+**Implementation:**
+- Use Draw Order property (not hierarchy reordering) to control layer visibility
+- Target actual layers/shapes, NOT groups
+- Keep vital text and UI elements always visible above decorative animations
+- Test with screen readers to ensure logical reading order
+
+#### 4. Motion Control via State Machines (WCAG AAA 2.3.3)
+
+**CRITICAL REQUIREMENTS - Motion Safety:**
+
+**Autoplay Control:**
+- Question every autoplay decision: Is it essential to the experience?
+- Prefer user-initiated animations over autoplay
+- Use State Machine triggers + playback speed control
+- Set timeline playback to 0x for full user control
+- This achieves WCAG AAA "Animation from Interactions" (2.3.3)
+
+**Implementation Pattern:**
+```javascript
+// State Machine with user control
+const riveInstance = new Rive({
+  canvas: canvas,
+  src: riveSrc,
+  autoplay: false, // User-initiated
+  stateMachines: 'ControlledAnimation',
+  onLoad: () => {
+    const inputs = riveInstance.stateMachineInputs('ControlledAnimation');
+    const playbackSpeed = inputs.find(i => i.name === 'speed');
+    playbackSpeed.value = 0; // User controls playback
+  }
+});
+```
+
+**Framerate Standard:**
+- Always use 60fps (Rive default) - provides smooth, jitter-free motion
+- Reduces motion blur that can overwhelm users with vestibular disorders
+- Never reduce framerate for "artistic" effect if it increases jitter
+
+**Flashing Content (WCAG AAA 2.3.2 - Three Flashes):**
+- Maximum: 3 flashes per second OR less than 25% of view area
+- At 60fps: 1 flash per 20 frames minimum
+- Test all transitions and effects for flash patterns
+- Meeting this criterion = AAA level compliance
+
+**Reduced Motion Support:**
+```javascript
+// Respect prefers-reduced-motion
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const riveInstance = new Rive({
+  canvas: canvas,
+  src: riveSrc,
+  autoplay: !prefersReducedMotion, // Disable for reduced motion users
+  onLoad: () => {
+    if (prefersReducedMotion) {
+      // Show static state or simplified version
+      const inputs = riveInstance.stateMachineInputs('StateMachine');
+      const motionControl = inputs.find(i => i.name === 'reduceMotion');
+      if (motionControl) motionControl.value = true;
+    }
+  }
+});
+```
+
+#### 5. Interactive Elements & Touch Targets
+
+**Button Sizing (WCAG 2.5.5):**
+- Minimum size: 24x24 pixels (consider HDPI displays make this smaller visually)
+- Recommended: 44x44 pixels or larger for better accessibility
+- Use Rive Layouts with Padding to create larger hit areas
+- Ensure adequate spacing between interactive elements (minimum 8px)
+
+**Implementation:**
+- Design buttons with Layouts, not raw shapes
+- Add Padding property to Layout for touch target expansion
+- Test on mobile devices with various screen densities
+- Consider thumb zones on mobile (bottom and middle of screen easiest)
+
+#### 6. Future-Proofing with Rive Features
+
+**Data Binding Preparation:**
+Rive's team is developing built-in accessibility features:
+- Semantic roles (button, heading, label, etc.)
+- Navigation order
+- ARIA labels
+- Direct .riv file metadata for screen readers
+
+**Current Approach:**
+- Manually create semantic information at runtime
+- Use Data Binding to expose accessibility values
+- Structure View Models with accessibility in mind
+- Document semantic structure for developers
+
+**Example Structure:**
+```javascript
+// Prepare for future semantic support
+const accessibilityData = {
+  role: 'button',
+  label: 'Play Animation',
+  description: 'Starts the hero animation sequence'
+};
+
+// Expose via data attributes for screen readers
+canvas.setAttribute('role', accessibilityData.role);
+canvas.setAttribute('aria-label', accessibilityData.label);
+canvas.setAttribute('aria-description', accessibilityData.description);
+```
+
+#### 7. Testing Checklist
+
+**Before Every Rive Implementation:**
+- [ ] Run color contrast checker on all text/background combinations
+- [ ] Test with screen reader (NVDA, JAWS, VoiceOver)
+- [ ] Verify keyboard navigation works (Tab, Enter, Space)
+- [ ] Check reduced motion preference handling
+- [ ] Validate button/touch target sizes (inspect mode)
+- [ ] Test at 200% and 400% zoom levels
+- [ ] Count flashes in any blinking/transitioning elements (max 3/second)
+- [ ] Verify 60fps playback (no frame drops)
+- [ ] Test on mobile devices (touch targets, density)
+- [ ] Document autoplay justification (is it necessary?)
+
+#### 8. WordPress Integration Requirements
+
+**Block Attributes to Add:**
+```json
+{
+  "enableAutoplay": {
+    "type": "boolean",
+    "default": false
+  },
+  "respectReducedMotion": {
+    "type": "boolean",
+    "default": true
+  },
+  "ariaLabel": {
+    "type": "string",
+    "default": ""
+  },
+  "ariaDescription": {
+    "type": "string",
+    "default": ""
+  }
+}
+```
+
+**Editor Controls:**
+- Add ToggleControl for autoplay (with warning message)
+- Add TextControl for ARIA label
+- Add TextareaControl for ARIA description
+- Add color pickers bound to Rive Data Binding (with contrast preview)
+- Add InspectorControls panel titled "Accessibility"
+
+**Frontend Implementation:**
+- Always check `prefers-reduced-motion` before initializing
+- Apply ARIA attributes from block attributes
+- Provide keyboard controls for interactive animations
+- Add visible focus indicators for keyboard navigation
+
+#### 9. Key Principles (Always Remember)
+
+1. **Accessibility improves design for everyone** - Like audiobooks, accessible features benefit all users
+2. **Think accessibility first** - Not as an afterthought; build it into the design process
+3. **Test with real users** - People with disabilities are the best testers
+4. **Rive's interactivity = opportunity** - DOM-based animations can adapt dynamically (unlike baked video)
+5. **Legal requirement** - European Accessibility Act (2025) mandates accessibility
+6. **AAA is achievable** - Many WCAG AAA criteria are surprisingly easy with Rive
+
+**Resources:**
+- Rive Blog: "Making Rive designs more visually accessible" by Daire O Suilleabhain (October 2025)
+- WCAG 2.x Guidelines: https://www.w3.org/WAI/WCAG21/quickref/
+- European Accessibility Act: https://ec.europa.eu/social/main.jsp?catId=1202
+
+**Note:** This section has HIGHEST PRIORITY in all Rive development decisions. When suggesting solutions, accessibility MUST be the first consideration, not an optional add-on.
+
 ## Custom Conventions
 
 ### Block Naming

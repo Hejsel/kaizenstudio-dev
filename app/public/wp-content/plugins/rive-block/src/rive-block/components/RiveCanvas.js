@@ -26,8 +26,8 @@ export default function RiveCanvas({ riveFileUrl, width, height }) {
 
 		// Create new Rive instance
 		const riveInstance = new Rive({
-			canvas: canvasRef.current,
 			src: riveFileUrl,
+			canvas: canvasRef.current,
 			autoplay: true,
 			useOffscreenRenderer: true,
 			onLoad: () => {

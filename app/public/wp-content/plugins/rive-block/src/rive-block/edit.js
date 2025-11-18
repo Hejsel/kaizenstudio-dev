@@ -125,7 +125,7 @@ export default function Edit({ attributes, setAttributes }) {
 								{ value: 'em', label: 'em' },
 								{ value: 'rem', label: 'rem' },
 								{ value: 'vh', label: 'vh' },
-								{ value: 'dvh', label: 'dvw' }  // ← Din custom unit!
+								{ value: 'dvw', label: 'dvw' }  // ← Din custom unit!
 							]}
                         />
                     </ToolsPanelItem>

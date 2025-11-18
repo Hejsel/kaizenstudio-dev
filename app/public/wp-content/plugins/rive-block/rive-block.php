@@ -71,7 +71,7 @@ add_filter( 'upload_mimes', 'rive_block_allow_riv_uploads' );
 /**
  * Fix MIME type check for .riv files
  */
-function rive_block_fix_riv_mime_type( $data, $file, $filename, $mimes ) {
+function rive_block_fix_riv_mime_type( $data, $_file, $filename ) {
 	$ext = pathinfo( $filename, PATHINFO_EXTENSION );
 
 	if ( $ext === 'riv' ) {
@@ -81,4 +81,4 @@ function rive_block_fix_riv_mime_type( $data, $file, $filename, $mimes ) {
 
 	return $data;
 }
-add_filter( 'wp_check_filetype_and_ext', 'rive_block_fix_riv_mime_type', 10, 4 );
+add_filter( 'wp_check_filetype_and_ext', 'rive_block_fix_riv_mime_type', 10, 3 );
