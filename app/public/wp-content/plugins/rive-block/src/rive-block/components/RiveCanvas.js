@@ -11,7 +11,53 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 import { Spinner, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-export default function RiveCanvas({ riveFileUrl, width, height }) {
+/**
+ * Scan Rive file for metadata (View Model properties, State Machines, Animations)
+ */
+function scanRiveMetadata(riveInstance) {
+	const metadata = {
+		stateMachines: [],
+		animations: [],
+		artboards: [],
+		viewModelProperties: [],
+		hasViewModel: false
+	};
+
+	try {
+		// Get basic info
+		metadata.stateMachines = riveInstance.stateMachineNames || [];
+		metadata.animations = riveInstance.animationNames || [];
+
+		// Get contents for complete file structure
+		if (riveInstance.contents && riveInstance.contents.artboards) {
+			metadata.artboards = riveInstance.contents.artboards.map(ab => ab.name);
+		}
+
+		// Scan for View Model
+		if (riveInstance.viewModelInstance) {
+			const vmi = riveInstance.viewModelInstance;
+
+			// Try to get properties
+			if (vmi._runtimeInstance && vmi._runtimeInstance.getProperties) {
+				const properties = vmi._runtimeInstance.getProperties();
+
+				if (properties && properties.length > 0) {
+					metadata.hasViewModel = true;
+					metadata.viewModelProperties = properties.map(prop => ({
+						name: prop.name,
+						type: prop.type // DataType enum value
+					}));
+				}
+			}
+		}
+	} catch (error) {
+		console.error('Error scanning Rive metadata:', error);
+	}
+
+	return metadata;
+}
+
+export default function RiveCanvas({ riveFileUrl, width, height, onMetadataDetected }) {
 	const canvasRef = useRef(null);
 	const riveInstanceRef = useRef(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -29,10 +75,18 @@ export default function RiveCanvas({ riveFileUrl, width, height }) {
 			src: riveFileUrl,
 			canvas: canvasRef.current,
 			autoplay: true,
+			autoBind: true, // Enable View Model auto-binding
 			useOffscreenRenderer: true,
 			onLoad: () => {
 				setIsLoading(false);
 				setLoadError(null);
+
+				// Scan file metadata
+				if (onMetadataDetected) {
+					const metadata = scanRiveMetadata(riveInstance);
+					console.log('🔍 Rive File Metadata Detected:', metadata);
+					onMetadataDetected(metadata);
+				}
 			},
 			onLoadError: () => {
 				setLoadError(__('Unable to load Rive animation. Please check the file and try again.', 'rive-block'));

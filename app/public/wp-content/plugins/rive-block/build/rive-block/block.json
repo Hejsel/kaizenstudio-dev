@@ -22,6 +22,18 @@
     },
     "riveFileId": {
       "type": "number"
+    },
+    "riveMetadata": {
+      "type": "object",
+      "default": {}
+    },
+    "viewModelValues": {
+      "type": "object",
+      "default": {}
+    },
+    "textRunValues": {
+      "type": "object",
+      "default": {}
     }
   },
   "supports": {

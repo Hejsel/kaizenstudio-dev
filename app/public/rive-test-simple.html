@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Rive Test</title>
-    <script src="https://unpkg.com/@rive-app/canvas@2.23.8"></script>
+    <script src="https://unpkg.com/@rive-app/canvas@latest"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,9 +45,15 @@
     <div class="info">
         <label for="fileSelect"><strong>Vælg .riv fil:</strong></label>
         <select id="fileSelect" style="padding: 8px; font-size: 16px; width: 100%;">
-            <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/20749-39045-glowing-subscribe-button.riv">glowing-subscribe-button.riv</option>
-            <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/20749-39045-glowing-subscribe-button-1.riv">glowing-subscribe-button-1.riv</option>
-            <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/24941-46557-expression-grid.riv">expression-grid.riv</option>
+            <optgroup label="Your Files">
+                <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/20749-39045-glowing-subscribe-button.riv">glowing-subscribe-button.riv</option>
+                <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/20749-39045-glowing-subscribe-button-1.riv">glowing-subscribe-button-1.riv</option>
+                <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/24941-46557-expression-grid.riv">expression-grid.riv</option>
+            </optgroup>
+            <optgroup label="Test Files (Data Bindings)">
+                <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/control-center-data-binding.riv">control-center-data-binding.riv</option>
+                <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/data-binding-loaders-tutorial.riv">data-binding-loaders-tutorial.riv</option>
+            </optgroup>
         </select>
     </div>
 
@@ -111,7 +117,8 @@
                     src: riveFileUrl,
                     canvas: canvas,
                     autoplay: true,
-                    stateMachines: 'State Machine 1', // Explicitly play this state machine
+                    autoBind: true, // Enable auto-binding of View Model
+                    // Note: Don't specify stateMachines to allow auto-binding to work
                     onLoad: () => {
                         log('✅ SUCCESS: Rive file loaded!');
                         log('State Machines: ' + JSON.stringify(currentRive.stateMachineNames));
@@ -135,6 +142,214 @@
                         }
 
                         status.textContent = 'SUCCESS: Rive loaded!';
+
+                        // === TEST DATA BINDINGS (View Model) ===
+                        log('\n=== DATA BINDINGS (View Model) ===');
+
+                        // Check if View Model methods exist
+                        log('Checking View Model methods:');
+                        log('  viewModelByName: ' + (typeof currentRive.viewModelByName === 'function' ? '✅' : '❌'));
+                        log('  defaultViewModel: ' + (typeof currentRive.defaultViewModel === 'function' ? '✅' : '❌'));
+                        log('  viewModelInstance: ' + (currentRive.viewModelInstance !== undefined ? '✅' : '❌'));
+
+                        // Try to get default View Model
+                        try {
+                            if (currentRive.defaultViewModel) {
+                                const defaultVM = currentRive.defaultViewModel();
+                                if (defaultVM) {
+                                    log('✅ DEFAULT VIEW MODEL FOUND!');
+                                    console.log('📊 Default View Model:', defaultVM);
+
+                                    // Try to get instance
+                                    if (defaultVM.defaultInstance) {
+                                        const vmi = defaultVM.defaultInstance();
+                                        log('✅ View Model Instance created!');
+                                        console.log('📦 View Model Instance:', vmi);
+                                    }
+                                } else {
+                                    log('⚠️ defaultViewModel() returned null/undefined');
+                                }
+                            }
+                        } catch (e) {
+                            log('❌ Error getting default view model: ' + e.message);
+                        }
+
+                        // Try to get auto-bound instance
+                        try {
+                            if (currentRive.viewModelInstance) {
+                                log('✅ AUTO-BOUND VIEW MODEL INSTANCE FOUND!');
+                                const vmi = currentRive.viewModelInstance;
+                                console.log('📦 Bound View Model Instance:', vmi);
+
+                                // Try to inspect internal runtime instance for property names
+                                log('Trying to get View Model property names...');
+
+                                if (vmi._runtimeInstance) {
+                                    console.log('🔍 Runtime Instance:', vmi._runtimeInstance);
+
+                                    // Try to get properties using getProperties method
+                                    try {
+                                        if (vmi._runtimeInstance.getProperties) {
+                                            const properties = vmi._runtimeInstance.getProperties();
+                                            log('✅ FOUND PROPERTIES via getProperties()!');
+                                            console.log('📋 Properties array:', properties);
+
+                                            if (properties && properties.length > 0) {
+                                                log('View Model has ' + properties.length + ' properties:');
+                                                properties.forEach((prop, index) => {
+                                                    log('  Property ' + (index + 1) + ':');
+                                                    console.log('    Full property object:', prop);
+
+                                                    // Try to get property details
+                                                    for (let key in prop) {
+                                                        if (typeof prop[key] !== 'function') {
+                                                            log('    ' + key + ': ' + prop[key]);
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                log('⚠️ getProperties() returned empty array');
+                                            }
+                                        } else {
+                                            log('⚠️ No getProperties method on runtime instance');
+                                        }
+                                    } catch (e) {
+                                        log('  Error calling getProperties: ' + e.message);
+                                    }
+                                }
+
+                                // Try to access via the default View Model to see structure
+                                try {
+                                    const defaultVM = currentRive.defaultViewModel();
+                                    console.log('🎯 Default View Model structure:', defaultVM);
+
+                                    // Check if View Model has property definitions
+                                    if (defaultVM._runtimeViewModel) {
+                                        console.log('🔍 Runtime View Model:', defaultVM._runtimeViewModel);
+                                    }
+                                } catch (e) {
+                                    log('Error inspecting View Model structure: ' + e.message);
+                                }
+
+                                // Check contents for View Model metadata
+                                log('\nChecking contents for View Model metadata...');
+                                if (currentRive.contents && currentRive.contents.artboards) {
+                                    const artboard = currentRive.contents.artboards[0];
+                                    if (artboard.viewModels) {
+                                        log('✅ View Models found in contents!');
+                                        log('View Models: ' + JSON.stringify(artboard.viewModels, null, 2));
+                                    } else {
+                                        log('⚠️ No viewModels property in contents.artboards[0]');
+
+                                        // Log all artboard properties to see what's available
+                                        log('Available artboard properties:');
+                                        for (let prop in artboard) {
+                                            log('  - ' + prop);
+                                        }
+                                    }
+                                }
+                            } else {
+                                log('⚠️ No auto-bound viewModelInstance');
+                            }
+                        } catch (e) {
+                            log('❌ Error getting view model instance: ' + e.message);
+                        }
+
+                        // === TEST TEXT RUNS ===
+                        log('\n=== TEXT RUNS ===');
+                        try {
+                            if (currentRive.artboard) {
+                                log('✅ Artboard exists');
+                                console.log('🎨 Artboard object:', currentRive.artboard);
+
+                                // Check for text runs
+                                if (currentRive.artboard.textRuns) {
+                                    log('✅ textRuns property exists!');
+                                    const textRuns = currentRive.artboard.textRuns();
+                                    log('Text runs found: ' + textRuns.length);
+
+                                    textRuns.forEach((textRun, index) => {
+                                        log('  Text Run ' + (index + 1) + ':');
+                                        log('    name: ' + textRun.name);
+                                        log('    text: ' + textRun.text);
+                                    });
+                                } else {
+                                    log('⚠️ No textRuns method on artboard');
+                                    log('Trying alternative access methods...');
+
+                                    // Try to find text runs another way
+                                    if (currentRive.retrieveTextRun) {
+                                        log('✅ retrieveTextRun method exists on instance');
+                                        log('Trying to retrieve text runs via retrieveTextRun...');
+
+                                        // We need to know text run names to retrieve them
+                                        // Try to get from contents
+                                        if (currentRive.contents && currentRive.contents.artboards) {
+                                            const artboard = currentRive.contents.artboards[0];
+                                            if (artboard.textRuns) {
+                                                log('Found text runs in contents:');
+                                                artboard.textRuns.forEach(tr => {
+                                                    log('  - ' + tr.name);
+
+                                                    try {
+                                                        const textRun = currentRive.retrieveTextRun(tr.name);
+                                                        log('    Retrieved! Type: ' + typeof textRun);
+                                                        console.log('    Text run object:', textRun);
+                                                    } catch (e) {
+                                                        log('    Error retrieving: ' + e.message);
+                                                    }
+                                                });
+                                            } else {
+                                                log('⚠️ No textRuns in contents.artboards[0]');
+                                            }
+                                        }
+
+                                        // Also try getTextRunValue method
+                                        if (currentRive.getTextRunValue) {
+                                            log('✅ getTextRunValue method also exists');
+                                        }
+                                    }
+                                }
+                            } else {
+                                log('❌ No artboard object');
+                            }
+                        } catch (e) {
+                            log('❌ Error inspecting text runs: ' + e.message);
+                        }
+
+                        // === TEST LOW-LEVEL ANIMATION OBJECTS ===
+                        log('\n=== ANIMATION METADATA ===');
+                        if (currentRive.artboard && currentRive.animationNames) {
+                            log('Testing access to animation metadata...');
+
+                            // Try to get first animation
+                            const firstAnimName = currentRive.animationNames[0];
+                            log('First animation: ' + firstAnimName);
+
+                            try {
+                                if (currentRive.artboard.animationByName) {
+                                    const anim = currentRive.artboard.animationByName(firstAnimName);
+                                    console.log('🎬 Animation object:', anim);
+
+                                    log('  Animation properties:');
+                                    if (anim.duration !== undefined) log('    duration: ' + anim.duration + ' seconds');
+                                    if (anim.fps !== undefined) log('    fps: ' + anim.fps);
+                                    if (anim.loopValue !== undefined) {
+                                        let loopMode = 'Unknown';
+                                        if (anim.loopValue === 0) loopMode = 'OneShot';
+                                        else if (anim.loopValue === 1) loopMode = 'Loop';
+                                        else if (anim.loopValue === 2) loopMode = 'PingPong';
+                                        log('    loopValue: ' + anim.loopValue + ' (' + loopMode + ')');
+                                    }
+                                    if (anim.workStart !== undefined) log('    workStart: ' + anim.workStart);
+                                    if (anim.workEnd !== undefined) log('    workEnd: ' + anim.workEnd);
+                                } else {
+                                    log('  ❌ animationByName method not available');
+                                }
+                            } catch (e) {
+                                log('  Error accessing animation: ' + e.message);
+                            }
+                        }
 
                         // Try to get inputs
                         if (currentRive.stateMachineNames && currentRive.stateMachineNames.length > 0) {

@@ -27,6 +27,24 @@ return array(
 			),
 			'riveFileId' => array(
 				'type' => 'number'
+			),
+			'riveMetadata' => array(
+				'type' => 'object',
+				'default' => array(
+					
+				)
+			),
+			'viewModelValues' => array(
+				'type' => 'object',
+				'default' => array(
+					
+				)
+			),
+			'textRunValues' => array(
+				'type' => 'object',
+				'default' => array(
+					
+				)
 			)
 		),
 		'supports' => array(

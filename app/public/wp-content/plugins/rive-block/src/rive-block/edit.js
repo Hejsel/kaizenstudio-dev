@@ -57,8 +57,16 @@ export default function Edit({ attributes, setAttributes }) {
 		riveFileUrl,
 		riveFileId,
 		width = metadata.attributes.width.default,
-		height = metadata.attributes.height.default
+		height = metadata.attributes.height.default,
+		riveMetadata = {},
+		viewModelValues = {},
+		textRunValues = {}
 	} = attributes;
+
+	// Handle metadata detection from RiveCanvas
+	const handleMetadataDetected = (detectedMetadata) => {
+		setAttributes({ riveMetadata: detectedMetadata });
+	};
 
 	// Handle Rive file selection from Media Library or Upload
 	const onSelectRiveFile = (media) => {
@@ -181,6 +189,7 @@ export default function Edit({ attributes, setAttributes }) {
 					riveFileUrl={riveFileUrl}
 					width={width}
 					height={height}
+					onMetadataDetected={handleMetadataDetected}
 				/>
 			</div>
 		</>
