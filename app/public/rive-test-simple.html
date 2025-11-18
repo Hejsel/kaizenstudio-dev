@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Rive Test</title>
+    <script src="https://unpkg.com/@rive-app/canvas@2.23.8"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        canvas {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            border: 2px solid #ccc;
+            display: block;
+            margin: 20px 0;
+        }
+        .info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        pre {
+            background: #333;
+            color: #0f0;
+            padding: 10px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Rive Test</h1>
+
+    <div class="info">
+        <p><strong>Status:</strong> <span id="status">Loading...</span></p>
+    </div>
+
+    <div class="info">
+        <label for="fileSelect"><strong>Vælg .riv fil:</strong></label>
+        <select id="fileSelect" style="padding: 8px; font-size: 16px; width: 100%;">
+            <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/20749-39045-glowing-subscribe-button.riv">glowing-subscribe-button.riv</option>
+            <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/20749-39045-glowing-subscribe-button-1.riv">glowing-subscribe-button-1.riv</option>
+            <option value="http://kaizenstudio-dev.local/wp-content/uploads/2025/11/24941-46557-expression-grid.riv">expression-grid.riv</option>
+        </select>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="info">
+        <h3>Console Output:</h3>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        // Console logging helper
+        const output = document.getElementById('output');
+        const status = document.getElementById('status');
+        const fileSelect = document.getElementById('fileSelect');
+        let currentRive = null;
+
+        function log(msg) {
+            console.log(msg);
+            output.textContent += msg + '\n';
+        }
+
+        function clearLog() {
+            output.textContent = '';
+        }
+
+        function loadRiveFile(riveFileUrl) {
+            clearLog();
+
+            // Cleanup previous instance
+            if (currentRive) {
+                try {
+                    currentRive.cleanup();
+                } catch (e) {
+                    log('Error cleaning up previous instance: ' + e.message);
+                }
+                currentRive = null;
+            }
+
+            log('=== Loading: ' + riveFileUrl.split('/').pop() + ' ===');
+            log('Rive library loaded: ' + (typeof rive !== 'undefined'));
+
+            if (typeof rive === 'undefined') {
+                status.textContent = 'ERROR: Rive library not loaded!';
+                log('ERROR: Rive library not loaded from CDN');
+                return;
+            }
+
+            status.textContent = 'Rive library loaded OK';
+            log('Rive object: ' + typeof rive);
+            log('Rive.Rive constructor: ' + typeof rive.Rive);
+
+            // Try to load a Rive file
+            const canvas = document.getElementById('canvas');
+
+            log('Attempting to load: ' + riveFileUrl);
+            status.textContent = 'Loading Rive file...';
+
+            try {
+                currentRive = new rive.Rive({
+                    src: riveFileUrl,
+                    canvas: canvas,
+                    autoplay: true,
+                    stateMachines: 'State Machine 1', // Explicitly play this state machine
+                    onLoad: () => {
+                        log('✅ SUCCESS: Rive file loaded!');
+                        log('State Machines: ' + JSON.stringify(currentRive.stateMachineNames));
+                        log('Animations: ' + JSON.stringify(currentRive.animationNames));
+                        log('Artboards: ' + JSON.stringify(currentRive.artboardNames));
+
+                        // IMPORTANT: Check the 'contents' property!
+                        log('\n=== FILE CONTENTS (Full Object Hierarchy) ===');
+                        if (currentRive.contents) {
+                            log('Contents property exists!');
+                            console.log('📦 Full contents object:', currentRive.contents);
+
+                            try {
+                                log('Contents: ' + JSON.stringify(currentRive.contents, null, 2));
+                            } catch (e) {
+                                log('Cannot stringify contents (circular reference or too large)');
+                                log('Check browser console for full object');
+                            }
+                        } else {
+                            log('❌ No contents property found');
+                        }
+
+                        status.textContent = 'SUCCESS: Rive loaded!';
+
+                        // Try to get inputs
+                        if (currentRive.stateMachineNames && currentRive.stateMachineNames.length > 0) {
+                            currentRive.stateMachineNames.forEach(smName => {
+                                log('\nState Machine: ' + smName);
+                                try {
+                                    const inputs = currentRive.stateMachineInputs(smName);
+                                    log('  Inputs raw: ' + JSON.stringify(inputs));
+                                    log('  Inputs type: ' + typeof inputs);
+                                    log('  Inputs is array: ' + Array.isArray(inputs));
+
+                                    if (inputs && inputs.length > 0) {
+                                        log('  ✅ FOUND ' + inputs.length + ' INPUTS:');
+                                        inputs.forEach(input => {
+                                            // Decode input type
+                                            let typeName = 'Unknown';
+                                            if (input.type === 56) typeName = 'Number';
+                                            else if (input.type === 57) typeName = 'Boolean';
+                                            else if (input.type === 58) typeName = 'Trigger';
+
+                                            log('    - ' + input.name + ' (type: ' + typeName + ' [' + input.type + '])');
+                                            log('      value: ' + input.value);
+                                            if (input.fire) log('      has fire() method: yes');
+                                        });
+                                    } else {
+                                        log('  ❌ No inputs found (State Machine har ingen eksponerede inputs)');
+                                    }
+                                } catch (e) {
+                                    log('  ❌ Error getting inputs: ' + e.message);
+                                }
+                            });
+                        } else {
+                            log('\n❌ No state machines found');
+                        }
+                    },
+                    onLoadError: (err) => {
+                        log('❌ ERROR loading Rive file');
+                        log('Error type: ' + typeof err);
+                        log('Error: ' + JSON.stringify(err));
+                        status.textContent = 'ERROR loading Rive file';
+                    }
+                });
+
+                log('Rive instance created');
+
+            } catch (e) {
+                log('❌ EXCEPTION: ' + e.message);
+                log('Stack: ' + e.stack);
+                status.textContent = 'ERROR: ' + e.message;
+            }
+        }
+
+        // Event listener for file selection
+        fileSelect.addEventListener('change', function(e) {
+            const selectedFile = e.target.value;
+            if (selectedFile) {
+                loadRiveFile(selectedFile);
+            }
+        });
+
+        // Load first file on page load
+        loadRiveFile(fileSelect.value);
+    </script>
+</body>
+</html>
