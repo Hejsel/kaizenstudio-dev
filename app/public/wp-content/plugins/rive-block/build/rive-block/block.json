@@ -22,6 +22,22 @@
     },
     "riveFileId": {
       "type": "number"
+    },
+    "enableAutoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "respectReducedMotion": {
+      "type": "boolean",
+      "default": true
+    },
+    "ariaLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "ariaDescription": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {

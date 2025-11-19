@@ -15,14 +15,33 @@ if ( empty( $attributes['riveFileUrl'] ) ) {
 	return;
 }
 
+// Get block attributes with defaults
 $width = $attributes['width'] ?? '100%';
 $height = $attributes['height'] ?? 'auto';
 $rive_file_url = $attributes['riveFileUrl'];
+$enable_autoplay = $attributes['enableAutoplay'] ?? false;
+$respect_reduced_motion = $attributes['respectReducedMotion'] ?? true;
+$aria_label = $attributes['ariaLabel'] ?? '';
+$aria_description = $attributes['ariaDescription'] ?? '';
+
+// Build wrapper attributes
+$wrapper_attributes = [
+	'style' => 'width: ' . esc_attr($width) . '; height: ' . esc_attr($height) . ';',
+	'data-rive-src' => esc_url($rive_file_url),
+	'data-enable-autoplay' => $enable_autoplay ? 'true' : 'false',
+	'data-respect-reduced-motion' => $respect_reduced_motion ? 'true' : 'false',
+];
+
+// Add ARIA attributes if provided
+if ( ! empty( $aria_label ) ) {
+	$wrapper_attributes['role'] = 'img';
+	$wrapper_attributes['aria-label'] = esc_attr( $aria_label );
+}
+
+if ( ! empty( $aria_description ) ) {
+	$wrapper_attributes['aria-description'] = esc_attr( $aria_description );
+}
 ?>
 <canvas
-	<?php echo get_block_wrapper_attributes([
-		'class' => 'rive-block-canvas',
-		'style' => 'width: ' . esc_attr($width) . '; height: ' . esc_attr($height) . ';',
-		'data-rive-src' => esc_url($rive_file_url)
-	]); ?>>
+	<?php echo get_block_wrapper_attributes( $wrapper_attributes ); ?>>
 </canvas>

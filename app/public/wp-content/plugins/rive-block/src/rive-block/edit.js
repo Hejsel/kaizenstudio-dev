@@ -23,6 +23,10 @@ import {
 import {
 	PanelBody,
 	Button,
+	ToggleControl,
+	TextControl,
+	TextareaControl,
+	Notice,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 	__experimentalUnitControl as UnitControl
@@ -57,7 +61,11 @@ export default function Edit({ attributes, setAttributes }) {
 		riveFileUrl,
 		riveFileId,
 		width = metadata.attributes.width.default,
-		height = metadata.attributes.height.default
+		height = metadata.attributes.height.default,
+		enableAutoplay = metadata.attributes.enableAutoplay.default,
+		respectReducedMotion = metadata.attributes.respectReducedMotion.default,
+		ariaLabel = metadata.attributes.ariaLabel.default,
+		ariaDescription = metadata.attributes.ariaDescription.default
 	} = attributes;
 
 	// Handle Rive file selection from Media Library or Upload
@@ -174,6 +182,44 @@ export default function Edit({ attributes, setAttributes }) {
 						/>
 					</MediaUploadCheck>
 				</PanelBody>
+				<PanelBody title={__('Accessibility', 'rive-block')} initialOpen={false}>
+					<ToggleControl
+						label={__('Enable Autoplay', 'rive-block')}
+						help={
+							enableAutoplay
+								? __('Animation will start automatically. Consider accessibility: users with vestibular disorders may prefer animations that don\'t autoplay.', 'rive-block')
+								: __('Animation will require user interaction to play. This is the recommended setting for WCAG AAA compliance.', 'rive-block')
+						}
+						checked={enableAutoplay}
+						onChange={(value) => setAttributes({ enableAutoplay: value })}
+					/>
+					{enableAutoplay && (
+						<Notice status="warning" isDismissible={false}>
+							{__('Autoplay may violate WCAG AAA 2.3.3 (Animation from Interactions). Consider if this animation is essential to the user experience.', 'rive-block')}
+						</Notice>
+					)}
+					<ToggleControl
+						label={__('Respect Reduced Motion Preference', 'rive-block')}
+						help={__('Disable animation for users who have set "prefers-reduced-motion" in their system settings. Highly recommended for accessibility.', 'rive-block')}
+						checked={respectReducedMotion}
+						onChange={(value) => setAttributes({ respectReducedMotion: value })}
+					/>
+					<TextControl
+						label={__('ARIA Label', 'rive-block')}
+						help={__('Accessible name for screen readers. Describe what this animation represents (e.g., "Company logo animation").', 'rive-block')}
+						value={ariaLabel}
+						onChange={(value) => setAttributes({ ariaLabel: value })}
+						placeholder={__('e.g., Hero animation', 'rive-block')}
+					/>
+					<TextareaControl
+						label={__('ARIA Description', 'rive-block')}
+						help={__('Detailed description of the animation for screen readers. Explain what happens in the animation.', 'rive-block')}
+						value={ariaDescription}
+						onChange={(value) => setAttributes({ ariaDescription: value })}
+						placeholder={__('e.g., An animated illustration showing...', 'rive-block')}
+						rows={3}
+					/>
+				</PanelBody>
 			</InspectorControls>
 
 			<div {...useBlockProps()}>
@@ -181,6 +227,10 @@ export default function Edit({ attributes, setAttributes }) {
 					riveFileUrl={riveFileUrl}
 					width={width}
 					height={height}
+					enableAutoplay={enableAutoplay}
+					respectReducedMotion={respectReducedMotion}
+					ariaLabel={ariaLabel}
+					ariaDescription={ariaDescription}
 				/>
 			</div>
 		</>

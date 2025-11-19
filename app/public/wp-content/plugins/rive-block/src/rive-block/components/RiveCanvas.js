@@ -2,18 +2,30 @@
  * RiveCanvas Component
  *
  * Wrapper component that handles Rive animation loading and display in the block editor.
- * Uses vanilla JavaScript @rive-app/canvas for identical markup to frontend.
+ * Uses @rive-app/canvas-advanced for full control over Rive runtime.
  * Isolated component ensures proper cleanup when riveFileUrl changes.
  */
 
-import { Rive } from '@rive-app/canvas';
 import { useEffect, useState, useRef } from '@wordpress/element';
 import { Spinner, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { riveRuntime } from '../utils/RiveRuntime';
 
-export default function RiveCanvas({ riveFileUrl, width, height }) {
+export default function RiveCanvas({
+	riveFileUrl,
+	width,
+	height,
+	enableAutoplay,
+	respectReducedMotion,
+	ariaLabel,
+	ariaDescription
+}) {
 	const canvasRef = useRef(null);
 	const riveInstanceRef = useRef(null);
+	const riveFileRef = useRef(null);
+	const artboardRef = useRef(null);
+	const rendererRef = useRef(null);
+	const animationFrameIdRef = useRef(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [loadError, setLoadError] = useState(null);
 
@@ -21,35 +33,205 @@ export default function RiveCanvas({ riveFileUrl, width, height }) {
 	useEffect(() => {
 		if (!canvasRef.current || !riveFileUrl) return;
 
+		let mounted = true;
 		setIsLoading(true);
 		setLoadError(null);
 
-		// Create new Rive instance
-		const riveInstance = new Rive({
-			src: riveFileUrl,
-			canvas: canvasRef.current,
-			autoplay: true,
-			useOffscreenRenderer: true,
-			onLoad: () => {
+		(async () => {
+			try {
+				// Get Rive runtime instance
+				const rive = await riveRuntime.awaitInstance();
+
+				if (!mounted) return;
+
+				// Fetch Rive file
+				const response = await fetch(riveFileUrl);
+				if (!response.ok) {
+					throw new Error(`Failed to fetch Rive file: ${response.statusText}`);
+				}
+
+				const arrayBuffer = await response.arrayBuffer();
+				const fileBytes = new Uint8Array(arrayBuffer);
+
+				// Load Rive file
+				const file = await rive.load(fileBytes);
+				riveFileRef.current = file;
+
+				if (!mounted) return;
+
+				// Get default artboard
+				const artboard = file.defaultArtboard();
+				artboardRef.current = artboard;
+
+				// Create renderer
+				const renderer = rive.makeRenderer(canvasRef.current, true);
+				rendererRef.current = renderer;
+
+				// Check user's motion preference
+				const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+				// Determine if autoplay should be enabled
+				const shouldAutoplay = enableAutoplay && !(respectReducedMotion && prefersReducedMotion);
+
+				// Try to create animation or state machine instance
+				let animationInstance = null;
+
+				if (artboard.animationCount() > 0) {
+					const animation = artboard.animationByIndex(0);
+					animationInstance = new rive.LinearAnimationInstance(animation, artboard);
+				}
+
+				riveInstanceRef.current = {
+					rive,
+					file,
+					artboard,
+					renderer,
+					animation: animationInstance,
+					shouldAutoplay
+				};
+
+				// Start render loop if autoplay is enabled
+				if (shouldAutoplay && animationInstance) {
+					startRenderLoop(rive);
+				} else {
+					// Just render one frame
+					renderFrame(rive);
+				}
+
 				setIsLoading(false);
 				setLoadError(null);
-			},
-			onLoadError: () => {
-				setLoadError(__('Unable to load Rive animation. Please check the file and try again.', 'rive-block'));
-				setIsLoading(false);
+
+			} catch (error) {
+				console.error('[Rive Block] Error loading Rive animation:', error);
+				if (mounted) {
+					setLoadError(__('Unable to load Rive animation. Please check the file and try again.', 'rive-block'));
+					setIsLoading(false);
+				}
 			}
-		});
+		})();
 
-		riveInstanceRef.current = riveInstance;
-
-		// Cleanup on unmount or when riveFileUrl changes
+		// Cleanup function
 		return () => {
-			if (riveInstanceRef.current) {
-				riveInstanceRef.current.cleanup();
-				riveInstanceRef.current = null;
-			}
+			mounted = false;
+			cleanup();
 		};
-	}, [riveFileUrl]);
+	}, [riveFileUrl, enableAutoplay, respectReducedMotion]);
+
+	/**
+	 * Start the render loop for animation
+	 */
+	const startRenderLoop = (rive) => {
+		let lastTime = 0;
+
+		const draw = (time) => {
+			if (!riveInstanceRef.current) return;
+
+			const { artboard, renderer, animation } = riveInstanceRef.current;
+			const elapsed = lastTime ? (time - lastTime) / 1000 : 0;
+			lastTime = time;
+
+			// Clear canvas
+			renderer.clear();
+			renderer.save();
+
+			// Advance animation
+			if (animation) {
+				animation.advance(elapsed);
+				animation.apply(1.0); // Full mix
+			}
+
+			// Advance artboard
+			artboard.advance(elapsed);
+
+			// Align to canvas
+			renderer.align(
+				rive.Fit.contain,
+				rive.Alignment.center,
+				{
+					minX: 0,
+					minY: 0,
+					maxX: canvasRef.current.width,
+					maxY: canvasRef.current.height
+				},
+				artboard.bounds
+			);
+
+			// Draw artboard
+			artboard.draw(renderer);
+			renderer.restore();
+
+			// Request next frame
+			animationFrameIdRef.current = rive.requestAnimationFrame(draw);
+		};
+
+		animationFrameIdRef.current = rive.requestAnimationFrame(draw);
+	};
+
+	/**
+	 * Render a single frame (for static display)
+	 */
+	const renderFrame = (rive) => {
+		if (!riveInstanceRef.current) return;
+
+		const { artboard, renderer } = riveInstanceRef.current;
+
+		renderer.clear();
+		renderer.save();
+
+		// Align to canvas
+		renderer.align(
+			rive.Fit.contain,
+			rive.Alignment.center,
+			{
+				minX: 0,
+				minY: 0,
+				maxX: canvasRef.current.width,
+				maxY: canvasRef.current.height
+			},
+			artboard.bounds
+		);
+
+		// Draw artboard
+		artboard.draw(renderer);
+		renderer.restore();
+	};
+
+	/**
+	 * Cleanup Rive resources
+	 */
+	const cleanup = () => {
+		// Cancel animation frame
+		if (animationFrameIdRef.current && riveInstanceRef.current) {
+			const { rive } = riveInstanceRef.current;
+			rive.cancelAnimationFrame(animationFrameIdRef.current);
+			animationFrameIdRef.current = null;
+		}
+
+		// Delete Rive instances
+		if (riveInstanceRef.current) {
+			const { animation, renderer, artboard } = riveInstanceRef.current;
+
+			if (animation) {
+				animation.delete();
+			}
+			if (renderer) {
+				renderer.delete();
+			}
+			if (artboard) {
+				artboard.delete();
+			}
+		}
+
+		// Unref file
+		if (riveFileRef.current) {
+			riveFileRef.current.unref();
+			riveFileRef.current = null;
+		}
+
+		riveInstanceRef.current = null;
+		artboardRef.current = null;
+		rendererRef.current = null;
+	};
 
 	return (
 		<div style={{ position: 'relative', width, height }}>
@@ -83,8 +265,10 @@ export default function RiveCanvas({ riveFileUrl, width, height }) {
 			{/* Rive animation canvas - identical markup to frontend */}
 			<canvas
 				ref={canvasRef}
-				className="rive-block-canvas"
 				style={{ width, height }}
+				role={ariaLabel ? 'img' : undefined}
+				aria-label={ariaLabel || undefined}
+				aria-description={ariaDescription || undefined}
 			/>
 		</div>
 	);

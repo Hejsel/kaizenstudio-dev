@@ -27,6 +27,22 @@ return array(
 			),
 			'riveFileId' => array(
 				'type' => 'number'
+			),
+			'enableAutoplay' => array(
+				'type' => 'boolean',
+				'default' => false
+			),
+			'respectReducedMotion' => array(
+				'type' => 'boolean',
+				'default' => true
+			),
+			'ariaLabel' => array(
+				'type' => 'string',
+				'default' => ''
+			),
+			'ariaDescription' => array(
+				'type' => 'string',
+				'default' => ''
 			)
 		),
 		'supports' => array(
