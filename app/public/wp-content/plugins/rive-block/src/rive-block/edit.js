@@ -2,6 +2,7 @@
  * Retrieves the translation of text.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
+ * @see https://www.w3.org/International/i18n-drafts/nav/about
  */
 import { __ } from '@wordpress/i18n';
 
@@ -160,7 +161,7 @@ export default function Edit({ attributes, setAttributes }) {
                         />
                     </ToolsPanelItem>
                 </ToolsPanel>
-				<PanelBody title={__('Rive File', 'rive-block')}>
+				<PanelBody title={__('Rive File', 'rive-block')} initialOpen={false}>
 					<p><strong>{__('Current file:', 'rive-block')}</strong></p>
 					<p style={{ wordBreak: 'break-all', fontSize: '12px', color: '#757575' }}>
 						{riveFileUrl}
@@ -183,6 +184,12 @@ export default function Edit({ attributes, setAttributes }) {
 					</MediaUploadCheck>
 				</PanelBody>
 				<PanelBody title={__('Accessibility', 'rive-block')} initialOpen={false}>
+					  <p>
+						<strong>
+							{__('Animation from Interactions', 'rive-block')}<br />
+							{__('(Level AAA)', 'rive-block')}
+						</strong>
+					</p>
 					<ToggleControl
 						label={__('Enable Autoplay', 'rive-block')}
 						help={
@@ -194,16 +201,33 @@ export default function Edit({ attributes, setAttributes }) {
 						onChange={(value) => setAttributes({ enableAutoplay: value })}
 					/>
 					{enableAutoplay && (
-						<Notice status="warning" isDismissible={false}>
-							{__('Autoplay may violate WCAG AAA 2.3.3 (Animation from Interactions). Consider if this animation is essential to the user experience.', 'rive-block')}
-						</Notice>
+						<div className='rive-block-notice'>
+							<Notice 
+								status="warning"
+								isDismissible={false}
+							>
+								{__('Autoplay may violate WCAG AAA 2.3.3 (Animation from Interactions). Consider if this animation is essential to the user experience.', 'rive-block')}
+							</Notice>
+						</div>
 					)}
+					<p>
+						<strong>
+							{__('Pause, Stop, Hide', 'rive-block')}<br />
+							{__('(Level A)', 'rive-block')}
+						</strong>
+					</p>
 					<ToggleControl
 						label={__('Respect Reduced Motion Preference', 'rive-block')}
 						help={__('Disable animation for users who have set "prefers-reduced-motion" in their system settings. Highly recommended for accessibility.', 'rive-block')}
 						checked={respectReducedMotion}
 						onChange={(value) => setAttributes({ respectReducedMotion: value })}
 					/>
+					<p>
+						<strong>
+							{__('Non-text Content', 'rive-block')}<br />
+							{__('(Level A)', 'rive-block')}
+						</strong>
+					</p>
 					<TextControl
 						label={__('ARIA Label', 'rive-block')}
 						help={__('Accessible name for screen readers. Describe what this animation represents (e.g., "Company logo animation").', 'rive-block')}

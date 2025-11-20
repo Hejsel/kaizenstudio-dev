@@ -1,1 +1,4348 @@
-(()=>{"use strict";var e,t={850:()=>{const e=window.wp.blocks,t=window.wp.i18n,r=window.wp.blockEditor,n=window.wp.components,a=JSON.parse('{"UU":"create-block/rive-block","uK":{"uJ":{"A":"auto"},"VL":{"A":"100%"},"Li":{"A":false},"lb":{"A":true},"Y4":{"A":""},"Em":{"A":""}}}'),i=window.ReactJSXRuntime,o=(0,i.jsx)("svg",{xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 150 150",children:(0,i.jsx)("path",{fillRule:"evenodd",d:"M19.18,23.33a7.46,7.46,0,0,0,7.5,7.42H88.84c20.52-1.39,33.1,24.78,17.5,38.65q-6.87,5.88-17.5,5.87h-27a7.43,7.43,0,1,0,0,14.85c.94,0,30.07,0,29.83,0l26.87,42.66a7.92,7.92,0,0,0,7,3.87c6.85.23,10-6.88,6.25-12.37l-23.9-38c37.3-17.51,21.54-71.94-19.07-70.34H26.68A7.47,7.47,0,0,0,19.18,23.33Z",transform:"translate(0 -0.2)"})}),s=window.wp.element;var l;const c=(l="undefined"!=typeof document?document.currentScript?.src:void 0,function(e={}){var t,r,n=e,a=new Promise((e,n)=>{t=e,r=n}),i="object"==typeof window,o="function"==typeof importScripts;function s(){function e(e){const i=n;r=t=0,n=new Map,i.forEach(t=>{try{t(e)}catch(e){console.error(e)}}),this.nb(),a&&a.Pb()}let t=0,r=0,n=new Map,a=null,i=null;this.requestAnimationFrame=function(a){t||=requestAnimationFrame(e.bind(this));const i=++r;return n.set(i,a),i},this.cancelAnimationFrame=function(e){n.delete(e),t&&0==n.size&&(cancelAnimationFrame(t),t=0)},this.Nb=function(e){i&&(document.body.remove(i),i=null),e||(i=document.createElement("div"),i.style.backgroundColor="black",i.style.position="fixed",i.style.right=0,i.style.top=0,i.style.color="white",i.style.padding="4px",i.innerHTML="RIVE FPS",e=function(e){i.innerHTML="RIVE FPS "+e.toFixed(1)},document.body.appendChild(i)),a=new function(){let t=0,r=0;this.Pb=function(){var n=performance.now();r?(++t,1e3<(n-=r)&&(e(1e3*t/n),t=r=0)):(r=n,t=0)}}},this.Kb=function(){i&&(document.body.remove(i),i=null),a=null},this.nb=function(){}}function c(e){const t=new Map;let r=-1/0;this.push=function(n){return n=n+((1<<e)-1)>>e,t.has(n)&&clearTimeout(t.get(n)),t.set(n,setTimeout(function(){t.delete(n),0==t.length?r=-1/0:n==r&&(r=Math.max(...t.keys()),console.assert(r<n))},1e3)),r=Math.max(n,r),r<<e}}const u=n.onRuntimeInitialized;n.onRuntimeInitialized=function(){u&&u();let e=n.decodeAudio;n.decodeAudio=function(t,r){r(t=e(t))};let t=n.decodeFont;n.decodeFont=function(e,r){r(e=t(e))};const r=n.FileAssetLoader;n.ptrToAsset=e=>{let t=n.ptrToFileAsset(e);return t.isImage?n.ptrToImageAsset(e):t.isFont?n.ptrToFontAsset(e):t.isAudio?n.ptrToAudioAsset(e):t},n.CustomFileAssetLoader=r.extend("CustomFileAssetLoader",{__construct:function({loadContents:e}){this.__parent.__construct.call(this),this.Db=e},loadContents:function(e,t){return e=n.ptrToAsset(e),this.Db(e,t)}}),n.CDNFileAssetLoader=r.extend("CDNFileAssetLoader",{__construct:function(){this.__parent.__construct.call(this)},loadContents:function(e){let t=n.ptrToAsset(e);return""!==(e=t.cdnUuid)&&(r=t.cdnBaseUrl+"/"+e,(a=new XMLHttpRequest).responseType="arraybuffer",a.onreadystatechange=function(){4==a.readyState&&200==a.status&&(e=>{t.decode(new Uint8Array(e.response))})(a)},a.open("GET",r,!0),a.send(null),!0);var r,a}}),n.FallbackFileAssetLoader=r.extend("FallbackFileAssetLoader",{__construct:function(){this.__parent.__construct.call(this),this.jb=[]},addLoader:function(e){this.jb.push(e)},loadContents:function(e,t){for(let r of this.jb)if(r.loadContents(e,t))return!0;return!1}});let a=n.computeAlignment;n.computeAlignment=function(e,t,r,n,i=1){return a.call(this,e,t,r,n,i)}};const h="createConicGradient createImageData createLinearGradient createPattern createRadialGradient getContextAttributes getImageData getLineDash getTransform isContextLost isPointInPath isPointInStroke measureText".split(" "),d=new function(){function e(){if(!t){var e=document.createElement("canvas"),o={alpha:1,depth:0,stencil:0,antialias:0,premultipliedAlpha:1,preserveDrawingBuffer:0,powerPreference:"high-performance",failIfMajorPerformanceCaveat:0,enableExtensionsByDefault:1,explicitSwapControl:1,renderViaOffscreenBackBuffer:1};let s;if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){if(s=e.getContext("webgl",o),r=1,!s)return console.log("No WebGL support. Image mesh will not be drawn."),!1}else if(s=e.getContext("webgl2",o))r=2;else{if(!(s=e.getContext("webgl",o)))return console.log("No WebGL support. Image mesh will not be drawn."),!1;r=1}function c(e,t,r){if(t=s.createShader(t),s.shaderSource(t,r),s.compileShader(t),0<((r=s.getShaderInfoLog(t))||"").length)throw r;s.attachShader(e,t)}if(s=new Proxy(s,{get:(e,t)=>e.isContextLost()?(l||(console.error("Cannot render the mesh because the GL Context was lost. Tried to invoke ",t),l=!0),"function"==typeof e[t]?function(){}:void 0):"function"==typeof e[t]?function(...r){return e[t].apply(e,r)}:e[t],set(e,t,r){if(!e.isContextLost())return e[t]=r,!0;l||(console.error("Cannot render the mesh because the GL Context was lost. Tried to set property "+t),l=!0)}}),n=Math.min(s.getParameter(s.MAX_RENDERBUFFER_SIZE),s.getParameter(s.MAX_TEXTURE_SIZE)),c(e=s.createProgram(),s.VERTEX_SHADER,"attribute vec2 vertex;\n                attribute vec2 uv;\n                uniform vec4 mat;\n                uniform vec2 translate;\n                varying vec2 st;\n                void main() {\n                    st = uv;\n                    gl_Position = vec4(mat2(mat) * vertex + translate, 0, 1);\n                }"),c(e,s.FRAGMENT_SHADER,"precision highp float;\n                uniform sampler2D image;\n                varying vec2 st;\n                void main() {\n                    gl_FragColor = texture2D(image, st);\n                }"),s.bindAttribLocation(e,0,"vertex"),s.bindAttribLocation(e,1,"uv"),s.linkProgram(e),0<((o=s.getProgramInfoLog(e))||"").trim().length)throw o;a=s.getUniformLocation(e,"mat"),i=s.getUniformLocation(e,"translate"),s.useProgram(e),s.bindBuffer(s.ARRAY_BUFFER,s.createBuffer()),s.enableVertexAttribArray(0),s.enableVertexAttribArray(1),s.bindBuffer(s.ELEMENT_ARRAY_BUFFER,s.createBuffer()),s.uniform1i(s.getUniformLocation(e,"image"),0),s.pixelStorei(s.UNPACK_PREMULTIPLY_ALPHA_WEBGL,!0),t=s}return!0}let t=null,r=0,n=0,a=null,i=null,o=0,s=0,l=!1;e(),this.ac=function(){return e(),n},this.Jb=function(e){t.deleteTexture&&t.deleteTexture(e)},this.Ib=function(n){if(!e())return null;const a=t.createTexture();return a?(t.bindTexture(t.TEXTURE_2D,a),t.texImage2D(t.TEXTURE_2D,0,t.RGBA,t.RGBA,t.UNSIGNED_BYTE,n),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_WRAP_S,t.CLAMP_TO_EDGE),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_WRAP_T,t.CLAMP_TO_EDGE),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MAG_FILTER,t.LINEAR),2==r?(t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MIN_FILTER,t.LINEAR_MIPMAP_LINEAR),t.generateMipmap(t.TEXTURE_2D)):t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MIN_FILTER,t.LINEAR),a):null};const u=new c(8),h=new c(8),d=new c(10),f=new c(10);this.Mb=function(r,n,l,c,m){if(e()){var p=u.push(r),v=h.push(n);if(t.canvas){for(var w of(t.canvas.width==p&&t.canvas.height==v||(t.canvas.width=p,t.canvas.height=v),t.viewport(0,v-n,r,n),t.disable(t.SCISSOR_TEST),t.clearColor(0,0,0,0),t.clear(t.COLOR_BUFFER_BIT),t.enable(t.SCISSOR_TEST),l.sort((e,t)=>t.ub-e.ub),p=d.push(c),o!=p&&(t.bufferData(t.ARRAY_BUFFER,8*p,t.DYNAMIC_DRAW),o=p),p=0,l))t.bufferSubData(t.ARRAY_BUFFER,p,w.Sa),p+=4*w.Sa.length;for(var g of(console.assert(p==4*c),l))t.bufferSubData(t.ARRAY_BUFFER,p,g.Ab),p+=4*g.Ab.length;for(var b of(console.assert(p==8*c),p=f.push(m),s!=p&&(t.bufferData(t.ELEMENT_ARRAY_BUFFER,2*p,t.DYNAMIC_DRAW),s=p),w=0,l))t.bufferSubData(t.ELEMENT_ARRAY_BUFFER,w,b.indices),w+=2*b.indices.length;console.assert(w==2*m),b=0,g=!0,p=w=0;for(const e of l){e.image.Ia!=b&&(t.bindTexture(t.TEXTURE_2D,e.image.Ha||null),b=e.image.Ia),e.fc?(t.scissor(e.Ya,v-e.Za-e.ib,e.tc,e.ib),g=!0):g&&(t.scissor(0,v-n,r,n),g=!1),l=2/r;const o=-2/n;t.uniform4f(a,e.ga[0]*l*e.za,e.ga[1]*o*e.Aa,e.ga[2]*l*e.za,e.ga[3]*o*e.Aa),t.uniform2f(i,e.ga[4]*l*e.za+l*(e.Ya-e.bc*e.za)-1,e.ga[5]*o*e.Aa+o*(e.Za-e.cc*e.Aa)+1),t.vertexAttribPointer(0,2,t.FLOAT,!1,0,p),t.vertexAttribPointer(1,2,t.FLOAT,!1,0,p+4*c),t.drawElements(t.TRIANGLES,e.indices.length,t.UNSIGNED_SHORT,w),p+=4*e.Sa.length,w+=2*e.indices.length}console.assert(p==4*c),console.assert(w==2*m)}}},this.canvas=function(){return e()&&t.canvas}},f=n.onRuntimeInitialized;n.onRuntimeInitialized=function(){function e(e){switch(e){case m.srcOver:return"source-over";case m.screen:return"screen";case m.overlay:return"overlay";case m.darken:return"darken";case m.lighten:return"lighten";case m.colorDodge:return"color-dodge";case m.colorBurn:return"color-burn";case m.hardLight:return"hard-light";case m.softLight:return"soft-light";case m.difference:return"difference";case m.exclusion:return"exclusion";case m.multiply:return"multiply";case m.hue:return"hue";case m.saturation:return"saturation";case m.color:return"color";case m.luminosity:return"luminosity"}}function t(e){return"rgba("+((16711680&e)>>>16)+","+((65280&e)>>>8)+","+((255&e)>>>0)+","+((4278190080&e)>>>24)/255+")"}function r(){0<R.length&&(d.Mb(C.drawWidth(),C.drawHeight(),R,T,k),R=[],k=T=0,C.reset(512,512));for(const e of A){for(const t of e.H)t();e.H=[]}A.clear()}f&&f();var a=n.RenderPaintStyle;const i=n.RenderPath,o=n.RenderPaint,l=n.Renderer,c=n.StrokeCap,u=n.StrokeJoin,m=n.BlendMode,p=a.fill,v=a.stroke,w=n.FillRule.evenOdd;let g=1;var b=n.RenderImage.extend("CanvasRenderImage",{__construct:function({ka:e,va:t}={}){this.__parent.__construct.call(this),this.Ia=g,g=g+1&2147483647||1,this.ka=e,this.va=t},__destruct:function(){this.Ha&&(d.Jb(this.Ha),URL.revokeObjectURL(this.Va)),this.__parent.__destruct.call(this)},decode:function(e){var t=this;t.va&&t.va(t);var r=new Image;t.Va=URL.createObjectURL(new Blob([e],{type:"image/png"})),r.onload=function(){t.Cb=r,t.Ha=d.Ib(r),t.size(r.width,r.height),t.ka&&t.ka(t)},r.src=t.Va}}),_=i.extend("CanvasRenderPath",{__construct:function(){this.__parent.__construct.call(this),this.T=new Path2D},rewind:function(){this.T=new Path2D},addPath:function(e,t,r,n,a,i,o){var s=this.T,l=s.addPath;e=e.T;const c=new DOMMatrix;c.a=t,c.b=r,c.c=n,c.d=a,c.e=i,c.f=o,l.call(s,e,c)},fillRule:function(e){this.Ua=e},moveTo:function(e,t){this.T.moveTo(e,t)},lineTo:function(e,t){this.T.lineTo(e,t)},cubicTo:function(e,t,r,n,a,i){this.T.bezierCurveTo(e,t,r,n,a,i)},close:function(){this.T.closePath()}}),y=o.extend("CanvasRenderPaint",{color:function(e){this.Wa=t(e)},thickness:function(e){this.Fb=e},join:function(e){switch(e){case u.miter:this.Ga="miter";break;case u.round:this.Ga="round";break;case u.bevel:this.Ga="bevel"}},cap:function(e){switch(e){case c.butt:this.Fa="butt";break;case c.round:this.Fa="round";break;case c.square:this.Fa="square"}},style:function(e){this.Eb=e},blendMode:function(t){this.Bb=e(t)},clearGradient:function(){this.ia=null},linearGradient:function(e,t,r,n){this.ia={wb:e,xb:t,bb:r,cb:n,Pa:[]}},radialGradient:function(e,t,r,n){this.ia={wb:e,xb:t,bb:r,cb:n,Pa:[],$b:!0}},addStop:function(e,t){this.ia.Pa.push({color:e,stop:t})},completeGradient:function(){},draw:function(e,r,n){let a=this.Eb;var i=this.Wa,o=this.ia;if(e.globalCompositeOperation=this.Bb,null!=o){i=o.wb;var s=o.xb;const r=o.bb;var l=o.cb;const n=o.Pa;o.$b?(o=r-i,l-=s,i=e.createRadialGradient(i,s,0,i,s,Math.sqrt(o*o+l*l))):i=e.createLinearGradient(i,s,r,l);for(let e=0,r=n.length;e<r;e++)s=n[e],i.addColorStop(s.stop,t(s.color));this.Wa=i,this.ia=null}switch(a){case v:e.strokeStyle=i,e.lineWidth=this.Fb,e.lineCap=this.Fa,e.lineJoin=this.Ga,e.stroke(r);break;case p:e.fillStyle=i,e.fill(r,n)}}});const A=new Set;let C=null,R=[],T=0,k=0;var E=n.CanvasRenderer=l.extend("Renderer",{__construct:function(e){this.__parent.__construct.call(this),this.S=[1,0,0,1,0,0],this.B=e.getContext("2d"),this.Ta=e,this.H=[]},save:function(){this.S.push(...this.S.slice(this.S.length-6)),this.H.push(this.B.save.bind(this.B))},restore:function(){const e=this.S.length-6;if(6>e)throw"restore() called without matching save().";this.S.splice(e),this.H.push(this.B.restore.bind(this.B))},transform:function(e,t,r,n,a,i){const o=this.S,s=o.length-6;o.splice(s,6,o[s]*e+o[s+2]*t,o[s+1]*e+o[s+3]*t,o[s]*r+o[s+2]*n,o[s+1]*r+o[s+3]*n,o[s]*a+o[s+2]*i+o[s+4],o[s+1]*a+o[s+3]*i+o[s+5]),this.H.push(this.B.transform.bind(this.B,e,t,r,n,a,i))},rotate:function(e){const t=Math.sin(e);e=Math.cos(e),this.transform(e,t,-t,e,0,0)},_drawPath:function(e,t){this.H.push(t.draw.bind(t,this.B,e.T,e.Ua===w?"evenodd":"nonzero"))},_drawRiveImage:function(t,r,n,a){var i=t.Cb;if(i){var o=this.B,s=e(n);this.H.push(function(){o.globalCompositeOperation=s,o.globalAlpha=a,o.drawImage(i,0,0),o.globalAlpha=1})}},_getMatrix:function(e){const t=this.S,r=t.length-6;for(let n=0;6>n;++n)e[n]=t[r+n]},_drawImageMesh:function(t,a,i,o,s,l,c,u,h,f,m){a=this.B.canvas.width;var p=this.B.canvas.height;const v=f-u,w=m-h;u=Math.max(u,0),h=Math.max(h,0),f=Math.min(f,a),m=Math.min(m,p);const g=f-u,b=m-h;if(console.assert(g<=Math.min(v,a)),console.assert(b<=Math.min(w,p)),!(0>=g||0>=b)){f=g<v||b<w,a=m=1;var _=Math.ceil(g*m),y=Math.ceil(b*a);p=d.ac(),_>p&&(m*=p/_,_=p),y>p&&(a*=p/y,y=p),C||(C=new n.DynamicRectanizer(p),C.reset(512,512)),0>(p=C.addRect(_,y))&&(r(),A.add(this),p=C.addRect(_,y),console.assert(0<=p));var E=65535&p,j=p>>16;R.push({ga:this.S.slice(this.S.length-6),image:t,Ya:E,Za:j,bc:u,cc:h,tc:_,ib:y,za:m,Aa:a,Sa:new Float32Array(s),Ab:new Float32Array(l),indices:new Uint16Array(c),fc:f,ub:t.Ia<<1|(f?1:0)}),T+=s.length,k+=c.length;var x=this.B,P=e(i);this.H.push(function(){x.save(),x.resetTransform(),x.globalCompositeOperation=P,x.globalAlpha=o;const e=d.canvas();e&&x.drawImage(e,E,j,_,y,u,h,g,b),x.restore()})}},_clipPath:function(e){this.H.push(this.B.clip.bind(this.B,e.T,e.Ua===w?"evenodd":"nonzero"))},clear:function(){A.add(this),this.H.push(this.B.clearRect.bind(this.B,0,0,this.Ta.width,this.Ta.height))},flush:function(){},translate:function(e,t){this.transform(1,0,0,1,e,t)}});n.makeRenderer=function(e){const t=new E(e),r=t.B;return new Proxy(t,{get(e,n){if("function"==typeof e[n])return function(...t){return e[n].apply(e,t)};if("function"==typeof r[n]){if(-1<h.indexOf(n))throw Error("RiveException: Method call to '"+n+"()' is not allowed, as the renderer cannot immediately pass through the return                 values of any canvas 2d context methods.");return function(...e){t.H.push(r[n].bind(r,...e))}}return e[n]},set(e,n,a){if(n in r)return t.H.push(()=>{r[n]=a}),!0}})},n.decodeImage=function(e,t){new b({ka:t}).decode(e)},n.renderFactory={makeRenderPaint:function(){return new y},makeRenderPath:function(){return new _},makeRenderImage:function(){let e=x;return new b({va:()=>{e.total++},ka:()=>{if(e.loaded++,e.loaded===e.total){const t=e.ready;t&&(t(),e.ready=null)}}})}};let j=n.load,x=null;n.load=function(e,t,r=!0){const a=new n.FallbackFileAssetLoader;return void 0!==t&&a.addLoader(t),r&&(t=new n.CDNFileAssetLoader,a.addLoader(t)),new Promise(function(t){let r=null;x={total:0,loaded:0,ready:function(){t(r)}},r=j(e,a),0==x.total&&t(r)})};let P=n.RendererWrapper.prototype.align;n.RendererWrapper.prototype.align=function(e,t,r,n,a=1){P.call(this,e,t,r,n,a)},a=new s,n.requestAnimationFrame=a.requestAnimationFrame.bind(a),n.cancelAnimationFrame=a.cancelAnimationFrame.bind(a),n.enableFPSCounter=a.Nb.bind(a),n.disableFPSCounter=a.Kb,a.nb=r,n.resolveAnimationFrame=r,n.cleanup=function(){C&&C.delete()}};var m,p,v=Object.assign({},n),w="./this.program",g="";(i||o)&&(o?g=self.location.href:"undefined"!=typeof document&&document.currentScript&&(g=document.currentScript.src),l&&(g=l),g=g.startsWith("blob:")?"":g.substr(0,g.replace(/[?#].*/,"").lastIndexOf("/")+1),o&&(p=e=>{var t=new XMLHttpRequest;return t.open("GET",e,!1),t.responseType="arraybuffer",t.send(null),new Uint8Array(t.response)}),m=(e,t,r)=>{if(H(e)){var n=new XMLHttpRequest;n.open("GET",e,!0),n.responseType="arraybuffer",n.onload=()=>{200==n.status||0==n.status&&n.response?t(n.response):r()},n.onerror=r,n.send(null)}else fetch(e,{credentials:"same-origin"}).then(e=>e.ok?e.arrayBuffer():Promise.reject(Error(e.status+" : "+e.url))).then(t,r)});var b,_=n.print||console.log.bind(console),y=n.printErr||console.error.bind(console);Object.assign(n,v),v=null,n.thisProgram&&(w=n.thisProgram),n.wasmBinary&&(b=n.wasmBinary);var A,C,R,T,k,E,j,x,P,F=!1;function D(){var e=A.buffer;n.HEAP8=C=new Int8Array(e),n.HEAP16=T=new Int16Array(e),n.HEAPU8=R=new Uint8Array(e),n.HEAPU16=k=new Uint16Array(e),n.HEAP32=E=new Int32Array(e),n.HEAPU32=j=new Uint32Array(e),n.HEAPF32=x=new Float32Array(e),n.HEAPF64=P=new Float64Array(e)}var M=[],S=[],I=[];function O(){var e=n.preRun.shift();M.unshift(e)}var $=0,U=null,L=null;function W(e){throw n.onAbort?.(e),y(e="Aborted("+e+")"),F=!0,e=new WebAssembly.RuntimeError(e+". Build with -sASSERTIONS for more info."),r(e),e}var B,N=e=>e.startsWith("data:application/octet-stream;base64,"),H=e=>e.startsWith("file://");function G(e){if(e==B&&b)return new Uint8Array(b);if(p)return p(e);throw"both async and sync fetching of the wasm failed"}function Y(e,t,r){return function(e){return b?Promise.resolve().then(()=>G(e)):new Promise((t,r)=>{m(e,e=>t(new Uint8Array(e)),()=>{try{t(G(e))}catch(e){r(e)}})})}(e).then(e=>WebAssembly.instantiate(e,t)).then(r,e=>{y(`failed to asynchronously prepare wasm: ${e}`),W(e)})}var V,X,z={464448:(e,t,r,n,a)=>{if("undefined"==typeof window||void 0===(window.AudioContext||window.webkitAudioContext))return 0;if(void 0===window.h){window.h={ya:0},window.h.I={},window.h.I.wa=e,window.h.I.capture=t,window.h.I.Ja=r,window.h.fa={},window.h.fa.stopped=n,window.h.fa.vb=a;let i=window.h;i.D=[],i.rc=function(e){for(var t=0;t<i.D.length;++t)if(null==i.D[t])return i.D[t]=e,t;return i.D.push(e),i.D.length-1},i.zb=function(e){for(i.D[e]=null;0<i.D.length&&null==i.D[i.D.length-1];)i.D.pop()},i.Oc=function(e){for(var t=0;t<i.D.length;++t)if(i.D[t]==e)return i.zb(t)},i.pa=function(e){return i.D[e]},i.Ra=["touchend","click"],i.unlock=function(){for(var e=0;e<i.D.length;++e){var t=i.D[e];null!=t&&null!=t.K&&t.state===i.fa.vb&&t.K.resume().then(()=>{jr(t.ob)},e=>{console.error("Failed to resume audiocontext",e)})}i.Ra.map(function(e){document.removeEventListener(e,i.unlock,!0)})},i.Ra.map(function(e){document.addEventListener(e,i.unlock,!0)})}return window.h.ya+=1,1},466626:()=>{void 0!==window.h&&(window.h.Ra.map(function(e){document.removeEventListener(e,window.h.unlock,!0)}),--window.h.ya,0===window.h.ya&&delete window.h)},466930:()=>void 0!==navigator.mediaDevices&&void 0!==navigator.mediaDevices.getUserMedia,467034:()=>{try{var e=new(window.AudioContext||window.webkitAudioContext),t=e.sampleRate;return e.close(),t}catch(e){return 0}},467205:(e,t,r,n,a,i)=>{if(void 0===window.h)return-1;var o={},s={};return e==window.h.I.wa&&0!=r&&(s.sampleRate=r),o.K=new(window.AudioContext||window.webkitAudioContext)(s),o.K.suspend(),o.state=window.h.fa.stopped,r=0,e!=window.h.I.wa&&(r=t),o.Y=o.K.createScriptProcessor(n,r,t),o.Y.onaudioprocess=function(r){if(null!=o.qa&&0!=o.qa.length||(o.qa=new Float32Array(x.buffer,a,n*t)),e==window.h.I.capture||e==window.h.I.Ja){for(var s=0;s<t;s+=1)for(var l=r.inputBuffer.getChannelData(s),c=o.qa,u=0;u<n;u+=1)c[u*t+s]=l[u];Pr(i,n,a)}if(e==window.h.I.wa||e==window.h.I.Ja)for(Fr(i,n,a),s=0;s<r.outputBuffer.numberOfChannels;++s)for(l=r.outputBuffer.getChannelData(s),c=o.qa,u=0;u<n;u+=1)l[u]=c[u*t+s];else for(s=0;s<r.outputBuffer.numberOfChannels;++s)r.outputBuffer.getChannelData(s).fill(0)},e!=window.h.I.capture&&e!=window.h.I.Ja||navigator.mediaDevices.getUserMedia({audio:!0,video:!1}).then(function(e){o.Ba=o.K.createMediaStreamSource(e),o.Ba.connect(o.Y),o.Y.connect(o.K.destination)}).catch(function(e){console.log("Failed to get user media: "+e)}),e==window.h.I.wa&&o.Y.connect(o.K.destination),o.ob=i,window.h.rc(o)},470082:e=>window.h.pa(e).K.sampleRate,470155:e=>{void 0!==(e=window.h.pa(e)).Y&&(e.Y.onaudioprocess=function(){},e.Y.disconnect(),e.Y=void 0),void 0!==e.Ba&&(e.Ba.disconnect(),e.Ba=void 0),e.K.close(),e.K=void 0,e.ob=void 0},470555:e=>{window.h.zb(e)},470605:e=>{(e=window.h.pa(e)).K.resume(),e.state=window.h.fa.vb},470744:e=>{(e=window.h.pa(e)).K.suspend(),e.state=window.h.fa.stopped}},J=e=>{for(;0<e.length;)e.shift()(n)};function K(){var e=E[+tt>>2];return tt+=4,e}var q=(e,t)=>{for(var r=0,n=e.length-1;0<=n;n--){var a=e[n];"."===a?e.splice(n,1):".."===a?(e.splice(n,1),r++):r&&(e.splice(n,1),r--)}if(t)for(;r;r--)e.unshift("..");return e},Z=e=>{var t="/"===e.charAt(0),r="/"===e.substr(-1);return(e=q(e.split("/").filter(e=>!!e),!t).join("/"))||t||(e="."),e&&r&&(e+="/"),(t?"/":"")+e},Q=e=>{var t=/^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/.exec(e).slice(1);return e=t[0],t=t[1],e||t?(t&&=t.substr(0,t.length-1),e+t):"."},ee=e=>{if("/"===e)return"/";var t=(e=(e=Z(e)).replace(/\/$/,"")).lastIndexOf("/");return-1===t?e:e.substr(t+1)},te=e=>(te=(()=>{if("object"==typeof crypto&&"function"==typeof crypto.getRandomValues)return e=>crypto.getRandomValues(e);W("initRandomDevice")})())(e),re=(...e)=>{for(var t="",r=!1,n=e.length-1;-1<=n&&!r;n--){if("string"!=typeof(r=0<=n?e[n]:"/"))throw new TypeError("Arguments to path.resolve must be strings");if(!r)return"";t=r+"/"+t,r="/"===r.charAt(0)}return(r?"/":"")+(t=q(t.split("/").filter(e=>!!e),!r).join("/"))||"."},ne="undefined"!=typeof TextDecoder?new TextDecoder("utf8"):void 0,ae=(e,t,r)=>{var n=t+r;for(r=t;e[r]&&!(r>=n);)++r;if(16<r-t&&e.buffer&&ne)return ne.decode(e.subarray(t,r));for(n="";t<r;){var a=e[t++];if(128&a){var i=63&e[t++];if(192==(224&a))n+=String.fromCharCode((31&a)<<6|i);else{var o=63&e[t++];65536>(a=224==(240&a)?(15&a)<<12|i<<6|o:(7&a)<<18|i<<12|o<<6|63&e[t++])?n+=String.fromCharCode(a):(a-=65536,n+=String.fromCharCode(55296|a>>10,56320|1023&a))}}else n+=String.fromCharCode(a)}return n},ie=[],oe=e=>{for(var t=0,r=0;r<e.length;++r){var n=e.charCodeAt(r);127>=n?t++:2047>=n?t+=2:55296<=n&&57343>=n?(t+=4,++r):t+=3}return t},se=(e,t,r,n)=>{if(!(0<n))return 0;var a=r;n=r+n-1;for(var i=0;i<e.length;++i){var o=e.charCodeAt(i);if(55296<=o&&57343>=o&&(o=65536+((1023&o)<<10)|1023&e.charCodeAt(++i)),127>=o){if(r>=n)break;t[r++]=o}else{if(2047>=o){if(r+1>=n)break;t[r++]=192|o>>6}else{if(65535>=o){if(r+2>=n)break;t[r++]=224|o>>12}else{if(r+3>=n)break;t[r++]=240|o>>18,t[r++]=128|o>>12&63}t[r++]=128|o>>6&63}t[r++]=128|63&o}}return t[r]=0,r-a};function le(e,t){var r=Array(oe(e)+1);return e=se(e,r,0,r.length),t&&(r.length=e),r}var ce=[];function ue(e,t){ce[e]={input:[],G:[],V:t},Ue(e,he)}var he={open(e){var t=ce[e.node.xa];if(!t)throw new Ae(43);e.s=t,e.seekable=!1},close(e){e.s.V.oa(e.s)},oa(e){e.s.V.oa(e.s)},read(e,t,r,n){if(!e.s||!e.s.V.hb)throw new Ae(60);for(var a=0,i=0;i<n;i++){try{var o=e.s.V.hb(e.s)}catch(e){throw new Ae(29)}if(void 0===o&&0===a)throw new Ae(6);if(null==o)break;a++,t[r+i]=o}return a&&(e.node.timestamp=Date.now()),a},write(e,t,r,n){if(!e.s||!e.s.V.Ma)throw new Ae(60);try{for(var a=0;a<n;a++)e.s.V.Ma(e.s,t[r+a])}catch(e){throw new Ae(29)}return n&&(e.node.timestamp=Date.now()),a}},de={hb(){e:{if(!ie.length){var e=null;if("undefined"!=typeof window&&"function"==typeof window.prompt&&null!==(e=window.prompt("Input: "))&&(e+="\n"),!e){e=null;break e}ie=le(e,!0)}e=ie.shift()}return e},Ma(e,t){null===t||10===t?(_(ae(e.G,0)),e.G=[]):0!=t&&e.G.push(t)},oa(e){e.G&&0<e.G.length&&(_(ae(e.G,0)),e.G=[])},Xb:()=>({zc:25856,Bc:5,yc:191,Ac:35387,xc:[3,28,127,21,4,0,1,0,17,19,26,0,18,15,23,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}),Yb:()=>0,Zb:()=>[24,80]},fe={Ma(e,t){null===t||10===t?(y(ae(e.G,0)),e.G=[]):0!=t&&e.G.push(t)},oa(e){e.G&&0<e.G.length&&(y(ae(e.G,0)),e.G=[])}};function me(e,t){var r=e.l?e.l.length:0;r>=t||(t=Math.max(t,r*(1048576>r?2:1.125)>>>0),0!=r&&(t=Math.max(t,256)),r=e.l,e.l=new Uint8Array(t),0<e.v&&e.l.set(r.subarray(0,e.v),0))}var pe={N:null,U:()=>pe.createNode(null,"/",16895,0),createNode(e,t,r,n){if(24576==(61440&r)||4096==(61440&r))throw new Ae(63);return pe.N||(pe.N={dir:{node:{X:pe.j.X,P:pe.j.P,ja:pe.j.ja,ta:pe.j.ta,sb:pe.j.sb,yb:pe.j.yb,tb:pe.j.tb,rb:pe.j.rb,Ca:pe.j.Ca},stream:{aa:pe.m.aa}},file:{node:{X:pe.j.X,P:pe.j.P},stream:{aa:pe.m.aa,read:pe.m.read,write:pe.m.write,Xa:pe.m.Xa,kb:pe.m.kb,mb:pe.m.mb}},link:{node:{X:pe.j.X,P:pe.j.P,la:pe.j.la},stream:{}},$a:{node:{X:pe.j.X,P:pe.j.P},stream:$e}}),16384==(61440&(r=Pe(e,t,r,n)).mode)?(r.j=pe.N.dir.node,r.m=pe.N.dir.stream,r.l={}):32768==(61440&r.mode)?(r.j=pe.N.file.node,r.m=pe.N.file.stream,r.v=0,r.l=null):40960==(61440&r.mode)?(r.j=pe.N.link.node,r.m=pe.N.link.stream):8192==(61440&r.mode)&&(r.j=pe.N.$a.node,r.m=pe.N.$a.stream),r.timestamp=Date.now(),e&&(e.l[t]=r,e.timestamp=r.timestamp),r},Fc:e=>e.l?e.l.subarray?e.l.subarray(0,e.v):new Uint8Array(e.l):new Uint8Array(0),j:{X(e){var t={};return t.Dc=8192==(61440&e.mode)?e.id:1,t.Hc=e.id,t.mode=e.mode,t.Kc=1,t.uid=0,t.Gc=0,t.xa=e.xa,16384==(61440&e.mode)?t.size=4096:32768==(61440&e.mode)?t.size=e.v:40960==(61440&e.mode)?t.size=e.link.length:t.size=0,t.vc=new Date(e.timestamp),t.Jc=new Date(e.timestamp),t.Cc=new Date(e.timestamp),t.Gb=4096,t.wc=Math.ceil(t.size/t.Gb),t},P(e,t){if(void 0!==t.mode&&(e.mode=t.mode),void 0!==t.timestamp&&(e.timestamp=t.timestamp),void 0!==t.size&&(t=t.size,e.v!=t))if(0==t)e.l=null,e.v=0;else{var r=e.l;e.l=new Uint8Array(t),r&&e.l.set(r.subarray(0,Math.min(t,e.v))),e.v=t}},ja(){throw Ce[44]},ta:(e,t,r,n)=>pe.createNode(e,t,r,n),sb(e,t,r){if(16384==(61440&e.mode)){try{var n=xe(t,r)}catch(e){}if(n)for(var a in n.l)throw new Ae(55)}delete e.parent.l[e.name],e.parent.timestamp=Date.now(),e.name=r,t.l[r]=e,t.timestamp=e.parent.timestamp},yb(e,t){delete e.l[t],e.timestamp=Date.now()},tb(e,t){var r,n=xe(e,t);for(r in n.l)throw new Ae(55);delete e.l[t],e.timestamp=Date.now()},rb(e){var t,r=[".",".."];for(t of Object.keys(e.l))r.push(t);return r},Ca:(e,t,r)=>((e=pe.createNode(e,t,41471,0)).link=r,e),la(e){if(40960!=(61440&e.mode))throw new Ae(28);return e.link}},m:{read(e,t,r,n,a){var i=e.node.l;if(a>=e.node.v)return 0;if(8<(e=Math.min(e.node.v-a,n))&&i.subarray)t.set(i.subarray(a,a+e),r);else for(n=0;n<e;n++)t[r+n]=i[a+n];return e},write(e,t,r,n,a,i){if(t.buffer===C.buffer&&(i=!1),!n)return 0;if((e=e.node).timestamp=Date.now(),t.subarray&&(!e.l||e.l.subarray)){if(i)return e.l=t.subarray(r,r+n),e.v=n;if(0===e.v&&0===a)return e.l=t.slice(r,r+n),e.v=n;if(a+n<=e.v)return e.l.set(t.subarray(r,r+n),a),n}if(me(e,a+n),e.l.subarray&&t.subarray)e.l.set(t.subarray(r,r+n),a);else for(i=0;i<n;i++)e.l[a+i]=t[r+i];return e.v=Math.max(e.v,a+n),n},aa(e,t,r){if(1===r?t+=e.position:2===r&&32768==(61440&e.node.mode)&&(t+=e.node.v),0>t)throw new Ae(28);return t},Xa(e,t,r){me(e.node,t+r),e.node.v=Math.max(e.node.v,t+r)},kb(e,t,r,n,a){if(32768!=(61440&e.node.mode))throw new Ae(43);if(e=e.node.l,2&a||e.buffer!==C.buffer){if((0<r||r+t<e.length)&&(e=e.subarray?e.subarray(r,r+t):Array.prototype.slice.call(e,r,r+t)),r=!0,W(),!(t=void 0))throw new Ae(48);C.set(e,t)}else r=!1,t=e.byteOffset;return{o:t,uc:r}},mb:(e,t,r,n)=>(pe.m.write(e,t,0,n,r,!1),0)}},ve=null,we={},ge=[],be=1,_e=null,ye=!0,Ae=class{constructor(e){this.name="ErrnoError",this.$=e}},Ce={},Re=class{constructor(){this.h={},this.node=null}get flags(){return this.h.flags}set flags(e){this.h.flags=e}get position(){return this.h.position}set position(e){this.h.position=e}},Te=class{constructor(e,t,r,n){e||=this,this.parent=e,this.U=e.U,this.ua=null,this.id=be++,this.name=t,this.mode=r,this.j={},this.m={},this.xa=n}get read(){return!(365&~this.mode)}set read(e){e?this.mode|=365:this.mode&=-366}get write(){return!(146&~this.mode)}set write(e){e?this.mode|=146:this.mode&=-147}};function ke(e,t={}){if(!(e=re(e)))return{path:"",node:null};if(8<(t=Object.assign({gb:!0,Oa:0},t)).Oa)throw new Ae(32);e=e.split("/").filter(e=>!!e);for(var r=ve,n="/",a=0;a<e.length;a++){var i=a===e.length-1;if(i&&t.parent)break;if(r=xe(r,e[a]),n=Z(n+"/"+e[a]),r.ua&&(!i||i&&t.gb)&&(r=r.ua.root),!i||t.fb)for(i=0;40960==(61440&r.mode);)if(r=Ge(n),r=ke(n=re(Q(n),r),{Oa:t.Oa+1}).node,40<i++)throw new Ae(32)}return{path:n,node:r}}function Ee(e){for(var t;;){if(e===e.parent)return e=e.U.lb,t?"/"!==e[e.length-1]?`${e}/${t}`:e+t:e;t=t?`${e.name}/${t}`:e.name,e=e.parent}}function je(e,t){for(var r=0,n=0;n<t.length;n++)r=(r<<5)-r+t.charCodeAt(n)|0;return(e+r>>>0)%_e.length}function xe(e,t){var r=16384==(61440&e.mode)?(r=De(e,"x"))?r:e.j.ja?0:2:54;if(r)throw new Ae(r);for(r=_e[je(e.id,t)];r;r=r.ec){var n=r.name;if(r.parent.id===e.id&&n===t)return r}return e.j.ja(e,t)}function Pe(e,t,r,n){return t=je((e=new Te(e,t,r,n)).parent.id,e.name),e.ec=_e[t],_e[t]=e}function Fe(e){var t=["r","w","rw"][3&e];return 512&e&&(t+="w"),t}function De(e,t){return ye?0:!t.includes("r")||292&e.mode?t.includes("w")&&!(146&e.mode)||t.includes("x")&&!(73&e.mode)?2:0:2}function Me(e,t){try{return xe(e,t),20}catch(e){}return De(e,"wx")}function Se(e){if(!(e=ge[e]))throw new Ae(8);return e}function Ie(e,t=-1){if(e=Object.assign(new Re,e),-1==t)e:{for(t=0;4096>=t;t++)if(!ge[t])break e;throw new Ae(33)}return e.W=t,ge[t]=e}var Oe,$e={open(e){e.m=we[e.node.xa].m,e.m.open?.(e)},aa(){throw new Ae(70)}};function Ue(e,t){we[e]={m:t}}function Le(e,t){var r="/"===t;if(r&&ve)throw new Ae(10);if(!r&&t){var n=ke(t,{gb:!1});if(t=n.path,(n=n.node).ua)throw new Ae(10);if(16384!=(61440&n.mode))throw new Ae(54)}t={type:e,Mc:{},lb:t,dc:[]},(e=e.U(t)).U=t,t.root=e,r?ve=e:n&&(n.ua=t,n.U&&n.U.dc.push(t))}function We(e,t,r){var n=ke(e,{parent:!0}).node;if(!(e=ee(e))||"."===e||".."===e)throw new Ae(28);var a=Me(n,e);if(a)throw new Ae(a);if(!n.j.ta)throw new Ae(63);return n.j.ta(n,e,t,r)}function Be(e){return We(e,16895,0)}function Ne(e,t,r){void 0===r&&(r=t,t=438),We(e,8192|t,r)}function He(e,t){if(!re(e))throw new Ae(44);var r=ke(t,{parent:!0}).node;if(!r)throw new Ae(44);var n=Me(r,t=ee(t));if(n)throw new Ae(n);if(!r.j.Ca)throw new Ae(63);r.j.Ca(r,t,e)}function Ge(e){if(!(e=ke(e).node))throw new Ae(44);if(!e.j.la)throw new Ae(28);return re(Ee(e.parent),e.j.la(e))}function Ye(e,t,r){if(""===e)throw new Ae(44);if("string"==typeof t){var a={r:0,"r+":2,w:577,"w+":578,a:1089,"a+":1090}[t];if(void 0===a)throw Error(`Unknown file open mode: ${t}`);t=a}if(r=64&t?4095&(void 0===r?438:r)|32768:0,"object"==typeof e)var i=e;else{e=Z(e);try{i=ke(e,{fb:!(131072&t)}).node}catch(e){}}if(a=!1,64&t)if(i){if(128&t)throw new Ae(20)}else i=We(e,r,0),a=!0;if(!i)throw new Ae(44);if(8192==(61440&i.mode)&&(t&=-513),65536&t&&16384!=(61440&i.mode))throw new Ae(54);if(!a&&(r=i?40960==(61440&i.mode)?32:16384==(61440&i.mode)&&("r"!==Fe(t)||512&t)?31:De(i,Fe(t)):44))throw new Ae(r);if(512&t&&!a){if(!(r="string"==typeof(r=i)?ke(r,{fb:!0}).node:r).j.P)throw new Ae(63);if(16384==(61440&r.mode))throw new Ae(31);if(32768!=(61440&r.mode))throw new Ae(28);if(a=De(r,"w"))throw new Ae(a);r.j.P(r,{size:0,timestamp:Date.now()})}return t&=-131713,(i=Ie({node:i,path:Ee(i),flags:t,seekable:!0,position:0,m:i.m,sc:[],error:!1})).m.open&&i.m.open(i),!n.logReadFiles||1&t||(Je||={},e in Je||(Je[e]=1)),i}function Ve(e,t,r){if(null===e.W)throw new Ae(8);if(!e.seekable||!e.m.aa)throw new Ae(70);if(0!=r&&1!=r&&2!=r)throw new Ae(28);e.position=e.m.aa(e,t,r),e.sc=[]}function Xe(e,t,r){e=Z("/dev/"+e);var n=((e,t)=>{var r=0;return e&&(r|=365),t&&(r|=146),r})(!!t,!!r);ze||=64;var a=ze++<<8;Ue(a,{open(e){e.seekable=!1},close(){r?.buffer?.length&&r(10)},read(e,r,n,a){for(var i=0,o=0;o<a;o++){try{var s=t()}catch(e){throw new Ae(29)}if(void 0===s&&0===i)throw new Ae(6);if(null==s)break;i++,r[n+o]=s}return i&&(e.node.timestamp=Date.now()),i},write(e,t,n,a){for(var i=0;i<a;i++)try{r(t[n+i])}catch(e){throw new Ae(29)}return a&&(e.node.timestamp=Date.now()),i}}),Ne(e,n,a)}var ze,Je,Ke,qe,Ze,Qe,et,tt=void 0,rt=(e,t)=>Object.defineProperty(t,"name",{value:e}),nt=[],at=[],it=e=>{if(!e)throw new Ke("Cannot use deleted val. handle = "+e);return at[e]},ot=e=>{switch(e){case void 0:return 2;case null:return 4;case!0:return 6;case!1:return 8;default:const t=nt.pop()||at.length;return at[t]=e,at[t+1]=1,t}},st=e=>{var t=Error,r=rt(e,function(t){this.name=e,this.message=t,void 0!==(t=Error(t).stack)&&(this.stack=this.toString()+"\n"+t.replace(/^Error(:[^\n]*)?\n/,""))});return r.prototype=Object.create(t.prototype),r.prototype.constructor=r,r.prototype.toString=function(){return void 0===this.message?this.name:`${this.name}: ${this.message}`},r},lt=e=>{for(var t="";R[e];)t+=Ze[R[e++]];return t},ct=[],ut=()=>{for(;ct.length;){var e=ct.pop();e.g.ea=!1,e.delete()}},ht={},dt=(e,t)=>{if(void 0===t)throw new Ke("ptr should not be undefined");for(;e.C;)t=e.ma(t),e=e.C;return t},ft={},mt=e=>{e=Er(e);var t=lt(e);return Tr(e),t},pt=(e,t)=>{var r=ft[e];if(void 0===r)throw e=`${t} has unknown type ${mt(e)}`,new Ke(e);return r},vt=()=>{},wt=!1,gt=(e,t,r)=>t===r?e:void 0===r.C||null===(e=gt(e,t,r.C))?null:r.Lb(e),bt={},_t=(e,t)=>{if(!t.u||!t.o)throw new et("makeClassHandle requires ptr and ptrType");if(!!t.J!=!!t.F)throw new et("Both smartPtrType and smartPtr must be specified");return t.count={value:1},yt(Object.create(e,{g:{value:t,writable:!0}}))},yt=e=>"undefined"==typeof FinalizationRegistry?(yt=e=>e,e):(wt=new FinalizationRegistry(e=>{--(e=e.g).count.value,0===e.count.value&&(e.F?e.J.O(e.F):e.u.i.O(e.o))}),vt=e=>{wt.unregister(e)},(yt=e=>{var t=e.g;return t.F&&wt.register(e,{g:t},e),e})(e)),At={},Ct=e=>{for(;e.length;){var t=e.pop();e.pop()(t)}};function Rt(e){return this.fromWireType(j[e>>2])}var Tt={},kt={},Et=(e,t,r)=>{function n(t){if((t=r(t)).length!==e.length)throw new et("Mismatched type converter count");for(var n=0;n<e.length;++n)jt(e[n],t[n])}e.forEach(function(e){kt[e]=t});var a=Array(t.length),i=[],o=0;t.forEach((e,t)=>{ft.hasOwnProperty(e)?a[t]=ft[e]:(i.push(e),Tt.hasOwnProperty(e)||(Tt[e]=[]),Tt[e].push(()=>{a[t]=ft[e],++o===i.length&&n(a)}))}),0===i.length&&n(a)};function jt(e,t,r={}){if(!("argPackAdvance"in t))throw new TypeError("registerType registeredInstance requires argPackAdvance");return function(e,t,r={}){var n=t.name;if(!e)throw new Ke(`type "${n}" must have a positive integer typeid pointer`);if(ft.hasOwnProperty(e)){if(r.Vb)return;throw new Ke(`Cannot register type '${n}' twice`)}ft[e]=t,delete kt[e],Tt.hasOwnProperty(e)&&(t=Tt[e],delete Tt[e],t.forEach(e=>e()))}(e,t,r)}var xt=e=>{throw new Ke(e.g.u.i.name+" instance already deleted")};function Pt(){}var Ft=(e,t,r)=>{if(void 0===e[t].A){var n=e[t];e[t]=function(...n){if(!e[t].A.hasOwnProperty(n.length))throw new Ke(`Function '${r}' called with an invalid number of arguments (${n.length}) - expects one of (${e[t].A})!`);return e[t].A[n.length].apply(this,n)},e[t].A=[],e[t].A[n.da]=n}},Dt=(e,t,r)=>{if(n.hasOwnProperty(e)){if(void 0===r||void 0!==n[e].A&&void 0!==n[e].A[r])throw new Ke(`Cannot register public name '${e}' twice`);if(Ft(n,e,e),n.hasOwnProperty(r))throw new Ke(`Cannot register multiple overloads of a function with the same number of arguments (${r})!`);n[e].A[r]=t}else n[e]=t,void 0!==r&&(n[e].Lc=r)};function Mt(e,t,r,n,a,i,o,s){this.name=e,this.constructor=t,this.M=r,this.O=n,this.C=a,this.Qb=i,this.ma=o,this.Lb=s,this.pb=[]}var St=(e,t,r)=>{for(;t!==r;){if(!t.ma)throw new Ke(`Expected null or instance of ${r.name}, got an instance of ${t.name}`);e=t.ma(e),t=t.C}return e};function It(e,t){if(null===t){if(this.La)throw new Ke(`null is not a valid ${this.name}`);return 0}if(!t.g)throw new Ke(`Cannot pass "${er(t)}" as a ${this.name}`);if(!t.g.o)throw new Ke(`Cannot pass deleted object as a pointer of type ${this.name}`);return St(t.g.o,t.g.u.i,this.i)}function Ot(e,t){if(null===t){if(this.La)throw new Ke(`null is not a valid ${this.name}`);if(this.sa){var r=this.Na();return null!==e&&e.push(this.O,r),r}return 0}if(!t||!t.g)throw new Ke(`Cannot pass "${er(t)}" as a ${this.name}`);if(!t.g.o)throw new Ke(`Cannot pass deleted object as a pointer of type ${this.name}`);if(!this.ra&&t.g.u.ra)throw new Ke(`Cannot convert argument of type ${t.g.J?t.g.J.name:t.g.u.name} to parameter type ${this.name}`);if(r=St(t.g.o,t.g.u.i,this.i),this.sa){if(void 0===t.g.F)throw new Ke("Passing raw pointer to smart pointer is illegal");switch(this.mc){case 0:if(t.g.J!==this)throw new Ke(`Cannot convert argument of type ${t.g.J?t.g.J.name:t.g.u.name} to parameter type ${this.name}`);r=t.g.F;break;case 1:r=t.g.F;break;case 2:if(t.g.J===this)r=t.g.F;else{var n=t.clone();r=this.ic(r,ot(()=>n.delete())),null!==e&&e.push(this.O,r)}break;default:throw new Ke("Unsupporting sharing policy")}}return r}function $t(e,t){if(null===t){if(this.La)throw new Ke(`null is not a valid ${this.name}`);return 0}if(!t.g)throw new Ke(`Cannot pass "${er(t)}" as a ${this.name}`);if(!t.g.o)throw new Ke(`Cannot pass deleted object as a pointer of type ${this.name}`);if(t.g.u.ra)throw new Ke(`Cannot convert argument of type ${t.g.u.name} to parameter type ${this.name}`);return St(t.g.o,t.g.u.i,this.i)}function Ut(e,t,r,n,a,i,o,s,l,c,u){this.name=e,this.i=t,this.La=r,this.ra=n,this.sa=a,this.hc=i,this.mc=o,this.qb=s,this.Na=l,this.ic=c,this.O=u,a||void 0!==t.C?this.toWireType=Ot:(this.toWireType=n?It:$t,this.L=null)}var Lt,Wt,Bt=(e,t,r)=>{if(!n.hasOwnProperty(e))throw new et("Replacing nonexistent public symbol");void 0!==n[e].A&&void 0!==r?n[e].A[r]=t:(n[e]=t,n[e].da=r)},Nt=[],Ht=e=>{var t=Nt[e];return t||(e>=Nt.length&&(Nt.length=e+1),Nt[e]=t=Lt.get(e)),t},Gt=(e,t)=>{var r=(e=lt(e)).includes("j")?((e,t)=>(...r)=>((e,t,r=[])=>(e.includes("j")?(e=e.replace(/p/g,"i"),t=(0,n["dynCall_"+e])(t,...r)):t=Ht(t)(...r),t))(e,t,r))(e,t):Ht(t);if("function"!=typeof r)throw new Ke(`unknown function pointer with signature ${e}: ${t}`);return r},Yt=(e,t)=>{var r=[],n={};throw t.forEach(function e(t){n[t]||ft[t]||(kt[t]?kt[t].forEach(e):(r.push(t),n[t]=!0))}),new Wt(`${e}: `+r.map(mt).join([", "]))};function Vt(e,t,r,n,a){var i=t.length;if(2>i)throw new Ke("argTypes array size mismatch! Must at least get return value and 'this' types!");var o=null!==t[1]&&null!==r,s=function(e){for(var t=1;t<e.length;++t)if(null!==e[t]&&void 0===e[t].L)return!0;return!1}(t),l="void"!==t[0].name,c=i-2,u=Array(c),h=[],d=[];return rt(e,function(...r){if(r.length!==c)throw new Ke(`function ${e} called with ${r.length} arguments, expected ${c}`);if(d.length=0,h.length=o?2:1,h[0]=a,o){var i=t[1].toWireType(d,this);h[1]=i}for(var f=0;f<c;++f)u[f]=t[f+2].toWireType(d,r[f]),h.push(u[f]);if(r=n(...h),s)Ct(d);else for(f=o?1:2;f<t.length;f++){var m=1===f?i:u[f-2];null!==t[f].L&&t[f].L(m)}return l?t[0].fromWireType(r):void 0})}var Xt,zt=(e,t)=>{for(var r=[],n=0;n<e;n++)r.push(j[t+4*n>>2]);return r},Jt=e=>{const t=(e=e.trim()).indexOf("(");return-1!==t?e.substr(0,t):e},Kt=(e,t,r)=>{if(!(e instanceof Object))throw new Ke(`${r} with invalid "this": ${e}`);if(!(e instanceof t.i.constructor))throw new Ke(`${r} incompatible with "this" of type ${e.constructor.name}`);if(!e.g.o)throw new Ke(`cannot call emscripten binding method ${r} on deleted object`);return St(e.g.o,e.g.u.i,t.i)},qt=e=>{9<e&&0===--at[e+1]&&(at[e]=void 0,nt.push(e))},Zt={name:"emscripten::val",fromWireType:e=>{var t=it(e);return qt(e),t},toWireType:(e,t)=>ot(t),argPackAdvance:8,readValueFromPointer:Rt,L:null},Qt=(e,t,r)=>{switch(t){case 1:return r?function(e){return this.fromWireType(C[e])}:function(e){return this.fromWireType(R[e])};case 2:return r?function(e){return this.fromWireType(T[e>>1])}:function(e){return this.fromWireType(k[e>>1])};case 4:return r?function(e){return this.fromWireType(E[e>>2])}:function(e){return this.fromWireType(j[e>>2])};default:throw new TypeError(`invalid integer width (${t}): ${e}`)}},er=e=>{if(null===e)return"null";var t=typeof e;return"object"===t||"array"===t||"function"===t?e.toString():""+e},tr=(e,t)=>{switch(t){case 4:return function(e){return this.fromWireType(x[e>>2])};case 8:return function(e){return this.fromWireType(P[e>>3])};default:throw new TypeError(`invalid float width (${t}): ${e}`)}},rr=(e,t,r)=>{switch(t){case 1:return r?e=>C[e]:e=>R[e];case 2:return r?e=>T[e>>1]:e=>k[e>>1];case 4:return r?e=>E[e>>2]:e=>j[e>>2];default:throw new TypeError(`invalid integer width (${t}): ${e}`)}},nr="undefined"!=typeof TextDecoder?new TextDecoder("utf-16le"):void 0,ar=(e,t)=>{for(var r=e>>1,n=r+t/2;!(r>=n)&&k[r];)++r;if(32<(r<<=1)-e&&nr)return nr.decode(R.subarray(e,r));for(r="",n=0;!(n>=t/2);++n){var a=T[e+2*n>>1];if(0==a)break;r+=String.fromCharCode(a)}return r},ir=(e,t,r)=>{if(r??=2147483647,2>r)return 0;var n=t;r=(r-=2)<2*e.length?r/2:e.length;for(var a=0;a<r;++a)T[t>>1]=e.charCodeAt(a),t+=2;return T[t>>1]=0,t-n},or=e=>2*e.length,sr=(e,t)=>{for(var r=0,n="";!(r>=t/4);){var a=E[e+4*r>>2];if(0==a)break;++r,65536<=a?(a-=65536,n+=String.fromCharCode(55296|a>>10,56320|1023&a)):n+=String.fromCharCode(a)}return n},lr=(e,t,r)=>{if(r??=2147483647,4>r)return 0;var n=t;r=n+r-4;for(var a=0;a<e.length;++a){var i=e.charCodeAt(a);if(55296<=i&&57343>=i&&(i=65536+((1023&i)<<10)|1023&e.charCodeAt(++a)),E[t>>2]=i,(t+=4)+4>r)break}return E[t>>2]=0,t-n},cr=e=>{for(var t=0,r=0;r<e.length;++r){var n=e.charCodeAt(r);55296<=n&&57343>=n&&++r,t+=4}return t},ur=(e,t,r)=>{var n=[];return e=e.toWireType(n,r),n.length&&(j[t>>2]=ot(n)),e},hr={},dr=e=>{var t=hr[e];return void 0===t?lt(e):t},fr=[],mr=Reflect.construct,pr=[],vr={},wr=()=>{if(!Xt){var e,t={USER:"web_user",LOGNAME:"web_user",PATH:"/",PWD:"/",HOME:"/home/web_user",LANG:("object"==typeof navigator&&navigator.languages&&navigator.languages[0]||"C").replace("-","_")+".UTF-8",_:w||"./this.program"};for(e in vr)void 0===vr[e]?delete t[e]:t[e]=vr[e];var r=[];for(e in t)r.push(`${e}=${t[e]}`);Xt=r}return Xt},gr=e=>0==e%4&&(0!=e%100||0==e%400),br=[31,29,31,30,31,30,31,31,30,31,30,31],_r=[31,28,31,30,31,30,31,31,30,31,30,31];[44].forEach(e=>{Ce[e]=new Ae(e),Ce[e].stack="<generic error, no stack>"}),_e=Array(4096),Le(pe,"/"),Be("/tmp"),Be("/home"),Be("/home/web_user"),function(){Be("/dev"),Ue(259,{read:()=>0,write:(e,t,r,n)=>n}),Ne("/dev/null",259),ue(1280,de),ue(1536,fe),Ne("/dev/tty",1280),Ne("/dev/tty1",1536);var e=new Uint8Array(1024),t=0,r=()=>(0===t&&(t=te(e).byteLength),e[--t]);Xe("random",r),Xe("urandom",r),Be("/dev/shm"),Be("/dev/shm/tmp")}(),function(){Be("/proc");var e=Be("/proc/self");Be("/proc/self/fd"),Le({U(){var t=Pe(e,"fd",16895,73);return t.j={ja(e,t){var r=Se(+t);return(e={parent:null,U:{lb:"fake"},j:{la:()=>r.path}}).parent=e}},t}},"/proc/self/fd")}(),Ke=n.BindingError=class extends Error{constructor(e){super(e),this.name="BindingError"}},at.push(0,1,void 0,1,null,1,!0,1,!1,1),n.count_emval_handles=()=>at.length/2-5-nt.length,qe=n.PureVirtualError=st("PureVirtualError");for(var yr=Array(256),Ar=0;256>Ar;++Ar)yr[Ar]=String.fromCharCode(Ar);Ze=yr,n.getInheritedInstanceCount=()=>Object.keys(ht).length,n.getLiveInheritedInstances=()=>{var e,t=[];for(e in ht)ht.hasOwnProperty(e)&&t.push(ht[e]);return t},n.flushPendingDeletes=ut,n.setDelayFunction=e=>{Qe=e,ct.length&&Qe&&Qe(ut)},et=n.InternalError=class extends Error{constructor(e){super(e),this.name="InternalError"}},Object.assign(Pt.prototype,{isAliasOf:function(e){if(!(this instanceof Pt&&e instanceof Pt))return!1;var t=this.g.u.i,r=this.g.o;e.g=e.g;var n=e.g.u.i;for(e=e.g.o;t.C;)r=t.ma(r),t=t.C;for(;n.C;)e=n.ma(e),n=n.C;return t===n&&r===e},clone:function(){if(this.g.o||xt(this),this.g.ha)return this.g.count.value+=1,this;var e=yt,t=Object,r=t.create,n=Object.getPrototypeOf(this),a=this.g;return(e=e(r.call(t,n,{g:{value:{count:a.count,ea:a.ea,ha:a.ha,o:a.o,u:a.u,F:a.F,J:a.J}}}))).g.count.value+=1,e.g.ea=!1,e},delete(){if(this.g.o||xt(this),this.g.ea&&!this.g.ha)throw new Ke("Object already scheduled for deletion");vt(this);var e=this.g;--e.count.value,0===e.count.value&&(e.F?e.J.O(e.F):e.u.i.O(e.o)),this.g.ha||(this.g.F=void 0,this.g.o=void 0)},isDeleted:function(){return!this.g.o},deleteLater:function(){if(this.g.o||xt(this),this.g.ea&&!this.g.ha)throw new Ke("Object already scheduled for deletion");return ct.push(this),1===ct.length&&Qe&&Qe(ut),this.g.ea=!0,this}}),Object.assign(Ut.prototype,{Rb(e){return this.qb&&(e=this.qb(e)),e},ab(e){this.O?.(e)},argPackAdvance:8,readValueFromPointer:Rt,fromWireType:function(e){function t(){return this.sa?_t(this.i.M,{u:this.hc,o:r,J:this,F:e}):_t(this.i.M,{u:this,o:e})}var r=this.Rb(e);if(!r)return this.ab(e),null;var n=((e,t)=>(t=dt(e,t),ht[t]))(this.i,r);if(void 0!==n)return 0===n.g.count.value?(n.g.o=r,n.g.F=e,n.clone()):(n=n.clone(),this.ab(e),n);if(n=this.i.Qb(r),!(n=bt[n]))return t.call(this);n=this.ra?n.Hb:n.pointerType;var a=gt(r,this.i,n.i);return null===a?t.call(this):this.sa?_t(n.i.M,{u:n,o:a,J:this,F:e}):_t(n.i.M,{u:n,o:a})}}),Wt=n.UnboundTypeError=st("UnboundTypeError");var Cr={__syscall_fcntl64:function(e,t,r){tt=r;try{var n=Se(e);switch(t){case 0:var a=K();if(0>a)break;for(;ge[a];)a++;return function(e,t=-1){return e=Ie(e,t),e.m?.Ec?.(e),e}(n,a).W;case 1:case 2:case 13:case 14:return 0;case 3:return n.flags;case 4:return a=K(),n.flags|=a,0;case 12:return a=K(),T[a+0>>1]=2,0}return-28}catch(e){if("ErrnoError"!==e.name)throw e;return-e.$}},__syscall_ioctl:function(e,t,r){tt=r;try{var n=Se(e);switch(t){case 21509:case 21510:case 21511:case 21512:case 21524:case 21515:return n.s?0:-59;case 21505:if(!n.s)return-59;if(n.s.V.Xb){e=[3,28,127,21,4,0,1,0,17,19,26,0,18,15,23,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];var a=K();E[a>>2]=25856,E[a+4>>2]=5,E[a+8>>2]=191,E[a+12>>2]=35387;for(var i=0;32>i;i++)C[a+i+17]=e[i]||0}return 0;case 21506:case 21507:case 21508:if(!n.s)return-59;if(n.s.V.Yb)for(a=K(),e=[],i=0;32>i;i++)e.push(C[a+i+17]);return 0;case 21519:return n.s?(a=K(),E[a>>2]=0):-59;case 21520:return n.s?-28:-59;case 21531:if(a=K(),!n.m.Wb)throw new Ae(59);return n.m.Wb(n,t,a);case 21523:return n.s?(n.s.V.Zb&&(i=[24,80],a=K(),T[a>>1]=i[0],T[a+2>>1]=i[1]),0):-59;default:return-28}}catch(e){if("ErrnoError"!==e.name)throw e;return-e.$}},__syscall_openat:function(e,t,r,n){tt=n;try{var a=t=t?ae(R,t):"";if("/"===a.charAt(0))t=a;else{var i=-100===e?"/":Se(e).path;if(0==a.length)throw new Ae(44);t=Z(i+"/"+a)}return Ye(t,r,n?K():0).W}catch(e){if("ErrnoError"!==e.name)throw e;return-e.$}},_abort_js:()=>{W("")},_embind_create_inheriting_constructor:(e,t,r)=>{e=lt(e),t=pt(t,"wrapper"),r=it(r);var n=t.i,a=n.M,i=n.C.M,o=n.C.constructor;return e=rt(e,function(...e){n.C.pb.forEach(function(e){if(this[e]===i[e])throw new qe(`Pure virtual function ${e} must be implemented in JavaScript`)}.bind(this)),Object.defineProperty(this,"__parent",{value:a}),this.__construct(...e)}),a.__construct=function(...e){if(this===a)throw new Ke("Pass correct 'this' to __construct");e=o.implement(this,...e),vt(e);var t=e.g;if(e.notifyOnDestruction(),t.ha=!0,Object.defineProperties(this,{g:{value:t}}),yt(this),e=t.o,e=dt(n,e),ht.hasOwnProperty(e))throw new Ke(`Tried to register registered instance: ${e}`);ht[e]=this},a.__destruct=function(){if(this===a)throw new Ke("Pass correct 'this' to __destruct");vt(this);var e=this.g.o;if(e=dt(n,e),!ht.hasOwnProperty(e))throw new Ke(`Tried to unregister unregistered instance: ${e}`);delete ht[e]},e.prototype=Object.create(a),Object.assign(e.prototype,r),ot(e)},_embind_finalize_value_object:e=>{var t=At[e];delete At[e];var r=t.Na,n=t.O,a=t.eb,i=a.map(e=>e.Ub).concat(a.map(e=>e.kc));Et([e],i,e=>{var i={};return a.forEach((t,r)=>{var n=e[r],o=t.Sb,s=t.Tb,l=e[r+a.length],c=t.jc,u=t.lc;i[t.Ob]={read:e=>n.fromWireType(o(s,e)),write:(e,t)=>{var r=[];c(u,e,l.toWireType(r,t)),Ct(r)}}}),[{name:t.name,fromWireType:e=>{var t,r={};for(t in i)r[t]=i[t].read(e);return n(e),r},toWireType:(e,t)=>{for(var a in i)if(!(a in t))throw new TypeError(`Missing field: "${a}"`);var o=r();for(a in i)i[a].write(o,t[a]);return null!==e&&e.push(n,o),o},argPackAdvance:8,readValueFromPointer:Rt,L:n}]})},_embind_register_bigint:()=>{},_embind_register_bool:(e,t,r,n)=>{jt(e,{name:t=lt(t),fromWireType:function(e){return!!e},toWireType:function(e,t){return t?r:n},argPackAdvance:8,readValueFromPointer:function(e){return this.fromWireType(R[e])},L:null})},_embind_register_class:(e,t,r,n,a,i,o,s,l,c,u,h,d)=>{u=lt(u),i=Gt(a,i),s&&=Gt(o,s),c&&=Gt(l,c),d=Gt(h,d);var f=(e=>{if(void 0===e)return"_unknown";var t=(e=e.replace(/[^a-zA-Z0-9_]/g,"$")).charCodeAt(0);return 48<=t&&57>=t?`_${e}`:e})(u);Dt(f,function(){Yt(`Cannot construct ${u} due to unbound types`,[n])}),Et([e,t,r],n?[n]:[],t=>{if(t=t[0],n)var r=t.i,a=r.M;else a=Pt.prototype;t=rt(u,function(...e){if(Object.getPrototypeOf(this)!==o)throw new Ke("Use 'new' to construct "+u);if(void 0===h.Z)throw new Ke(u+" has no accessible constructor");var t=h.Z[e.length];if(void 0===t)throw new Ke(`Tried to invoke ctor of ${u} with invalid number of parameters (${e.length}) - expected (${Object.keys(h.Z).toString()}) parameters instead!`);return t.apply(this,e)});var o=Object.create(a,{constructor:{value:t}});t.prototype=o;var l,h=new Mt(u,t,o,d,r,i,s,c);return h.C&&((l=h.C).na??(l.na=[]),h.C.na.push(h)),r=new Ut(u,h,!0,!1,!1),l=new Ut(u+"*",h,!1,!1,!1),a=new Ut(u+" const*",h,!1,!0,!1),bt[e]={pointerType:l,Hb:a},Bt(f,t),[r,l,a]})},_embind_register_class_class_function:(e,t,r,n,a,i,o)=>{var s=zt(r,n);t=lt(t),t=Jt(t),i=Gt(a,i),Et([],[e],e=>{function n(){Yt(`Cannot call ${a} due to unbound types`,s)}var a=`${(e=e[0]).name}.${t}`;t.startsWith("@@")&&(t=Symbol[t.substring(2)]);var l=e.i.constructor;return void 0===l[t]?(n.da=r-1,l[t]=n):(Ft(l,t,a),l[t].A[r-1]=n),Et([],s,n=>{if(n=Vt(a,[n[0],null].concat(n.slice(1)),null,i,o),void 0===l[t].A?(n.da=r-1,l[t]=n):l[t].A[r-1]=n,e.i.na)for(const r of e.i.na)r.constructor.hasOwnProperty(t)||(r.constructor[t]=n);return[]}),[]})},_embind_register_class_class_property:(e,t,r,n,a,i,o,s)=>{t=lt(t),i=Gt(a,i),Et([],[e],e=>{var a=`${(e=e[0]).name}.${t}`,l={get(){Yt(`Cannot access ${a} due to unbound types`,[r])},enumerable:!0,configurable:!0};return l.set=s?()=>{Yt(`Cannot access ${a} due to unbound types`,[r])}:()=>{throw new Ke(`${a} is a read-only property`)},Object.defineProperty(e.i.constructor,t,l),Et([],[r],r=>{r=r[0];var a={get:()=>r.fromWireType(i(n)),enumerable:!0};return s&&(s=Gt(o,s),a.set=e=>{var t=[];s(n,r.toWireType(t,e)),Ct(t)}),Object.defineProperty(e.i.constructor,t,a),[]}),[]})},_embind_register_class_constructor:(e,t,r,n,a,i)=>{var o=zt(t,r);a=Gt(n,a),Et([],[e],e=>{var r=`constructor ${(e=e[0]).name}`;if(void 0===e.i.Z&&(e.i.Z=[]),void 0!==e.i.Z[t-1])throw new Ke(`Cannot register multiple constructors with identical number of parameters (${t-1}) for class '${e.name}'! Overload resolution is currently only performed using the parameter count, not actual type info!`);return e.i.Z[t-1]=()=>{Yt(`Cannot construct ${e.name} due to unbound types`,o)},Et([],o,n=>(n.splice(1,0,null),e.i.Z[t-1]=Vt(r,n,null,a,i),[])),[]})},_embind_register_class_function:(e,t,r,n,a,i,o,s)=>{var l=zt(r,n);t=lt(t),t=Jt(t),i=Gt(a,i),Et([],[e],e=>{function n(){Yt(`Cannot call ${a} due to unbound types`,l)}var a=`${(e=e[0]).name}.${t}`;t.startsWith("@@")&&(t=Symbol[t.substring(2)]),s&&e.i.pb.push(t);var c=e.i.M,u=c[t];return void 0===u||void 0===u.A&&u.className!==e.name&&u.da===r-2?(n.da=r-2,n.className=e.name,c[t]=n):(Ft(c,t,a),c[t].A[r-2]=n),Et([],l,n=>(n=Vt(a,n,e,i,o),void 0===c[t].A?(n.da=r-2,c[t]=n):c[t].A[r-2]=n,[])),[]})},_embind_register_class_property:(e,t,r,n,a,i,o,s,l,c)=>{t=lt(t),a=Gt(n,a),Et([],[e],e=>{var n=`${(e=e[0]).name}.${t}`,u={get(){Yt(`Cannot access ${n} due to unbound types`,[r,o])},enumerable:!0,configurable:!0};return u.set=l?()=>Yt(`Cannot access ${n} due to unbound types`,[r,o]):()=>{throw new Ke(n+" is a read-only property")},Object.defineProperty(e.i.M,t,u),Et([],l?[r,o]:[r],r=>{var o=r[0],u={get(){var t=Kt(this,e,n+" getter");return o.fromWireType(a(i,t))},enumerable:!0};if(l){l=Gt(s,l);var h=r[1];u.set=function(t){var r=Kt(this,e,n+" setter"),a=[];l(c,r,h.toWireType(a,t)),Ct(a)}}return Object.defineProperty(e.i.M,t,u),[]}),[]})},_embind_register_emval:e=>jt(e,Zt),_embind_register_enum:(e,t,r,n)=>{function a(){}t=lt(t),a.values={},jt(e,{name:t,constructor:a,fromWireType:function(e){return this.constructor.values[e]},toWireType:(e,t)=>t.value,argPackAdvance:8,readValueFromPointer:Qt(t,r,n),L:null}),Dt(t,a)},_embind_register_enum_value:(e,t,r)=>{var n=pt(e,"enum");t=lt(t),e=n.constructor,n=Object.create(n.constructor.prototype,{value:{value:r},constructor:{value:rt(`${n.name}_${t}`,function(){})}}),e.values[r]=n,e[t]=n},_embind_register_float:(e,t,r)=>{jt(e,{name:t=lt(t),fromWireType:e=>e,toWireType:(e,t)=>t,argPackAdvance:8,readValueFromPointer:tr(t,r),L:null})},_embind_register_function:(e,t,r,n,a,i)=>{var o=zt(t,r);e=lt(e),e=Jt(e),a=Gt(n,a),Dt(e,function(){Yt(`Cannot call ${e} due to unbound types`,o)},t-1),Et([],o,r=>(Bt(e,Vt(e,[r[0],null].concat(r.slice(1)),null,a,i),t-1),[]))},_embind_register_integer:(e,t,r,n,a)=>{if(t=lt(t),-1===a&&(a=4294967295),a=e=>e,0===n){var i=32-8*r;a=e=>e<<i>>>i}var o=t.includes("unsigned")?function(e,t){return t>>>0}:function(e,t){return t};jt(e,{name:t,fromWireType:a,toWireType:o,argPackAdvance:8,readValueFromPointer:rr(t,r,0!==n),L:null})},_embind_register_memory_view:(e,t,r)=>{function n(e){return new a(C.buffer,j[e+4>>2],j[e>>2])}var a=[Int8Array,Uint8Array,Int16Array,Uint16Array,Int32Array,Uint32Array,Float32Array,Float64Array][t];jt(e,{name:r=lt(r),fromWireType:n,argPackAdvance:8,readValueFromPointer:n},{Vb:!0})},_embind_register_std_string:(e,t)=>{var r="std::string"===(t=lt(t));jt(e,{name:t,fromWireType:function(e){var t=j[e>>2],n=e+4;if(r)for(var a=n,i=0;i<=t;++i){var o=n+i;if(i==t||0==R[o]){if(a=a?ae(R,a,o-a):"",void 0===s)var s=a;else s+=String.fromCharCode(0),s+=a;a=o+1}}else{for(s=Array(t),i=0;i<t;++i)s[i]=String.fromCharCode(R[n+i]);s=s.join("")}return Tr(e),s},toWireType:function(e,t){t instanceof ArrayBuffer&&(t=new Uint8Array(t));var n="string"==typeof t;if(!(n||t instanceof Uint8Array||t instanceof Uint8ClampedArray||t instanceof Int8Array))throw new Ke("Cannot pass non-string to std::string");var a=r&&n?oe(t):t.length,i=kr(4+a+1),o=i+4;if(j[i>>2]=a,r&&n)se(t,R,o,a+1);else if(n)for(n=0;n<a;++n){var s=t.charCodeAt(n);if(255<s)throw Tr(o),new Ke("String has UTF-16 code units that do not fit in 8 bits");R[o+n]=s}else for(n=0;n<a;++n)R[o+n]=t[n];return null!==e&&e.push(Tr,i),i},argPackAdvance:8,readValueFromPointer:Rt,L(e){Tr(e)}})},_embind_register_std_wstring:(e,t,r)=>{if(r=lt(r),2===t)var n=ar,a=ir,i=or,o=e=>k[e>>1];else 4===t&&(n=sr,a=lr,i=cr,o=e=>j[e>>2]);jt(e,{name:r,fromWireType:e=>{for(var r,a=j[e>>2],i=e+4,s=0;s<=a;++s){var l=e+4+s*t;s!=a&&0!=o(l)||(i=n(i,l-i),void 0===r?r=i:(r+=String.fromCharCode(0),r+=i),i=l+t)}return Tr(e),r},toWireType:(e,n)=>{if("string"!=typeof n)throw new Ke(`Cannot pass non-string to C++ string type ${r}`);var o=i(n),s=kr(4+o+t);return j[s>>2]=o/t,a(n,s+4,o+t),null!==e&&e.push(Tr,s),s},argPackAdvance:8,readValueFromPointer:Rt,L(e){Tr(e)}})},_embind_register_value_object:(e,t,r,n,a,i)=>{At[e]={name:lt(t),Na:Gt(r,n),O:Gt(a,i),eb:[]}},_embind_register_value_object_field:(e,t,r,n,a,i,o,s,l,c)=>{At[e].eb.push({Ob:lt(t),Ub:r,Sb:Gt(n,a),Tb:i,kc:o,jc:Gt(s,l),lc:c})},_embind_register_void:(e,t)=>{jt(e,{Ic:!0,name:t=lt(t),argPackAdvance:0,fromWireType:()=>{},toWireType:()=>{}})},_emscripten_get_now_is_monotonic:()=>1,_emscripten_memcpy_js:(e,t,r)=>R.copyWithin(e,t,t+r),_emval_as:(e,t,r)=>(e=it(e),t=pt(t,"emval::as"),ur(t,r,e)),_emval_call_method:(e,t,r,n,a)=>(e=fr[e])(t=it(t),t[r=dr(r)],n,a),_emval_decref:qt,_emval_get_method_caller:(e,t,r)=>{var n=((e,t)=>{for(var r=Array(e),n=0;n<e;++n)r[n]=pt(j[t+4*n>>2],"parameter "+n);return r})(e,t),a=n.shift();e--;var i=Array(e);return t=`methodCaller<(${n.map(e=>e.name).join(", ")}) => ${a.name}>`,(e=>{var t=fr.length;return fr.push(e),t})(rt(t,(t,o,s,l)=>{for(var c=0,u=0;u<e;++u)i[u]=n[u].readValueFromPointer(l+c),c+=n[u].argPackAdvance;return t=1===r?mr(o,i):o.apply(t,i),ur(a,s,t)}))},_emval_get_module_property:e=>(e=dr(e),ot(n[e])),_emval_get_property:(e,t)=>(e=it(e),t=it(t),ot(e[t])),_emval_incref:e=>{9<e&&(at[e+1]+=1)},_emval_new_array:()=>ot([]),_emval_new_cstring:e=>ot(dr(e)),_emval_new_object:()=>ot({}),_emval_run_destructors:e=>{var t=it(e);Ct(t),qt(e)},_emval_set_property:(e,t,r)=>{e=it(e),t=it(t),r=it(r),e[t]=r},_emval_take_value:(e,t)=>(e=(e=pt(e,"_emval_take_value")).readValueFromPointer(t),ot(e)),emscripten_asm_const_int:(e,t,r)=>{pr.length=0;for(var n;n=R[t++];){var a=105!=n;r+=(a&=112!=n)&&r%8?4:0,pr.push(112==n?j[r>>2]:105==n?E[r>>2]:P[r>>3]),r+=a?8:4}return z[e](...pr)},emscripten_date_now:()=>Date.now(),emscripten_get_now:()=>performance.now(),emscripten_resize_heap:e=>{var t=R.length;if(2147483648<(e>>>=0))return!1;for(var r=1;4>=r;r*=2){var n=t*(1+.2/r);n=Math.min(n,e+100663296);var a=Math;n=Math.max(e,n);e:{a=(a.min.call(a,2147483648,n+(65536-n%65536)%65536)-A.buffer.byteLength+65535)/65536;try{A.grow(a),D();var i=1;break e}catch(e){}i=void 0}if(i)return!0}return!1},environ_get:(e,t)=>{var r=0;return wr().forEach((n,a)=>{var i=t+r;for(a=j[e+4*a>>2]=i,i=0;i<n.length;++i)C[a++]=n.charCodeAt(i);C[a]=0,r+=n.length+1}),0},environ_sizes_get:(e,t)=>{var r=wr();j[e>>2]=r.length;var n=0;return r.forEach(e=>n+=e.length+1),j[t>>2]=n,0},fd_close:function(e){try{var t=Se(e);if(null===t.W)throw new Ae(8);t.Ka&&(t.Ka=null);try{t.m.close&&t.m.close(t)}catch(e){throw e}finally{ge[t.W]=null}return t.W=null,0}catch(e){if("ErrnoError"!==e.name)throw e;return e.$}},fd_read:function(e,t,r,n){try{e:{var a=Se(e);e=t;for(var i,o=t=0;o<r;o++){var s=j[e>>2],l=j[e+4>>2];e+=8;var c=a,u=i,h=C;if(0>l||0>u)throw new Ae(28);if(null===c.W)throw new Ae(8);if(1==(2097155&c.flags))throw new Ae(8);if(16384==(61440&c.node.mode))throw new Ae(31);if(!c.m.read)throw new Ae(28);var d=void 0!==u;if(d){if(!c.seekable)throw new Ae(70)}else u=c.position;var f=c.m.read(c,h,s,l,u);d||(c.position+=f);var m=f;if(0>m){var p=-1;break e}if(t+=m,m<l)break;void 0!==i&&(i+=m)}p=t}return j[n>>2]=p,0}catch(e){if("ErrnoError"!==e.name)throw e;return e.$}},fd_seek:function(e,t,r,n,a){t=r+2097152>>>0<4194305-!!t?(t>>>0)+4294967296*r:NaN;try{if(isNaN(t))return 61;var i=Se(e);return Ve(i,t,n),X=[i.position>>>0,(V=i.position,1<=+Math.abs(V)?0<V?+Math.floor(V/4294967296)>>>0:~~+Math.ceil((V-+(~~V>>>0))/4294967296)>>>0:0)],E[a>>2]=X[0],E[a+4>>2]=X[1],i.Ka&&0===t&&0===n&&(i.Ka=null),0}catch(e){if("ErrnoError"!==e.name)throw e;return e.$}},fd_write:function(e,t,r,n){try{e:{var a=Se(e);e=t;for(var i,o=t=0;o<r;o++){var s=j[e>>2],l=j[e+4>>2];e+=8;var c=a,u=s,h=l,d=i,f=C;if(0>h||0>d)throw new Ae(28);if(null===c.W)throw new Ae(8);if(!(2097155&c.flags))throw new Ae(8);if(16384==(61440&c.node.mode))throw new Ae(31);if(!c.m.write)throw new Ae(28);c.seekable&&1024&c.flags&&Ve(c,0,2);var m=void 0!==d;if(m){if(!c.seekable)throw new Ae(70)}else d=c.position;var p=c.m.write(c,f,u,h,d,void 0);m||(c.position+=p);var v=p;if(0>v){var w=-1;break e}t+=v,void 0!==i&&(i+=v)}w=t}return j[n>>2]=w,0}catch(e){if("ErrnoError"!==e.name)throw e;return e.$}},strftime_l:(e,t,r,n)=>((e,t,r,n)=>{function a(e,t,r){for(e="number"==typeof e?e.toString():e||"";e.length<t;)e=r[0]+e;return e}function i(e,t){return a(e,t,"0")}function o(e,t){function r(e){return 0>e?-1:0<e?1:0}var n;return 0===(n=r(e.getFullYear()-t.getFullYear()))&&0===(n=r(e.getMonth()-t.getMonth()))&&(n=r(e.getDate()-t.getDate())),n}function s(e){switch(e.getDay()){case 0:return new Date(e.getFullYear()-1,11,29);case 1:return e;case 2:return new Date(e.getFullYear(),0,3);case 3:return new Date(e.getFullYear(),0,2);case 4:return new Date(e.getFullYear(),0,1);case 5:return new Date(e.getFullYear()-1,11,31);case 6:return new Date(e.getFullYear()-1,11,30)}}function l(e){var t=e.ba;for(e=new Date(new Date(e.ca+1900,0,1).getTime());0<t;){var r=e.getMonth(),n=(gr(e.getFullYear())?br:_r)[r];if(!(t>n-e.getDate())){e.setDate(e.getDate()+t);break}t-=n-e.getDate()+1,e.setDate(1),11>r?e.setMonth(r+1):(e.setMonth(0),e.setFullYear(e.getFullYear()+1))}return r=new Date(e.getFullYear()+1,0,4),t=s(new Date(e.getFullYear(),0,4)),r=s(r),0>=o(t,e)?0>=o(r,e)?e.getFullYear()+1:e.getFullYear():e.getFullYear()-1}var c=j[n+40>>2];for(var u in n={pc:E[n>>2],oc:E[n+4>>2],Da:E[n+8>>2],Qa:E[n+12>>2],Ea:E[n+16>>2],ca:E[n+20>>2],R:E[n+24>>2],ba:E[n+28>>2],Nc:E[n+32>>2],nc:E[n+36>>2],qc:c&&c?ae(R,c):""},r=r?ae(R,r):"",c={"%c":"%a %b %d %H:%M:%S %Y","%D":"%m/%d/%y","%F":"%Y-%m-%d","%h":"%b","%r":"%I:%M:%S %p","%R":"%H:%M","%T":"%H:%M:%S","%x":"%m/%d/%y","%X":"%H:%M:%S","%Ec":"%c","%EC":"%C","%Ex":"%m/%d/%y","%EX":"%H:%M:%S","%Ey":"%y","%EY":"%Y","%Od":"%d","%Oe":"%e","%OH":"%H","%OI":"%I","%Om":"%m","%OM":"%M","%OS":"%S","%Ou":"%u","%OU":"%U","%OV":"%V","%Ow":"%w","%OW":"%W","%Oy":"%y"})r=r.replace(new RegExp(u,"g"),c[u]);var h="Sunday Monday Tuesday Wednesday Thursday Friday Saturday".split(" "),d="January February March April May June July August September October November December".split(" ");for(u in c={"%a":e=>h[e.R].substring(0,3),"%A":e=>h[e.R],"%b":e=>d[e.Ea].substring(0,3),"%B":e=>d[e.Ea],"%C":e=>i((e.ca+1900)/100|0,2),"%d":e=>i(e.Qa,2),"%e":e=>a(e.Qa,2," "),"%g":e=>l(e).toString().substring(2),"%G":l,"%H":e=>i(e.Da,2),"%I":e=>(0==(e=e.Da)?e=12:12<e&&(e-=12),i(e,2)),"%j":e=>{for(var t=0,r=0;r<=e.Ea-1;t+=(gr(e.ca+1900)?br:_r)[r++]);return i(e.Qa+t,3)},"%m":e=>i(e.Ea+1,2),"%M":e=>i(e.oc,2),"%n":()=>"\n","%p":e=>0<=e.Da&&12>e.Da?"AM":"PM","%S":e=>i(e.pc,2),"%t":()=>"\t","%u":e=>e.R||7,"%U":e=>i(Math.floor((e.ba+7-e.R)/7),2),"%V":e=>{var t=Math.floor((e.ba+7-(e.R+6)%7)/7);if(2>=(e.R+371-e.ba-2)%7&&t++,t)53==t&&(4==(r=(e.R+371-e.ba)%7)||3==r&&gr(e.ca)||(t=1));else{t=52;var r=(e.R+7-e.ba-1)%7;(4==r||5==r&&gr(e.ca%400-1))&&t++}return i(t,2)},"%w":e=>e.R,"%W":e=>i(Math.floor((e.ba+7-(e.R+6)%7)/7),2),"%y":e=>(e.ca+1900).toString().substring(2),"%Y":e=>e.ca+1900,"%z":e=>{var t=0<=(e=e.nc);return e=Math.abs(e)/60,(t?"+":"-")+String("0000"+(e/60*100+e%60)).slice(-4)},"%Z":e=>e.qc,"%%":()=>"%"},r=r.replace(/%%/g,"\0\0"),c)r.includes(u)&&(r=r.replace(new RegExp(u,"g"),c[u](n)));return(u=le(r=r.replace(/\0\0/g,"%"),!1)).length>t?0:(C.set(u,e),u.length-1)})(e,t,r,n)},Rr=function(){function e(e){return Rr=e.exports,A=Rr.memory,D(),Lt=Rr.__indirect_function_table,S.unshift(Rr.__wasm_call_ctors),$--,n.monitorRunDependencies?.($),0==$&&(null!==U&&(clearInterval(U),U=null),L&&(e=L,L=null,e())),Rr}var t={env:Cr,wasi_snapshot_preview1:Cr};if($++,n.monitorRunDependencies?.($),n.instantiateWasm)try{return n.instantiateWasm(t,e)}catch(e){y(`Module.instantiateWasm callback failed with error: ${e}`),r(e)}return B||=N("canvas_advanced.wasm")?"canvas_advanced.wasm":n.locateFile?n.locateFile("canvas_advanced.wasm",g):g+"canvas_advanced.wasm",function(e,t){var r=B;return b||"function"!=typeof WebAssembly.instantiateStreaming||N(r)||H(r)||"function"!=typeof fetch?Y(r,e,t):fetch(r,{credentials:"same-origin"}).then(n=>WebAssembly.instantiateStreaming(n,e).then(t,function(n){return y(`wasm streaming compile failed: ${n}`),y("falling back to ArrayBuffer instantiation"),Y(r,e,t)}))}(t,function(t){e(t.instance)}).catch(r),{}}(),Tr=e=>(Tr=Rr.free)(e),kr=e=>(kr=Rr.malloc)(e),Er=e=>(Er=Rr.__getTypeName)(e),jr=n._ma_device__on_notification_unlocked=e=>(jr=n._ma_device__on_notification_unlocked=Rr.ma_device__on_notification_unlocked)(e);n._ma_malloc_emscripten=(e,t)=>(n._ma_malloc_emscripten=Rr.ma_malloc_emscripten)(e,t),n._ma_free_emscripten=(e,t)=>(n._ma_free_emscripten=Rr.ma_free_emscripten)(e,t);var xr,Pr=n._ma_device_process_pcm_frames_capture__webaudio=(e,t,r)=>(Pr=n._ma_device_process_pcm_frames_capture__webaudio=Rr.ma_device_process_pcm_frames_capture__webaudio)(e,t,r),Fr=n._ma_device_process_pcm_frames_playback__webaudio=(e,t,r)=>(Fr=n._ma_device_process_pcm_frames_playback__webaudio=Rr.ma_device_process_pcm_frames_playback__webaudio)(e,t,r);function Dr(){function e(){if(!xr&&(xr=!0,n.calledRun=!0,!F)){if(n.noFSInit||Oe||(Oe=!0,n.stdin=n.stdin,n.stdout=n.stdout,n.stderr=n.stderr,n.stdin?Xe("stdin",n.stdin):He("/dev/tty","/dev/stdin"),n.stdout?Xe("stdout",null,n.stdout):He("/dev/tty","/dev/stdout"),n.stderr?Xe("stderr",null,n.stderr):He("/dev/tty1","/dev/stderr"),Ye("/dev/stdin",0),Ye("/dev/stdout",1),Ye("/dev/stderr",1)),ye=!1,J(S),t(n),n.onRuntimeInitialized&&n.onRuntimeInitialized(),n.postRun)for("function"==typeof n.postRun&&(n.postRun=[n.postRun]);n.postRun.length;){var e=n.postRun.shift();I.unshift(e)}J(I)}}if(!(0<$)){if(n.preRun)for("function"==typeof n.preRun&&(n.preRun=[n.preRun]);n.preRun.length;)O();J(M),0<$||(n.setStatus?(n.setStatus("Running..."),setTimeout(function(){setTimeout(function(){n.setStatus("")},1),e()},1)):e())}}if(n.dynCall_iiji=(e,t,r,a,i)=>(n.dynCall_iiji=Rr.dynCall_iiji)(e,t,r,a,i),n.dynCall_jiji=(e,t,r,a,i)=>(n.dynCall_jiji=Rr.dynCall_jiji)(e,t,r,a,i),n.dynCall_iiiji=(e,t,r,a,i,o)=>(n.dynCall_iiiji=Rr.dynCall_iiiji)(e,t,r,a,i,o),n.dynCall_iij=(e,t,r,a)=>(n.dynCall_iij=Rr.dynCall_iij)(e,t,r,a),n.dynCall_jii=(e,t,r)=>(n.dynCall_jii=Rr.dynCall_jii)(e,t,r),n.dynCall_viijii=(e,t,r,a,i,o,s)=>(n.dynCall_viijii=Rr.dynCall_viijii)(e,t,r,a,i,o,s),n.dynCall_iiiiij=(e,t,r,a,i,o,s)=>(n.dynCall_iiiiij=Rr.dynCall_iiiiij)(e,t,r,a,i,o,s),n.dynCall_iiiiijj=(e,t,r,a,i,o,s,l,c)=>(n.dynCall_iiiiijj=Rr.dynCall_iiiiijj)(e,t,r,a,i,o,s,l,c),n.dynCall_iiiiiijj=(e,t,r,a,i,o,s,l,c,u)=>(n.dynCall_iiiiiijj=Rr.dynCall_iiiiiijj)(e,t,r,a,i,o,s,l,c,u),L=function e(){xr||Dr(),xr||(L=e)},n.preInit)for("function"==typeof n.preInit&&(n.preInit=[n.preInit]);0<n.preInit.length;)n.preInit.pop()();return Dr(),a}),u=new class{constructor(){this.runtime=null,this.isLoading=!1,this.callbacks=[],this.wasmURL="https://unpkg.com/@rive-app/canvas-advanced@2.32.1/rive.wasm"}async loadRuntime(){try{for(this.runtime=await c({locateFile:()=>this.wasmURL});this.callbacks.length>0;){const e=this.callbacks.shift();e&&e(this.runtime)}}catch(e){for(console.error("[Rive Block] Failed to load Rive runtime:",e);this.callbacks.length>0;)this.callbacks.shift();throw e}}getInstance(e){this.runtime?e(this.runtime):(this.callbacks.push(e),this.isLoading||(this.isLoading=!0,this.loadRuntime()))}awaitInstance(){return new Promise((e,t)=>{this.runtime?e(this.runtime):this.getInstance(r=>{r?e(r):t(new Error("Failed to load Rive runtime"))})})}setWasmUrl(e){this.runtime?console.warn("[Rive Block] Runtime already loaded. WASM URL change will not take effect."):this.wasmURL=e}};function h({riveFileUrl:e,width:r,height:a,enableAutoplay:o,respectReducedMotion:l,ariaLabel:c,ariaDescription:h}){const d=(0,s.useRef)(null),f=(0,s.useRef)(null),m=(0,s.useRef)(null),p=(0,s.useRef)(null),v=(0,s.useRef)(null),w=(0,s.useRef)(null),[g,b]=(0,s.useState)(!0),[_,y]=(0,s.useState)(null);(0,s.useEffect)(()=>{if(!d.current||!e)return;let r=!0;return b(!0),y(null),(async()=>{try{const t=await u.awaitInstance();if(!r)return;const n=await fetch(e);if(!n.ok)throw new Error(`Failed to fetch Rive file: ${n.statusText}`);const a=await n.arrayBuffer(),i=new Uint8Array(a),s=await t.load(i);if(m.current=s,!r)return;const c=s.defaultArtboard();p.current=c;const h=t.makeRenderer(d.current,!0);v.current=h;const w=window.matchMedia("(prefers-reduced-motion: reduce)").matches,g=o&&!(l&&w);let _=null;if(c.animationCount()>0){const e=c.animationByIndex(0);_=new t.LinearAnimationInstance(e,c)}f.current={rive:t,file:s,artboard:c,renderer:h,animation:_,shouldAutoplay:g},g&&_?A(t):C(t),b(!1),y(null)}catch(e){console.error("[Rive Block] Error loading Rive animation:",e),r&&(y((0,t.__)("Unable to load Rive animation. Please check the file and try again.","rive-block")),b(!1))}})(),()=>{r=!1,R()}},[e,o,l]);const A=e=>{let t=0;const r=n=>{if(!f.current)return;const{artboard:a,renderer:i,animation:o}=f.current,s=t?(n-t)/1e3:0;t=n,i.clear(),i.save(),o&&(o.advance(s),o.apply(1)),a.advance(s),i.align(e.Fit.contain,e.Alignment.center,{minX:0,minY:0,maxX:d.current.width,maxY:d.current.height},a.bounds),a.draw(i),i.restore(),w.current=e.requestAnimationFrame(r)};w.current=e.requestAnimationFrame(r)},C=e=>{if(!f.current)return;const{artboard:t,renderer:r}=f.current;r.clear(),r.save(),r.align(e.Fit.contain,e.Alignment.center,{minX:0,minY:0,maxX:d.current.width,maxY:d.current.height},t.bounds),t.draw(r),r.restore()},R=()=>{if(w.current&&f.current){const{rive:e}=f.current;e.cancelAnimationFrame(w.current),w.current=null}if(f.current){const{animation:e,renderer:t,artboard:r}=f.current;e&&e.delete(),t&&t.delete(),r&&r.delete()}m.current&&(m.current.unref(),m.current=null),f.current=null,p.current=null,v.current=null};return(0,i.jsxs)("div",{style:{position:"relative",width:r,height:a},children:[g&&(0,i.jsx)("div",{style:{position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",alignItems:"center",justifyContent:"center",backgroundColor:"rgba(255, 255, 255, 0.8)",zIndex:1e3},children:(0,i.jsx)(n.Spinner,{})}),_&&(0,i.jsx)(n.Notice,{status:"error",isDismissible:!1,children:_}),(0,i.jsx)("canvas",{ref:d,style:{width:r,height:a},role:c?"img":void 0,"aria-label":c||void 0,"aria-description":h||void 0})]})}(0,e.registerBlockType)(a.UU,{icon:o,edit:function({attributes:e,setAttributes:s}){const{riveFileUrl:l,riveFileId:c,width:u=a.uK.VL.A,height:d=a.uK.uJ.A,enableAutoplay:f=a.uK.Li.A,respectReducedMotion:m=a.uK.lb.A,ariaLabel:p=a.uK.Y4.A,ariaDescription:v=a.uK.Em.A}=e,w=e=>{e&&e.url?s({riveFileUrl:e.url,riveFileId:e.id}):s({riveFileUrl:void 0,riveFileId:void 0})};return l?(0,i.jsxs)(i.Fragment,{children:[(0,i.jsxs)(r.InspectorControls,{children:[(0,i.jsxs)(n.__experimentalToolsPanel,{label:(0,t.__)("Settings","rive-block"),resetAll:()=>{s({width:void 0,height:void 0})},children:[(0,i.jsx)(n.__experimentalToolsPanelItem,{hasValue:()=>void 0!==u&&u!==a.uK.VL.A,label:(0,t.__)("Width","rive-block"),onDeselect:()=>s({width:void 0}),isShownByDefault:!0,children:(0,i.jsx)(n.__experimentalUnitControl,{label:(0,t.__)("Width","rive-block"),value:u,onChange:e=>s({width:e||void 0}),units:[{value:"px",label:"px"},{value:"%",label:"%"},{value:"em",label:"em"},{value:"rem",label:"rem"},{value:"vh",label:"vh"},{value:"dvw",label:"dvw"}]})}),(0,i.jsx)(n.__experimentalToolsPanelItem,{hasValue:()=>void 0!==d&&d!==a.uK.uJ.A,label:(0,t.__)("Height","rive-block"),onDeselect:()=>s({height:void 0}),isShownByDefault:!0,children:(0,i.jsx)(n.__experimentalUnitControl,{label:(0,t.__)("Height","rive-block"),value:d,onChange:e=>s({height:e||void 0}),units:[{value:"px",label:"px"},{value:"%",label:"%"},{value:"em",label:"em"},{value:"rem",label:"rem"},{value:"vh",label:"vh"},{value:"dvh",label:"dvh"}]})})]}),(0,i.jsxs)(n.PanelBody,{title:(0,t.__)("Rive File","rive-block"),children:[(0,i.jsx)("p",{children:(0,i.jsx)("strong",{children:(0,t.__)("Current file:","rive-block")})}),(0,i.jsx)("p",{style:{wordBreak:"break-all",fontSize:"12px",color:"#757575"},children:l}),(0,i.jsx)(r.MediaUploadCheck,{children:(0,i.jsx)(r.MediaUpload,{onSelect:w,allowedTypes:["application/octet-stream"],value:c,render:({open:e})=>(0,i.jsx)(n.Button,{onClick:e,variant:"secondary",__next40pxDefaultSize:!0,children:(0,t.__)("Replace Rive File","rive-block")})})})]}),(0,i.jsxs)(n.PanelBody,{title:(0,t.__)("Accessibility","rive-block"),initialOpen:!1,children:[(0,i.jsx)(n.ToggleControl,{label:(0,t.__)("Enable Autoplay","rive-block"),help:f?(0,t.__)("Animation will start automatically. Consider accessibility: users with vestibular disorders may prefer animations that don't autoplay.","rive-block"):(0,t.__)("Animation will require user interaction to play. This is the recommended setting for WCAG AAA compliance.","rive-block"),checked:f,onChange:e=>s({enableAutoplay:e})}),f&&(0,i.jsx)(n.Notice,{status:"warning",isDismissible:!1,children:(0,t.__)("Autoplay may violate WCAG AAA 2.3.3 (Animation from Interactions). Consider if this animation is essential to the user experience.","rive-block")}),(0,i.jsx)(n.ToggleControl,{label:(0,t.__)("Respect Reduced Motion Preference","rive-block"),help:(0,t.__)('Disable animation for users who have set "prefers-reduced-motion" in their system settings. Highly recommended for accessibility.',"rive-block"),checked:m,onChange:e=>s({respectReducedMotion:e})}),(0,i.jsx)(n.TextControl,{label:(0,t.__)("ARIA Label","rive-block"),help:(0,t.__)('Accessible name for screen readers. Describe what this animation represents (e.g., "Company logo animation").',"rive-block"),value:p,onChange:e=>s({ariaLabel:e}),placeholder:(0,t.__)("e.g., Hero animation","rive-block")}),(0,i.jsx)(n.TextareaControl,{label:(0,t.__)("ARIA Description","rive-block"),help:(0,t.__)("Detailed description of the animation for screen readers. Explain what happens in the animation.","rive-block"),value:v,onChange:e=>s({ariaDescription:e}),placeholder:(0,t.__)("e.g., An animated illustration showing...","rive-block"),rows:3})]})]}),(0,i.jsx)("div",{...(0,r.useBlockProps)(),children:(0,i.jsx)(h,{riveFileUrl:l,width:u,height:d,enableAutoplay:f,respectReducedMotion:m,ariaLabel:p,ariaDescription:v})})]}):(0,i.jsx)("div",{...(0,r.useBlockProps)(),children:(0,i.jsx)(r.MediaPlaceholder,{icon:(0,i.jsx)(r.BlockIcon,{icon:o}),onSelect:w,accept:".riv",allowedTypes:["application/octet-stream"],labels:{title:(0,t.__)("Choose Rive Asset","rive-block"),instructions:(0,t.__)("Upload a Rive file or choose from your Media Library.","rive-block")}})})}})}},r={};function n(e){var a=r[e];if(void 0!==a)return a.exports;var i=r[e]={exports:{}};return t[e](i,i.exports,n),i.exports}n.m=t,e=[],n.O=(t,r,a,i)=>{if(!r){var o=1/0;for(u=0;u<e.length;u++){for(var[r,a,i]=e[u],s=!0,l=0;l<r.length;l++)(!1&i||o>=i)&&Object.keys(n.O).every(e=>n.O[e](r[l]))?r.splice(l--,1):(s=!1,i<o&&(o=i));if(s){e.splice(u--,1);var c=a();void 0!==c&&(t=c)}}return t}i=i||0;for(var u=e.length;u>0&&e[u-1][2]>i;u--)e[u]=e[u-1];e[u]=[r,a,i]},n.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),(()=>{var e={750:0,898:0};n.O.j=t=>0===e[t];var t=(t,r)=>{var a,i,[o,s,l]=r,c=0;if(o.some(t=>0!==e[t])){for(a in s)n.o(s,a)&&(n.m[a]=s[a]);if(l)var u=l(n)}for(t&&t(r);c<o.length;c++)i=o[c],n.o(e,i)&&e[i]&&e[i][0](),e[i]=0;return n.O(u)},r=globalThis.webpackChunkrive_block=globalThis.webpackChunkrive_block||[];r.forEach(t.bind(null,0)),r.push=t.bind(null,r.push.bind(r))})();var a=n.O(void 0,[898],()=>n(850));a=n.O(a)})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./node_modules/@rive-app/canvas-advanced/canvas_advanced.mjs":
+/*!********************************************************************!*\
+  !*** ./node_modules/@rive-app/canvas-advanced/canvas_advanced.mjs ***!
+  \********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+
+var Rive = (() => {
+  var _scriptName = typeof document != 'undefined' ? document.currentScript?.src : undefined;
+  
+  return (
+function(moduleArg = {}) {
+  var moduleRtn;
+
+var m = moduleArg, ba, ca, da = new Promise((a, b) => {
+  ba = a;
+  ca = b;
+}), ea = "object" == typeof window, fa = "function" == typeof importScripts;
+function ha() {
+  function a(g) {
+    const k = d;
+    c = b = 0;
+    d = new Map();
+    k.forEach(p => {
+      try {
+        p(g);
+      } catch (n) {
+        console.error(n);
+      }
+    });
+    this.nb();
+    e && e.Pb();
+  }
+  let b = 0, c = 0, d = new Map(), e = null, f = null;
+  this.requestAnimationFrame = function(g) {
+    b ||= requestAnimationFrame(a.bind(this));
+    const k = ++c;
+    d.set(k, g);
+    return k;
+  };
+  this.cancelAnimationFrame = function(g) {
+    d.delete(g);
+    b && 0 == d.size && (cancelAnimationFrame(b), b = 0);
+  };
+  this.Nb = function(g) {
+    f && (document.body.remove(f), f = null);
+    g || (f = document.createElement("div"), f.style.backgroundColor = "black", f.style.position = "fixed", f.style.right = 0, f.style.top = 0, f.style.color = "white", f.style.padding = "4px", f.innerHTML = "RIVE FPS", g = function(k) {
+      f.innerHTML = "RIVE FPS " + k.toFixed(1);
+    }, document.body.appendChild(f));
+    e = new function() {
+      let k = 0, p = 0;
+      this.Pb = function() {
+        var n = performance.now();
+        p ? (++k, n -= p, 1000 < n && (g(1000 * k / n), k = p = 0)) : (p = n, k = 0);
+      };
+    }();
+  };
+  this.Kb = function() {
+    f && (document.body.remove(f), f = null);
+    e = null;
+  };
+  this.nb = function() {
+  };
+}
+function ia(a) {
+  console.assert(!0);
+  const b = new Map();
+  let c = -Infinity;
+  this.push = function(d) {
+    d = d + ((1 << a) - 1) >> a;
+    b.has(d) && clearTimeout(b.get(d));
+    b.set(d, setTimeout(function() {
+      b.delete(d);
+      0 == b.length ? c = -Infinity : d == c && (c = Math.max(...b.keys()), console.assert(c < d));
+    }, 1000));
+    c = Math.max(d, c);
+    return c << a;
+  };
+}
+const ja = m.onRuntimeInitialized;
+m.onRuntimeInitialized = function() {
+  ja && ja();
+  let a = m.decodeAudio;
+  m.decodeAudio = function(e, f) {
+    e = a(e);
+    f(e);
+  };
+  let b = m.decodeFont;
+  m.decodeFont = function(e, f) {
+    e = b(e);
+    f(e);
+  };
+  const c = m.FileAssetLoader;
+  m.ptrToAsset = e => {
+    let f = m.ptrToFileAsset(e);
+    return f.isImage ? m.ptrToImageAsset(e) : f.isFont ? m.ptrToFontAsset(e) : f.isAudio ? m.ptrToAudioAsset(e) : f;
+  };
+  m.CustomFileAssetLoader = c.extend("CustomFileAssetLoader", {__construct:function({loadContents:e}) {
+    this.__parent.__construct.call(this);
+    this.Db = e;
+  }, loadContents:function(e, f) {
+    e = m.ptrToAsset(e);
+    return this.Db(e, f);
+  },});
+  m.CDNFileAssetLoader = c.extend("CDNFileAssetLoader", {__construct:function() {
+    this.__parent.__construct.call(this);
+  }, loadContents:function(e) {
+    let f = m.ptrToAsset(e);
+    e = f.cdnUuid;
+    if ("" === e) {
+      return !1;
+    }
+    (function(g, k) {
+      var p = new XMLHttpRequest();
+      p.responseType = "arraybuffer";
+      p.onreadystatechange = function() {
+        4 == p.readyState && 200 == p.status && k(p);
+      };
+      p.open("GET", g, !0);
+      p.send(null);
+    })(f.cdnBaseUrl + "/" + e, g => {
+      f.decode(new Uint8Array(g.response));
+    });
+    return !0;
+  },});
+  m.FallbackFileAssetLoader = c.extend("FallbackFileAssetLoader", {__construct:function() {
+    this.__parent.__construct.call(this);
+    this.jb = [];
+  }, addLoader:function(e) {
+    this.jb.push(e);
+  }, loadContents:function(e, f) {
+    for (let g of this.jb) {
+      if (g.loadContents(e, f)) {
+        return !0;
+      }
+    }
+    return !1;
+  },});
+  let d = m.computeAlignment;
+  m.computeAlignment = function(e, f, g, k, p = 1.0) {
+    return d.call(this, e, f, g, k, p);
+  };
+};
+const ka = "createConicGradient createImageData createLinearGradient createPattern createRadialGradient getContextAttributes getImageData getLineDash getTransform isContextLost isPointInPath isPointInStroke measureText".split(" "), la = new function() {
+  function a() {
+    if (!b) {
+      var l = document.createElement("canvas"), u = {alpha:1, depth:0, stencil:0, antialias:0, premultipliedAlpha:1, preserveDrawingBuffer:0, powerPreference:"high-performance", failIfMajorPerformanceCaveat:0, enableExtensionsByDefault:1, explicitSwapControl:1, renderViaOffscreenBackBuffer:1,};
+      let q;
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        if (q = l.getContext("webgl", u), c = 1, !q) {
+          return console.log("No WebGL support. Image mesh will not be drawn."), !1;
+        }
+      } else {
+        if (q = l.getContext("webgl2", u)) {
+          c = 2;
+        } else {
+          if (q = l.getContext("webgl", u)) {
+            c = 1;
+          } else {
+            return console.log("No WebGL support. Image mesh will not be drawn."), !1;
+          }
+        }
+      }
+      q = new Proxy(q, {get(E, w) {
+        if (E.isContextLost()) {
+          if (p || (console.error("Cannot render the mesh because the GL Context was lost. Tried to invoke ", w), p = !0), "function" === typeof E[w]) {
+            return function() {
+            };
+          }
+        } else {
+          return "function" === typeof E[w] ? function(...L) {
+            return E[w].apply(E, L);
+          } : E[w];
+        }
+      }, set(E, w, L) {
+        if (E.isContextLost()) {
+          p || (console.error("Cannot render the mesh because the GL Context was lost. Tried to set property " + w), p = !0);
+        } else {
+          return E[w] = L, !0;
+        }
+      },});
+      d = Math.min(q.getParameter(q.MAX_RENDERBUFFER_SIZE), q.getParameter(q.MAX_TEXTURE_SIZE));
+      function C(E, w, L) {
+        w = q.createShader(w);
+        q.shaderSource(w, L);
+        q.compileShader(w);
+        L = q.getShaderInfoLog(w);
+        if (0 < (L || "").length) {
+          throw L;
+        }
+        q.attachShader(E, w);
+      }
+      l = q.createProgram();
+      C(l, q.VERTEX_SHADER, "attribute vec2 vertex;\n                attribute vec2 uv;\n                uniform vec4 mat;\n                uniform vec2 translate;\n                varying vec2 st;\n                void main() {\n                    st = uv;\n                    gl_Position = vec4(mat2(mat) * vertex + translate, 0, 1);\n                }");
+      C(l, q.FRAGMENT_SHADER, "precision highp float;\n                uniform sampler2D image;\n                varying vec2 st;\n                void main() {\n                    gl_FragColor = texture2D(image, st);\n                }");
+      q.bindAttribLocation(l, 0, "vertex");
+      q.bindAttribLocation(l, 1, "uv");
+      q.linkProgram(l);
+      u = q.getProgramInfoLog(l);
+      if (0 < (u || "").trim().length) {
+        throw u;
+      }
+      e = q.getUniformLocation(l, "mat");
+      f = q.getUniformLocation(l, "translate");
+      q.useProgram(l);
+      q.bindBuffer(q.ARRAY_BUFFER, q.createBuffer());
+      q.enableVertexAttribArray(0);
+      q.enableVertexAttribArray(1);
+      q.bindBuffer(q.ELEMENT_ARRAY_BUFFER, q.createBuffer());
+      q.uniform1i(q.getUniformLocation(l, "image"), 0);
+      q.pixelStorei(q.UNPACK_PREMULTIPLY_ALPHA_WEBGL, !0);
+      b = q;
+    }
+    return !0;
+  }
+  let b = null, c = 0, d = 0, e = null, f = null, g = 0, k = 0, p = !1;
+  a();
+  this.ac = function() {
+    a();
+    return d;
+  };
+  this.Jb = function(l) {
+    b.deleteTexture && b.deleteTexture(l);
+  };
+  this.Ib = function(l) {
+    if (!a()) {
+      return null;
+    }
+    const u = b.createTexture();
+    if (!u) {
+      return null;
+    }
+    b.bindTexture(b.TEXTURE_2D, u);
+    b.texImage2D(b.TEXTURE_2D, 0, b.RGBA, b.RGBA, b.UNSIGNED_BYTE, l);
+    b.texParameteri(b.TEXTURE_2D, b.TEXTURE_WRAP_S, b.CLAMP_TO_EDGE);
+    b.texParameteri(b.TEXTURE_2D, b.TEXTURE_WRAP_T, b.CLAMP_TO_EDGE);
+    b.texParameteri(b.TEXTURE_2D, b.TEXTURE_MAG_FILTER, b.LINEAR);
+    2 == c ? (b.texParameteri(b.TEXTURE_2D, b.TEXTURE_MIN_FILTER, b.LINEAR_MIPMAP_LINEAR), b.generateMipmap(b.TEXTURE_2D)) : b.texParameteri(b.TEXTURE_2D, b.TEXTURE_MIN_FILTER, b.LINEAR);
+    return u;
+  };
+  const n = new ia(8), t = new ia(8), x = new ia(10), y = new ia(10);
+  this.Mb = function(l, u, q, C, E) {
+    if (a()) {
+      var w = n.push(l), L = t.push(u);
+      if (b.canvas) {
+        if (b.canvas.width != w || b.canvas.height != L) {
+          b.canvas.width = w, b.canvas.height = L;
+        }
+        b.viewport(0, L - u, l, u);
+        b.disable(b.SCISSOR_TEST);
+        b.clearColor(0, 0, 0, 0);
+        b.clear(b.COLOR_BUFFER_BIT);
+        b.enable(b.SCISSOR_TEST);
+        q.sort((H, aa) => aa.ub - H.ub);
+        w = x.push(C);
+        g != w && (b.bufferData(b.ARRAY_BUFFER, 8 * w, b.DYNAMIC_DRAW), g = w);
+        w = 0;
+        for (var R of q) {
+          b.bufferSubData(b.ARRAY_BUFFER, w, R.Sa), w += 4 * R.Sa.length;
+        }
+        console.assert(w == 4 * C);
+        for (var W of q) {
+          b.bufferSubData(b.ARRAY_BUFFER, w, W.Ab), w += 4 * W.Ab.length;
+        }
+        console.assert(w == 8 * C);
+        w = y.push(E);
+        k != w && (b.bufferData(b.ELEMENT_ARRAY_BUFFER, 2 * w, b.DYNAMIC_DRAW), k = w);
+        R = 0;
+        for (var pa of q) {
+          b.bufferSubData(b.ELEMENT_ARRAY_BUFFER, R, pa.indices), R += 2 * pa.indices.length;
+        }
+        console.assert(R == 2 * E);
+        pa = 0;
+        W = !0;
+        w = R = 0;
+        for (const H of q) {
+          H.image.Ia != pa && (b.bindTexture(b.TEXTURE_2D, H.image.Ha || null), pa = H.image.Ia);
+          H.fc ? (b.scissor(H.Ya, L - H.Za - H.ib, H.tc, H.ib), W = !0) : W && (b.scissor(0, L - u, l, u), W = !1);
+          q = 2 / l;
+          const aa = -2 / u;
+          b.uniform4f(e, H.ga[0] * q * H.za, H.ga[1] * aa * H.Aa, H.ga[2] * q * H.za, H.ga[3] * aa * H.Aa);
+          b.uniform2f(f, H.ga[4] * q * H.za + q * (H.Ya - H.bc * H.za) - 1, H.ga[5] * aa * H.Aa + aa * (H.Za - H.cc * H.Aa) + 1);
+          b.vertexAttribPointer(0, 2, b.FLOAT, !1, 0, w);
+          b.vertexAttribPointer(1, 2, b.FLOAT, !1, 0, w + 4 * C);
+          b.drawElements(b.TRIANGLES, H.indices.length, b.UNSIGNED_SHORT, R);
+          w += 4 * H.Sa.length;
+          R += 2 * H.indices.length;
+        }
+        console.assert(w == 4 * C);
+        console.assert(R == 2 * E);
+      }
+    }
+  };
+  this.canvas = function() {
+    return a() && b.canvas;
+  };
+}(), ma = m.onRuntimeInitialized;
+m.onRuntimeInitialized = function() {
+  function a(r) {
+    switch(r) {
+      case n.srcOver:
+        return "source-over";
+      case n.screen:
+        return "screen";
+      case n.overlay:
+        return "overlay";
+      case n.darken:
+        return "darken";
+      case n.lighten:
+        return "lighten";
+      case n.colorDodge:
+        return "color-dodge";
+      case n.colorBurn:
+        return "color-burn";
+      case n.hardLight:
+        return "hard-light";
+      case n.softLight:
+        return "soft-light";
+      case n.difference:
+        return "difference";
+      case n.exclusion:
+        return "exclusion";
+      case n.multiply:
+        return "multiply";
+      case n.hue:
+        return "hue";
+      case n.saturation:
+        return "saturation";
+      case n.color:
+        return "color";
+      case n.luminosity:
+        return "luminosity";
+    }
+  }
+  function b(r) {
+    return "rgba(" + ((16711680 & r) >>> 16) + "," + ((65280 & r) >>> 8) + "," + ((255 & r) >>> 0) + "," + ((4278190080 & r) >>> 24) / 255 + ")";
+  }
+  function c() {
+    0 < L.length && (la.Mb(w.drawWidth(), w.drawHeight(), L, R, W), L = [], W = R = 0, w.reset(512, 512));
+    for (const r of E) {
+      for (const v of r.H) {
+        v();
+      }
+      r.H = [];
+    }
+    E.clear();
+  }
+  ma && ma();
+  var d = m.RenderPaintStyle;
+  const e = m.RenderPath, f = m.RenderPaint, g = m.Renderer, k = m.StrokeCap, p = m.StrokeJoin, n = m.BlendMode, t = d.fill, x = d.stroke, y = m.FillRule.evenOdd;
+  let l = 1;
+  var u = m.RenderImage.extend("CanvasRenderImage", {__construct:function({ka:r, va:v} = {}) {
+    this.__parent.__construct.call(this);
+    this.Ia = l;
+    l = l + 1 & 2147483647 || 1;
+    this.ka = r;
+    this.va = v;
+  }, __destruct:function() {
+    this.Ha && (la.Jb(this.Ha), URL.revokeObjectURL(this.Va));
+    this.__parent.__destruct.call(this);
+  }, decode:function(r) {
+    var v = this;
+    v.va && v.va(v);
+    var F = new Image();
+    v.Va = URL.createObjectURL(new Blob([r], {type:"image/png",}));
+    F.onload = function() {
+      v.Cb = F;
+      v.Ha = la.Ib(F);
+      v.size(F.width, F.height);
+      v.ka && v.ka(v);
+    };
+    F.src = v.Va;
+  },}), q = e.extend("CanvasRenderPath", {__construct:function() {
+    this.__parent.__construct.call(this);
+    this.T = new Path2D();
+  }, rewind:function() {
+    this.T = new Path2D();
+  }, addPath:function(r, v, F, I, B, G, J) {
+    var K = this.T, Z = K.addPath;
+    r = r.T;
+    const S = new DOMMatrix();
+    S.a = v;
+    S.b = F;
+    S.c = I;
+    S.d = B;
+    S.e = G;
+    S.f = J;
+    Z.call(K, r, S);
+  }, fillRule:function(r) {
+    this.Ua = r;
+  }, moveTo:function(r, v) {
+    this.T.moveTo(r, v);
+  }, lineTo:function(r, v) {
+    this.T.lineTo(r, v);
+  }, cubicTo:function(r, v, F, I, B, G) {
+    this.T.bezierCurveTo(r, v, F, I, B, G);
+  }, close:function() {
+    this.T.closePath();
+  },}), C = f.extend("CanvasRenderPaint", {color:function(r) {
+    this.Wa = b(r);
+  }, thickness:function(r) {
+    this.Fb = r;
+  }, join:function(r) {
+    switch(r) {
+      case p.miter:
+        this.Ga = "miter";
+        break;
+      case p.round:
+        this.Ga = "round";
+        break;
+      case p.bevel:
+        this.Ga = "bevel";
+    }
+  }, cap:function(r) {
+    switch(r) {
+      case k.butt:
+        this.Fa = "butt";
+        break;
+      case k.round:
+        this.Fa = "round";
+        break;
+      case k.square:
+        this.Fa = "square";
+    }
+  }, style:function(r) {
+    this.Eb = r;
+  }, blendMode:function(r) {
+    this.Bb = a(r);
+  }, clearGradient:function() {
+    this.ia = null;
+  }, linearGradient:function(r, v, F, I) {
+    this.ia = {wb:r, xb:v, bb:F, cb:I, Pa:[],};
+  }, radialGradient:function(r, v, F, I) {
+    this.ia = {wb:r, xb:v, bb:F, cb:I, Pa:[], $b:!0,};
+  }, addStop:function(r, v) {
+    this.ia.Pa.push({color:r, stop:v,});
+  }, completeGradient:function() {
+  }, draw:function(r, v, F) {
+    let I = this.Eb;
+    var B = this.Wa, G = this.ia;
+    r.globalCompositeOperation = this.Bb;
+    if (null != G) {
+      B = G.wb;
+      var J = G.xb;
+      const Z = G.bb;
+      var K = G.cb;
+      const S = G.Pa;
+      G.$b ? (G = Z - B, K -= J, B = r.createRadialGradient(B, J, 0, B, J, Math.sqrt(G * G + K * K))) : B = r.createLinearGradient(B, J, Z, K);
+      for (let Y = 0, T = S.length; Y < T; Y++) {
+        J = S[Y], B.addColorStop(J.stop, b(J.color));
+      }
+      this.Wa = B;
+      this.ia = null;
+    }
+    switch(I) {
+      case x:
+        r.strokeStyle = B;
+        r.lineWidth = this.Fb;
+        r.lineCap = this.Fa;
+        r.lineJoin = this.Ga;
+        r.stroke(v);
+        break;
+      case t:
+        r.fillStyle = B, r.fill(v, F);
+    }
+  },});
+  const E = new Set();
+  let w = null, L = [], R = 0, W = 0;
+  var pa = m.CanvasRenderer = g.extend("Renderer", {__construct:function(r) {
+    this.__parent.__construct.call(this);
+    this.S = [1, 0, 0, 1, 0, 0];
+    this.B = r.getContext("2d");
+    this.Ta = r;
+    this.H = [];
+  }, save:function() {
+    this.S.push(...this.S.slice(this.S.length - 6));
+    this.H.push(this.B.save.bind(this.B));
+  }, restore:function() {
+    const r = this.S.length - 6;
+    if (6 > r) {
+      throw "restore() called without matching save().";
+    }
+    this.S.splice(r);
+    this.H.push(this.B.restore.bind(this.B));
+  }, transform:function(r, v, F, I, B, G) {
+    const J = this.S, K = J.length - 6;
+    J.splice(K, 6, J[K] * r + J[K + 2] * v, J[K + 1] * r + J[K + 3] * v, J[K] * F + J[K + 2] * I, J[K + 1] * F + J[K + 3] * I, J[K] * B + J[K + 2] * G + J[K + 4], J[K + 1] * B + J[K + 3] * G + J[K + 5]);
+    this.H.push(this.B.transform.bind(this.B, r, v, F, I, B, G));
+  }, rotate:function(r) {
+    const v = Math.sin(r);
+    r = Math.cos(r);
+    this.transform(r, v, -v, r, 0, 0);
+  }, _drawPath:function(r, v) {
+    this.H.push(v.draw.bind(v, this.B, r.T, r.Ua === y ? "evenodd" : "nonzero"));
+  }, _drawRiveImage:function(r, v, F, I) {
+    var B = r.Cb;
+    if (B) {
+      var G = this.B, J = a(F);
+      this.H.push(function() {
+        G.globalCompositeOperation = J;
+        G.globalAlpha = I;
+        G.drawImage(B, 0, 0);
+        G.globalAlpha = 1;
+      });
+    }
+  }, _getMatrix:function(r) {
+    const v = this.S, F = v.length - 6;
+    for (let I = 0; 6 > I; ++I) {
+      r[I] = v[F + I];
+    }
+  }, _drawImageMesh:function(r, v, F, I, B, G, J, K, Z, S, Y) {
+    v = this.B.canvas.width;
+    var T = this.B.canvas.height;
+    const Wb = S - K, Xb = Y - Z;
+    K = Math.max(K, 0);
+    Z = Math.max(Z, 0);
+    S = Math.min(S, v);
+    Y = Math.min(Y, T);
+    const Da = S - K, Ea = Y - Z;
+    console.assert(Da <= Math.min(Wb, v));
+    console.assert(Ea <= Math.min(Xb, T));
+    if (!(0 >= Da || 0 >= Ea)) {
+      S = Da < Wb || Ea < Xb;
+      v = Y = 1;
+      var qa = Math.ceil(Da * Y), ra = Math.ceil(Ea * v);
+      T = la.ac();
+      qa > T && (Y *= T / qa, qa = T);
+      ra > T && (v *= T / ra, ra = T);
+      w || (w = new m.DynamicRectanizer(T), w.reset(512, 512));
+      T = w.addRect(qa, ra);
+      0 > T && (c(), E.add(this), T = w.addRect(qa, ra), console.assert(0 <= T));
+      var Yb = T & 65535, Zb = T >> 16;
+      L.push({ga:this.S.slice(this.S.length - 6), image:r, Ya:Yb, Za:Zb, bc:K, cc:Z, tc:qa, ib:ra, za:Y, Aa:v, Sa:new Float32Array(B), Ab:new Float32Array(G), indices:new Uint16Array(J), fc:S, ub:r.Ia << 1 | (S ? 1 : 0),});
+      R += B.length;
+      W += J.length;
+      var xa = this.B, kd = a(F);
+      this.H.push(function() {
+        xa.save();
+        xa.resetTransform();
+        xa.globalCompositeOperation = kd;
+        xa.globalAlpha = I;
+        const $b = la.canvas();
+        $b && xa.drawImage($b, Yb, Zb, qa, ra, K, Z, Da, Ea);
+        xa.restore();
+      });
+    }
+  }, _clipPath:function(r) {
+    this.H.push(this.B.clip.bind(this.B, r.T, r.Ua === y ? "evenodd" : "nonzero"));
+  }, clear:function() {
+    E.add(this);
+    this.H.push(this.B.clearRect.bind(this.B, 0, 0, this.Ta.width, this.Ta.height));
+  }, flush:function() {
+  }, translate:function(r, v) {
+    this.transform(1, 0, 0, 1, r, v);
+  },});
+  m.makeRenderer = function(r) {
+    const v = new pa(r), F = v.B;
+    return new Proxy(v, {get(I, B) {
+      if ("function" === typeof I[B]) {
+        return function(...G) {
+          return I[B].apply(I, G);
+        };
+      }
+      if ("function" === typeof F[B]) {
+        if (-1 < ka.indexOf(B)) {
+          throw Error("RiveException: Method call to '" + B + "()' is not allowed, as the renderer cannot immediately pass through the return                 values of any canvas 2d context methods.");
+        }
+        return function(...G) {
+          v.H.push(F[B].bind(F, ...G));
+        };
+      }
+      return I[B];
+    }, set(I, B, G) {
+      if (B in F) {
+        return v.H.push(() => {
+          F[B] = G;
+        }), !0;
+      }
+    },});
+  };
+  m.decodeImage = function(r, v) {
+    (new u({ka:v})).decode(r);
+  };
+  m.renderFactory = {makeRenderPaint:function() {
+    return new C();
+  }, makeRenderPath:function() {
+    return new q();
+  }, makeRenderImage:function() {
+    let r = aa;
+    return new u({va:() => {
+      r.total++;
+    }, ka:() => {
+      r.loaded++;
+      if (r.loaded === r.total) {
+        const v = r.ready;
+        v && (v(), r.ready = null);
+      }
+    },});
+  },};
+  let H = m.load, aa = null;
+  m.load = function(r, v, F = !0) {
+    const I = new m.FallbackFileAssetLoader();
+    void 0 !== v && I.addLoader(v);
+    F && (v = new m.CDNFileAssetLoader(), I.addLoader(v));
+    return new Promise(function(B) {
+      let G = null;
+      aa = {total:0, loaded:0, ready:function() {
+        B(G);
+      },};
+      G = H(r, I);
+      0 == aa.total && B(G);
+    });
+  };
+  let ld = m.RendererWrapper.prototype.align;
+  m.RendererWrapper.prototype.align = function(r, v, F, I, B = 1.0) {
+    ld.call(this, r, v, F, I, B);
+  };
+  d = new ha();
+  m.requestAnimationFrame = d.requestAnimationFrame.bind(d);
+  m.cancelAnimationFrame = d.cancelAnimationFrame.bind(d);
+  m.enableFPSCounter = d.Nb.bind(d);
+  m.disableFPSCounter = d.Kb;
+  d.nb = c;
+  m.resolveAnimationFrame = c;
+  m.cleanup = function() {
+    w && w.delete();
+  };
+};
+var na = Object.assign({}, m), oa = "./this.program", sa = "", ta, ua;
+if (ea || fa) {
+  fa ? sa = self.location.href : "undefined" != typeof document && document.currentScript && (sa = document.currentScript.src), _scriptName && (sa = _scriptName), sa.startsWith("blob:") ? sa = "" : sa = sa.substr(0, sa.replace(/[?#].*/, "").lastIndexOf("/") + 1), fa && (ua = a => {
+    var b = new XMLHttpRequest();
+    b.open("GET", a, !1);
+    b.responseType = "arraybuffer";
+    b.send(null);
+    return new Uint8Array(b.response);
+  }), ta = (a, b, c) => {
+    if (va(a)) {
+      var d = new XMLHttpRequest();
+      d.open("GET", a, !0);
+      d.responseType = "arraybuffer";
+      d.onload = () => {
+        200 == d.status || 0 == d.status && d.response ? b(d.response) : c();
+      };
+      d.onerror = c;
+      d.send(null);
+    } else {
+      fetch(a, {credentials:"same-origin"}).then(e => e.ok ? e.arrayBuffer() : Promise.reject(Error(e.status + " : " + e.url))).then(b, c);
+    }
+  };
+}
+var wa = m.print || console.log.bind(console), ya = m.printErr || console.error.bind(console);
+Object.assign(m, na);
+na = null;
+m.thisProgram && (oa = m.thisProgram);
+var za;
+m.wasmBinary && (za = m.wasmBinary);
+var Aa, Ba = !1, z, A, Ca, Fa, D, M, Ga, Ha;
+function Ia() {
+  var a = Aa.buffer;
+  m.HEAP8 = z = new Int8Array(a);
+  m.HEAP16 = Ca = new Int16Array(a);
+  m.HEAPU8 = A = new Uint8Array(a);
+  m.HEAPU16 = Fa = new Uint16Array(a);
+  m.HEAP32 = D = new Int32Array(a);
+  m.HEAPU32 = M = new Uint32Array(a);
+  m.HEAPF32 = Ga = new Float32Array(a);
+  m.HEAPF64 = Ha = new Float64Array(a);
+}
+var Ja = [], Ka = [], La = [];
+function Ma() {
+  var a = m.preRun.shift();
+  Ja.unshift(a);
+}
+var Na = 0, Oa = null, Pa = null;
+function Qa(a) {
+  m.onAbort?.(a);
+  a = "Aborted(" + a + ")";
+  ya(a);
+  Ba = !0;
+  a = new WebAssembly.RuntimeError(a + ". Build with -sASSERTIONS for more info.");
+  ca(a);
+  throw a;
+}
+var Ra = a => a.startsWith("data:application/octet-stream;base64,"), va = a => a.startsWith("file://"), Sa;
+function Ta(a) {
+  if (a == Sa && za) {
+    return new Uint8Array(za);
+  }
+  if (ua) {
+    return ua(a);
+  }
+  throw "both async and sync fetching of the wasm failed";
+}
+function Ua(a) {
+  return za ? Promise.resolve().then(() => Ta(a)) : new Promise((b, c) => {
+    ta(a, d => b(new Uint8Array(d)), () => {
+      try {
+        b(Ta(a));
+      } catch (d) {
+        c(d);
+      }
+    });
+  });
+}
+function Va(a, b, c) {
+  return Ua(a).then(d => WebAssembly.instantiate(d, b)).then(c, d => {
+    ya(`failed to asynchronously prepare wasm: ${d}`);
+    Qa(d);
+  });
+}
+function Wa(a, b) {
+  var c = Sa;
+  return za || "function" != typeof WebAssembly.instantiateStreaming || Ra(c) || va(c) || "function" != typeof fetch ? Va(c, a, b) : fetch(c, {credentials:"same-origin"}).then(d => WebAssembly.instantiateStreaming(d, a).then(b, function(e) {
+    ya(`wasm streaming compile failed: ${e}`);
+    ya("falling back to ArrayBuffer instantiation");
+    return Va(c, a, b);
+  }));
+}
+var Xa, Ya, bb = {464448:(a, b, c, d, e) => {
+  if ("undefined" === typeof window || void 0 === (window.AudioContext || window.webkitAudioContext)) {
+    return 0;
+  }
+  if ("undefined" === typeof window.h) {
+    window.h = {ya:0};
+    window.h.I = {};
+    window.h.I.wa = a;
+    window.h.I.capture = b;
+    window.h.I.Ja = c;
+    window.h.fa = {};
+    window.h.fa.stopped = d;
+    window.h.fa.vb = e;
+    let f = window.h;
+    f.D = [];
+    f.rc = function(g) {
+      for (var k = 0; k < f.D.length; ++k) {
+        if (null == f.D[k]) {
+          return f.D[k] = g, k;
+        }
+      }
+      f.D.push(g);
+      return f.D.length - 1;
+    };
+    f.zb = function(g) {
+      for (f.D[g] = null; 0 < f.D.length;) {
+        if (null == f.D[f.D.length - 1]) {
+          f.D.pop();
+        } else {
+          break;
+        }
+      }
+    };
+    f.Oc = function(g) {
+      for (var k = 0; k < f.D.length; ++k) {
+        if (f.D[k] == g) {
+          return f.zb(k);
+        }
+      }
+    };
+    f.pa = function(g) {
+      return f.D[g];
+    };
+    f.Ra = ["touchend", "click"];
+    f.unlock = function() {
+      for (var g = 0; g < f.D.length; ++g) {
+        var k = f.D[g];
+        null != k && null != k.K && k.state === f.fa.vb && k.K.resume().then(() => {
+          Za(k.ob);
+        }, p => {
+          console.error("Failed to resume audiocontext", p);
+        });
+      }
+      f.Ra.map(function(p) {
+        document.removeEventListener(p, f.unlock, !0);
+      });
+    };
+    f.Ra.map(function(g) {
+      document.addEventListener(g, f.unlock, !0);
+    });
+  }
+  window.h.ya += 1;
+  return 1;
+}, 466626:() => {
+  "undefined" !== typeof window.h && (window.h.Ra.map(function(a) {
+    document.removeEventListener(a, window.h.unlock, !0);
+  }), --window.h.ya, 0 === window.h.ya && delete window.h);
+}, 466930:() => void 0 !== navigator.mediaDevices && void 0 !== navigator.mediaDevices.getUserMedia, 467034:() => {
+  try {
+    var a = new (window.AudioContext || window.webkitAudioContext)(), b = a.sampleRate;
+    a.close();
+    return b;
+  } catch (c) {
+    return 0;
+  }
+}, 467205:(a, b, c, d, e, f) => {
+  if ("undefined" === typeof window.h) {
+    return -1;
+  }
+  var g = {}, k = {};
+  a == window.h.I.wa && 0 != c && (k.sampleRate = c);
+  g.K = new (window.AudioContext || window.webkitAudioContext)(k);
+  g.K.suspend();
+  g.state = window.h.fa.stopped;
+  c = 0;
+  a != window.h.I.wa && (c = b);
+  g.Y = g.K.createScriptProcessor(d, c, b);
+  g.Y.onaudioprocess = function(p) {
+    if (null == g.qa || 0 == g.qa.length) {
+      g.qa = new Float32Array(Ga.buffer, e, d * b);
+    }
+    if (a == window.h.I.capture || a == window.h.I.Ja) {
+      for (var n = 0; n < b; n += 1) {
+        for (var t = p.inputBuffer.getChannelData(n), x = g.qa, y = 0; y < d; y += 1) {
+          x[y * b + n] = t[y];
+        }
+      }
+      $a(f, d, e);
+    }
+    if (a == window.h.I.wa || a == window.h.I.Ja) {
+      for (ab(f, d, e), n = 0; n < p.outputBuffer.numberOfChannels; ++n) {
+        for (t = p.outputBuffer.getChannelData(n), x = g.qa, y = 0; y < d; y += 1) {
+          t[y] = x[y * b + n];
+        }
+      }
+    } else {
+      for (n = 0; n < p.outputBuffer.numberOfChannels; ++n) {
+        p.outputBuffer.getChannelData(n).fill(0.0);
+      }
+    }
+  };
+  a != window.h.I.capture && a != window.h.I.Ja || navigator.mediaDevices.getUserMedia({audio:!0, video:!1}).then(function(p) {
+    g.Ba = g.K.createMediaStreamSource(p);
+    g.Ba.connect(g.Y);
+    g.Y.connect(g.K.destination);
+  }).catch(function(p) {
+    console.log("Failed to get user media: " + p);
+  });
+  a == window.h.I.wa && g.Y.connect(g.K.destination);
+  g.ob = f;
+  return window.h.rc(g);
+}, 470082:a => window.h.pa(a).K.sampleRate, 470155:a => {
+  a = window.h.pa(a);
+  void 0 !== a.Y && (a.Y.onaudioprocess = function() {
+  }, a.Y.disconnect(), a.Y = void 0);
+  void 0 !== a.Ba && (a.Ba.disconnect(), a.Ba = void 0);
+  a.K.close();
+  a.K = void 0;
+  a.ob = void 0;
+}, 470555:a => {
+  window.h.zb(a);
+}, 470605:a => {
+  a = window.h.pa(a);
+  a.K.resume();
+  a.state = window.h.fa.vb;
+}, 470744:a => {
+  a = window.h.pa(a);
+  a.K.suspend();
+  a.state = window.h.fa.stopped;
+}}, cb = a => {
+  for (; 0 < a.length;) {
+    a.shift()(m);
+  }
+};
+function db() {
+  var a = D[+eb >> 2];
+  eb += 4;
+  return a;
+}
+var fb = (a, b) => {
+  for (var c = 0, d = a.length - 1; 0 <= d; d--) {
+    var e = a[d];
+    "." === e ? a.splice(d, 1) : ".." === e ? (a.splice(d, 1), c++) : c && (a.splice(d, 1), c--);
+  }
+  if (b) {
+    for (; c; c--) {
+      a.unshift("..");
+    }
+  }
+  return a;
+}, gb = a => {
+  var b = "/" === a.charAt(0), c = "/" === a.substr(-1);
+  (a = fb(a.split("/").filter(d => !!d), !b).join("/")) || b || (a = ".");
+  a && c && (a += "/");
+  return (b ? "/" : "") + a;
+}, hb = a => {
+  var b = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/.exec(a).slice(1);
+  a = b[0];
+  b = b[1];
+  if (!a && !b) {
+    return ".";
+  }
+  b &&= b.substr(0, b.length - 1);
+  return a + b;
+}, ib = a => {
+  if ("/" === a) {
+    return "/";
+  }
+  a = gb(a);
+  a = a.replace(/\/$/, "");
+  var b = a.lastIndexOf("/");
+  return -1 === b ? a : a.substr(b + 1);
+}, jb = () => {
+  if ("object" == typeof crypto && "function" == typeof crypto.getRandomValues) {
+    return a => crypto.getRandomValues(a);
+  }
+  Qa("initRandomDevice");
+}, kb = a => (kb = jb())(a), lb = (...a) => {
+  for (var b = "", c = !1, d = a.length - 1; -1 <= d && !c; d--) {
+    c = 0 <= d ? a[d] : "/";
+    if ("string" != typeof c) {
+      throw new TypeError("Arguments to path.resolve must be strings");
+    }
+    if (!c) {
+      return "";
+    }
+    b = c + "/" + b;
+    c = "/" === c.charAt(0);
+  }
+  b = fb(b.split("/").filter(e => !!e), !c).join("/");
+  return (c ? "/" : "") + b || ".";
+}, mb = "undefined" != typeof TextDecoder ? new TextDecoder("utf8") : void 0, nb = (a, b, c) => {
+  var d = b + c;
+  for (c = b; a[c] && !(c >= d);) {
+    ++c;
+  }
+  if (16 < c - b && a.buffer && mb) {
+    return mb.decode(a.subarray(b, c));
+  }
+  for (d = ""; b < c;) {
+    var e = a[b++];
+    if (e & 128) {
+      var f = a[b++] & 63;
+      if (192 == (e & 224)) {
+        d += String.fromCharCode((e & 31) << 6 | f);
+      } else {
+        var g = a[b++] & 63;
+        e = 224 == (e & 240) ? (e & 15) << 12 | f << 6 | g : (e & 7) << 18 | f << 12 | g << 6 | a[b++] & 63;
+        65536 > e ? d += String.fromCharCode(e) : (e -= 65536, d += String.fromCharCode(55296 | e >> 10, 56320 | e & 1023));
+      }
+    } else {
+      d += String.fromCharCode(e);
+    }
+  }
+  return d;
+}, ob = [], pb = a => {
+  for (var b = 0, c = 0; c < a.length; ++c) {
+    var d = a.charCodeAt(c);
+    127 >= d ? b++ : 2047 >= d ? b += 2 : 55296 <= d && 57343 >= d ? (b += 4, ++c) : b += 3;
+  }
+  return b;
+}, qb = (a, b, c, d) => {
+  if (!(0 < d)) {
+    return 0;
+  }
+  var e = c;
+  d = c + d - 1;
+  for (var f = 0; f < a.length; ++f) {
+    var g = a.charCodeAt(f);
+    if (55296 <= g && 57343 >= g) {
+      var k = a.charCodeAt(++f);
+      g = 65536 + ((g & 1023) << 10) | k & 1023;
+    }
+    if (127 >= g) {
+      if (c >= d) {
+        break;
+      }
+      b[c++] = g;
+    } else {
+      if (2047 >= g) {
+        if (c + 1 >= d) {
+          break;
+        }
+        b[c++] = 192 | g >> 6;
+      } else {
+        if (65535 >= g) {
+          if (c + 2 >= d) {
+            break;
+          }
+          b[c++] = 224 | g >> 12;
+        } else {
+          if (c + 3 >= d) {
+            break;
+          }
+          b[c++] = 240 | g >> 18;
+          b[c++] = 128 | g >> 12 & 63;
+        }
+        b[c++] = 128 | g >> 6 & 63;
+      }
+      b[c++] = 128 | g & 63;
+    }
+  }
+  b[c] = 0;
+  return c - e;
+};
+function rb(a, b) {
+  var c = Array(pb(a) + 1);
+  a = qb(a, c, 0, c.length);
+  b && (c.length = a);
+  return c;
+}
+var sb = [];
+function tb(a, b) {
+  sb[a] = {input:[], G:[], V:b};
+  ub(a, vb);
+}
+var vb = {open(a) {
+  var b = sb[a.node.xa];
+  if (!b) {
+    throw new N(43);
+  }
+  a.s = b;
+  a.seekable = !1;
+}, close(a) {
+  a.s.V.oa(a.s);
+}, oa(a) {
+  a.s.V.oa(a.s);
+}, read(a, b, c, d) {
+  if (!a.s || !a.s.V.hb) {
+    throw new N(60);
+  }
+  for (var e = 0, f = 0; f < d; f++) {
+    try {
+      var g = a.s.V.hb(a.s);
+    } catch (k) {
+      throw new N(29);
+    }
+    if (void 0 === g && 0 === e) {
+      throw new N(6);
+    }
+    if (null === g || void 0 === g) {
+      break;
+    }
+    e++;
+    b[c + f] = g;
+  }
+  e && (a.node.timestamp = Date.now());
+  return e;
+}, write(a, b, c, d) {
+  if (!a.s || !a.s.V.Ma) {
+    throw new N(60);
+  }
+  try {
+    for (var e = 0; e < d; e++) {
+      a.s.V.Ma(a.s, b[c + e]);
+    }
+  } catch (f) {
+    throw new N(29);
+  }
+  d && (a.node.timestamp = Date.now());
+  return e;
+},}, wb = {hb() {
+  a: {
+    if (!ob.length) {
+      var a = null;
+      "undefined" != typeof window && "function" == typeof window.prompt && (a = window.prompt("Input: "), null !== a && (a += "\n"));
+      if (!a) {
+        a = null;
+        break a;
+      }
+      ob = rb(a, !0);
+    }
+    a = ob.shift();
+  }
+  return a;
+}, Ma(a, b) {
+  null === b || 10 === b ? (wa(nb(a.G, 0)), a.G = []) : 0 != b && a.G.push(b);
+}, oa(a) {
+  a.G && 0 < a.G.length && (wa(nb(a.G, 0)), a.G = []);
+}, Xb() {
+  return {zc:25856, Bc:5, yc:191, Ac:35387, xc:[3, 28, 127, 21, 4, 0, 1, 0, 17, 19, 26, 0, 18, 15, 23, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]};
+}, Yb() {
+  return 0;
+}, Zb() {
+  return [24, 80];
+},}, xb = {Ma(a, b) {
+  null === b || 10 === b ? (ya(nb(a.G, 0)), a.G = []) : 0 != b && a.G.push(b);
+}, oa(a) {
+  a.G && 0 < a.G.length && (ya(nb(a.G, 0)), a.G = []);
+},};
+function yb(a, b) {
+  var c = a.l ? a.l.length : 0;
+  c >= b || (b = Math.max(b, c * (1048576 > c ? 2.0 : 1.125) >>> 0), 0 != c && (b = Math.max(b, 256)), c = a.l, a.l = new Uint8Array(b), 0 < a.v && a.l.set(c.subarray(0, a.v), 0));
+}
+var O = {N:null, U() {
+  return O.createNode(null, "/", 16895, 0);
+}, createNode(a, b, c, d) {
+  if (24576 === (c & 61440) || 4096 === (c & 61440)) {
+    throw new N(63);
+  }
+  O.N || (O.N = {dir:{node:{X:O.j.X, P:O.j.P, ja:O.j.ja, ta:O.j.ta, sb:O.j.sb, yb:O.j.yb, tb:O.j.tb, rb:O.j.rb, Ca:O.j.Ca}, stream:{aa:O.m.aa}}, file:{node:{X:O.j.X, P:O.j.P}, stream:{aa:O.m.aa, read:O.m.read, write:O.m.write, Xa:O.m.Xa, kb:O.m.kb, mb:O.m.mb}}, link:{node:{X:O.j.X, P:O.j.P, la:O.j.la}, stream:{}}, $a:{node:{X:O.j.X, P:O.j.P}, stream:zb}});
+  c = Ab(a, b, c, d);
+  16384 === (c.mode & 61440) ? (c.j = O.N.dir.node, c.m = O.N.dir.stream, c.l = {}) : 32768 === (c.mode & 61440) ? (c.j = O.N.file.node, c.m = O.N.file.stream, c.v = 0, c.l = null) : 40960 === (c.mode & 61440) ? (c.j = O.N.link.node, c.m = O.N.link.stream) : 8192 === (c.mode & 61440) && (c.j = O.N.$a.node, c.m = O.N.$a.stream);
+  c.timestamp = Date.now();
+  a && (a.l[b] = c, a.timestamp = c.timestamp);
+  return c;
+}, Fc(a) {
+  return a.l ? a.l.subarray ? a.l.subarray(0, a.v) : new Uint8Array(a.l) : new Uint8Array(0);
+}, j:{X(a) {
+  var b = {};
+  b.Dc = 8192 === (a.mode & 61440) ? a.id : 1;
+  b.Hc = a.id;
+  b.mode = a.mode;
+  b.Kc = 1;
+  b.uid = 0;
+  b.Gc = 0;
+  b.xa = a.xa;
+  16384 === (a.mode & 61440) ? b.size = 4096 : 32768 === (a.mode & 61440) ? b.size = a.v : 40960 === (a.mode & 61440) ? b.size = a.link.length : b.size = 0;
+  b.vc = new Date(a.timestamp);
+  b.Jc = new Date(a.timestamp);
+  b.Cc = new Date(a.timestamp);
+  b.Gb = 4096;
+  b.wc = Math.ceil(b.size / b.Gb);
+  return b;
+}, P(a, b) {
+  void 0 !== b.mode && (a.mode = b.mode);
+  void 0 !== b.timestamp && (a.timestamp = b.timestamp);
+  if (void 0 !== b.size && (b = b.size, a.v != b)) {
+    if (0 == b) {
+      a.l = null, a.v = 0;
+    } else {
+      var c = a.l;
+      a.l = new Uint8Array(b);
+      c && a.l.set(c.subarray(0, Math.min(b, a.v)));
+      a.v = b;
+    }
+  }
+}, ja() {
+  throw Bb[44];
+}, ta(a, b, c, d) {
+  return O.createNode(a, b, c, d);
+}, sb(a, b, c) {
+  if (16384 === (a.mode & 61440)) {
+    try {
+      var d = Cb(b, c);
+    } catch (f) {
+    }
+    if (d) {
+      for (var e in d.l) {
+        throw new N(55);
+      }
+    }
+  }
+  delete a.parent.l[a.name];
+  a.parent.timestamp = Date.now();
+  a.name = c;
+  b.l[c] = a;
+  b.timestamp = a.parent.timestamp;
+}, yb(a, b) {
+  delete a.l[b];
+  a.timestamp = Date.now();
+}, tb(a, b) {
+  var c = Cb(a, b), d;
+  for (d in c.l) {
+    throw new N(55);
+  }
+  delete a.l[b];
+  a.timestamp = Date.now();
+}, rb(a) {
+  var b = [".", ".."], c;
+  for (c of Object.keys(a.l)) {
+    b.push(c);
+  }
+  return b;
+}, Ca(a, b, c) {
+  a = O.createNode(a, b, 41471, 0);
+  a.link = c;
+  return a;
+}, la(a) {
+  if (40960 !== (a.mode & 61440)) {
+    throw new N(28);
+  }
+  return a.link;
+},}, m:{read(a, b, c, d, e) {
+  var f = a.node.l;
+  if (e >= a.node.v) {
+    return 0;
+  }
+  a = Math.min(a.node.v - e, d);
+  if (8 < a && f.subarray) {
+    b.set(f.subarray(e, e + a), c);
+  } else {
+    for (d = 0; d < a; d++) {
+      b[c + d] = f[e + d];
+    }
+  }
+  return a;
+}, write(a, b, c, d, e, f) {
+  b.buffer === z.buffer && (f = !1);
+  if (!d) {
+    return 0;
+  }
+  a = a.node;
+  a.timestamp = Date.now();
+  if (b.subarray && (!a.l || a.l.subarray)) {
+    if (f) {
+      return a.l = b.subarray(c, c + d), a.v = d;
+    }
+    if (0 === a.v && 0 === e) {
+      return a.l = b.slice(c, c + d), a.v = d;
+    }
+    if (e + d <= a.v) {
+      return a.l.set(b.subarray(c, c + d), e), d;
+    }
+  }
+  yb(a, e + d);
+  if (a.l.subarray && b.subarray) {
+    a.l.set(b.subarray(c, c + d), e);
+  } else {
+    for (f = 0; f < d; f++) {
+      a.l[e + f] = b[c + f];
+    }
+  }
+  a.v = Math.max(a.v, e + d);
+  return d;
+}, aa(a, b, c) {
+  1 === c ? b += a.position : 2 === c && 32768 === (a.node.mode & 61440) && (b += a.node.v);
+  if (0 > b) {
+    throw new N(28);
+  }
+  return b;
+}, Xa(a, b, c) {
+  yb(a.node, b + c);
+  a.node.v = Math.max(a.node.v, b + c);
+}, kb(a, b, c, d, e) {
+  if (32768 !== (a.node.mode & 61440)) {
+    throw new N(43);
+  }
+  a = a.node.l;
+  if (e & 2 || a.buffer !== z.buffer) {
+    if (0 < c || c + b < a.length) {
+      a.subarray ? a = a.subarray(c, c + b) : a = Array.prototype.slice.call(a, c, c + b);
+    }
+    c = !0;
+    Qa();
+    b = void 0;
+    if (!b) {
+      throw new N(48);
+    }
+    z.set(a, b);
+  } else {
+    c = !1, b = a.byteOffset;
+  }
+  return {o:b, uc:c};
+}, mb(a, b, c, d) {
+  O.m.write(a, b, 0, d, c, !1);
+  return 0;
+},},}, Db = (a, b) => {
+  var c = 0;
+  a && (c |= 365);
+  b && (c |= 146);
+  return c;
+}, Eb = null, Fb = {}, Gb = [], Hb = 1, Ib = null, Jb = !0, N = class {
+  constructor(a) {
+    this.name = "ErrnoError";
+    this.$ = a;
+  }
+}, Bb = {}, Kb = class {
+  constructor() {
+    this.h = {};
+    this.node = null;
+  }
+  get flags() {
+    return this.h.flags;
+  }
+  set flags(a) {
+    this.h.flags = a;
+  }
+  get position() {
+    return this.h.position;
+  }
+  set position(a) {
+    this.h.position = a;
+  }
+}, Lb = class {
+  constructor(a, b, c, d) {
+    a ||= this;
+    this.parent = a;
+    this.U = a.U;
+    this.ua = null;
+    this.id = Hb++;
+    this.name = b;
+    this.mode = c;
+    this.j = {};
+    this.m = {};
+    this.xa = d;
+  }
+  get read() {
+    return 365 === (this.mode & 365);
+  }
+  set read(a) {
+    a ? this.mode |= 365 : this.mode &= -366;
+  }
+  get write() {
+    return 146 === (this.mode & 146);
+  }
+  set write(a) {
+    a ? this.mode |= 146 : this.mode &= -147;
+  }
+};
+function Mb(a, b = {}) {
+  a = lb(a);
+  if (!a) {
+    return {path:"", node:null};
+  }
+  b = Object.assign({gb:!0, Oa:0}, b);
+  if (8 < b.Oa) {
+    throw new N(32);
+  }
+  a = a.split("/").filter(g => !!g);
+  for (var c = Eb, d = "/", e = 0; e < a.length; e++) {
+    var f = e === a.length - 1;
+    if (f && b.parent) {
+      break;
+    }
+    c = Cb(c, a[e]);
+    d = gb(d + "/" + a[e]);
+    c.ua && (!f || f && b.gb) && (c = c.ua.root);
+    if (!f || b.fb) {
+      for (f = 0; 40960 === (c.mode & 61440);) {
+        if (c = Nb(d), d = lb(hb(d), c), c = Mb(d, {Oa:b.Oa + 1}).node, 40 < f++) {
+          throw new N(32);
+        }
+      }
+    }
+  }
+  return {path:d, node:c};
+}
+function Ob(a) {
+  for (var b;;) {
+    if (a === a.parent) {
+      return a = a.U.lb, b ? "/" !== a[a.length - 1] ? `${a}/${b}` : a + b : a;
+    }
+    b = b ? `${a.name}/${b}` : a.name;
+    a = a.parent;
+  }
+}
+function Pb(a, b) {
+  for (var c = 0, d = 0; d < b.length; d++) {
+    c = (c << 5) - c + b.charCodeAt(d) | 0;
+  }
+  return (a + c >>> 0) % Ib.length;
+}
+function Cb(a, b) {
+  var c = 16384 === (a.mode & 61440) ? (c = Qb(a, "x")) ? c : a.j.ja ? 0 : 2 : 54;
+  if (c) {
+    throw new N(c);
+  }
+  for (c = Ib[Pb(a.id, b)]; c; c = c.ec) {
+    var d = c.name;
+    if (c.parent.id === a.id && d === b) {
+      return c;
+    }
+  }
+  return a.j.ja(a, b);
+}
+function Ab(a, b, c, d) {
+  a = new Lb(a, b, c, d);
+  b = Pb(a.parent.id, a.name);
+  a.ec = Ib[b];
+  return Ib[b] = a;
+}
+function Rb(a) {
+  var b = ["r", "w", "rw"][a & 3];
+  a & 512 && (b += "w");
+  return b;
+}
+function Qb(a, b) {
+  if (Jb) {
+    return 0;
+  }
+  if (!b.includes("r") || a.mode & 292) {
+    if (b.includes("w") && !(a.mode & 146) || b.includes("x") && !(a.mode & 73)) {
+      return 2;
+    }
+  } else {
+    return 2;
+  }
+  return 0;
+}
+function Sb(a, b) {
+  try {
+    return Cb(a, b), 20;
+  } catch (c) {
+  }
+  return Qb(a, "wx");
+}
+function Tb(a) {
+  a = Gb[a];
+  if (!a) {
+    throw new N(8);
+  }
+  return a;
+}
+function Ub(a, b = -1) {
+  a = Object.assign(new Kb(), a);
+  if (-1 == b) {
+    a: {
+      for (b = 0; 4096 >= b; b++) {
+        if (!Gb[b]) {
+          break a;
+        }
+      }
+      throw new N(33);
+    }
+  }
+  a.W = b;
+  return Gb[b] = a;
+}
+function Vb(a, b = -1) {
+  a = Ub(a, b);
+  a.m?.Ec?.(a);
+  return a;
+}
+var zb = {open(a) {
+  a.m = Fb[a.node.xa].m;
+  a.m.open?.(a);
+}, aa() {
+  throw new N(70);
+},};
+function ub(a, b) {
+  Fb[a] = {m:b};
+}
+function ac(a, b) {
+  var c = "/" === b;
+  if (c && Eb) {
+    throw new N(10);
+  }
+  if (!c && b) {
+    var d = Mb(b, {gb:!1});
+    b = d.path;
+    d = d.node;
+    if (d.ua) {
+      throw new N(10);
+    }
+    if (16384 !== (d.mode & 61440)) {
+      throw new N(54);
+    }
+  }
+  b = {type:a, Mc:{}, lb:b, dc:[]};
+  a = a.U(b);
+  a.U = b;
+  b.root = a;
+  c ? Eb = a : d && (d.ua = b, d.U && d.U.dc.push(b));
+}
+function bc(a, b, c) {
+  var d = Mb(a, {parent:!0}).node;
+  a = ib(a);
+  if (!a || "." === a || ".." === a) {
+    throw new N(28);
+  }
+  var e = Sb(d, a);
+  if (e) {
+    throw new N(e);
+  }
+  if (!d.j.ta) {
+    throw new N(63);
+  }
+  return d.j.ta(d, a, b, c);
+}
+function cc(a) {
+  return bc(a, 16895, 0);
+}
+function dc(a, b, c) {
+  "undefined" == typeof c && (c = b, b = 438);
+  bc(a, b | 8192, c);
+}
+function ec(a, b) {
+  if (!lb(a)) {
+    throw new N(44);
+  }
+  var c = Mb(b, {parent:!0}).node;
+  if (!c) {
+    throw new N(44);
+  }
+  b = ib(b);
+  var d = Sb(c, b);
+  if (d) {
+    throw new N(d);
+  }
+  if (!c.j.Ca) {
+    throw new N(63);
+  }
+  c.j.Ca(c, b, a);
+}
+function Nb(a) {
+  a = Mb(a).node;
+  if (!a) {
+    throw new N(44);
+  }
+  if (!a.j.la) {
+    throw new N(28);
+  }
+  return lb(Ob(a.parent), a.j.la(a));
+}
+function fc(a, b, c) {
+  if ("" === a) {
+    throw new N(44);
+  }
+  if ("string" == typeof b) {
+    var d = {r:0, "r+":2, w:577, "w+":578, a:1089, "a+":1090,}[b];
+    if ("undefined" == typeof d) {
+      throw Error(`Unknown file open mode: ${b}`);
+    }
+    b = d;
+  }
+  c = b & 64 ? ("undefined" == typeof c ? 438 : c) & 4095 | 32768 : 0;
+  if ("object" == typeof a) {
+    var e = a;
+  } else {
+    a = gb(a);
+    try {
+      e = Mb(a, {fb:!(b & 131072)}).node;
+    } catch (f) {
+    }
+  }
+  d = !1;
+  if (b & 64) {
+    if (e) {
+      if (b & 128) {
+        throw new N(20);
+      }
+    } else {
+      e = bc(a, c, 0), d = !0;
+    }
+  }
+  if (!e) {
+    throw new N(44);
+  }
+  8192 === (e.mode & 61440) && (b &= -513);
+  if (b & 65536 && 16384 !== (e.mode & 61440)) {
+    throw new N(54);
+  }
+  if (!d && (c = e ? 40960 === (e.mode & 61440) ? 32 : 16384 === (e.mode & 61440) && ("r" !== Rb(b) || b & 512) ? 31 : Qb(e, Rb(b)) : 44)) {
+    throw new N(c);
+  }
+  if (b & 512 && !d) {
+    c = e;
+    c = "string" == typeof c ? Mb(c, {fb:!0}).node : c;
+    if (!c.j.P) {
+      throw new N(63);
+    }
+    if (16384 === (c.mode & 61440)) {
+      throw new N(31);
+    }
+    if (32768 !== (c.mode & 61440)) {
+      throw new N(28);
+    }
+    if (d = Qb(c, "w")) {
+      throw new N(d);
+    }
+    c.j.P(c, {size:0, timestamp:Date.now()});
+  }
+  b &= -131713;
+  e = Ub({node:e, path:Ob(e), flags:b, seekable:!0, position:0, m:e.m, sc:[], error:!1});
+  e.m.open && e.m.open(e);
+  !m.logReadFiles || b & 1 || (gc ||= {}, a in gc || (gc[a] = 1));
+  return e;
+}
+function hc(a, b, c) {
+  if (null === a.W) {
+    throw new N(8);
+  }
+  if (!a.seekable || !a.m.aa) {
+    throw new N(70);
+  }
+  if (0 != c && 1 != c && 2 != c) {
+    throw new N(28);
+  }
+  a.position = a.m.aa(a, b, c);
+  a.sc = [];
+}
+var ic;
+function jc(a, b, c) {
+  a = gb("/dev/" + a);
+  var d = Db(!!b, !!c);
+  kc ||= 64;
+  var e = kc++ << 8 | 0;
+  ub(e, {open(f) {
+    f.seekable = !1;
+  }, close() {
+    c?.buffer?.length && c(10);
+  }, read(f, g, k, p) {
+    for (var n = 0, t = 0; t < p; t++) {
+      try {
+        var x = b();
+      } catch (y) {
+        throw new N(29);
+      }
+      if (void 0 === x && 0 === n) {
+        throw new N(6);
+      }
+      if (null === x || void 0 === x) {
+        break;
+      }
+      n++;
+      g[k + t] = x;
+    }
+    n && (f.node.timestamp = Date.now());
+    return n;
+  }, write(f, g, k, p) {
+    for (var n = 0; n < p; n++) {
+      try {
+        c(g[k + n]);
+      } catch (t) {
+        throw new N(29);
+      }
+    }
+    p && (f.node.timestamp = Date.now());
+    return n;
+  }});
+  dc(a, d, e);
+}
+var kc, lc = {}, gc, eb = void 0, mc = (a, b) => Object.defineProperty(b, "name", {value:a}), nc = [], oc = [], P, pc = a => {
+  if (!a) {
+    throw new P("Cannot use deleted val. handle = " + a);
+  }
+  return oc[a];
+}, qc = a => {
+  switch(a) {
+    case void 0:
+      return 2;
+    case null:
+      return 4;
+    case !0:
+      return 6;
+    case !1:
+      return 8;
+    default:
+      const b = nc.pop() || oc.length;
+      oc[b] = a;
+      oc[b + 1] = 1;
+      return b;
+  }
+}, rc = a => {
+  var b = Error, c = mc(a, function(d) {
+    this.name = a;
+    this.message = d;
+    d = Error(d).stack;
+    void 0 !== d && (this.stack = this.toString() + "\n" + d.replace(/^Error(:[^\n]*)?\n/, ""));
+  });
+  c.prototype = Object.create(b.prototype);
+  c.prototype.constructor = c;
+  c.prototype.toString = function() {
+    return void 0 === this.message ? this.name : `${this.name}: ${this.message}`;
+  };
+  return c;
+}, sc, tc, Q = a => {
+  for (var b = ""; A[a];) {
+    b += tc[A[a++]];
+  }
+  return b;
+}, uc = [], vc = () => {
+  for (; uc.length;) {
+    var a = uc.pop();
+    a.g.ea = !1;
+    a["delete"]();
+  }
+}, wc, xc = {}, yc = (a, b) => {
+  if (void 0 === b) {
+    throw new P("ptr should not be undefined");
+  }
+  for (; a.C;) {
+    b = a.ma(b), a = a.C;
+  }
+  return b;
+}, zc = {}, Cc = a => {
+  a = Ac(a);
+  var b = Q(a);
+  Bc(a);
+  return b;
+}, Dc = (a, b) => {
+  var c = zc[a];
+  if (void 0 === c) {
+    throw a = `${b} has unknown type ${Cc(a)}`, new P(a);
+  }
+  return c;
+}, Ec = () => {
+}, Fc = !1, Gc = (a, b, c) => {
+  if (b === c) {
+    return a;
+  }
+  if (void 0 === c.C) {
+    return null;
+  }
+  a = Gc(a, b, c.C);
+  return null === a ? null : c.Lb(a);
+}, Hc = {}, Ic = (a, b) => {
+  b = yc(a, b);
+  return xc[b];
+}, Jc, Lc = (a, b) => {
+  if (!b.u || !b.o) {
+    throw new Jc("makeClassHandle requires ptr and ptrType");
+  }
+  if (!!b.J !== !!b.F) {
+    throw new Jc("Both smartPtrType and smartPtr must be specified");
+  }
+  b.count = {value:1};
+  return Kc(Object.create(a, {g:{value:b, writable:!0,},}));
+}, Kc = a => {
+  if ("undefined" === typeof FinalizationRegistry) {
+    return Kc = b => b, a;
+  }
+  Fc = new FinalizationRegistry(b => {
+    b = b.g;
+    --b.count.value;
+    0 === b.count.value && (b.F ? b.J.O(b.F) : b.u.i.O(b.o));
+  });
+  Kc = b => {
+    var c = b.g;
+    c.F && Fc.register(b, {g:c}, b);
+    return b;
+  };
+  Ec = b => {
+    Fc.unregister(b);
+  };
+  return Kc(a);
+}, Mc = {}, Nc = a => {
+  for (; a.length;) {
+    var b = a.pop();
+    a.pop()(b);
+  }
+};
+function Oc(a) {
+  return this.fromWireType(M[a >> 2]);
+}
+var Pc = {}, Qc = {}, U = (a, b, c) => {
+  function d(k) {
+    k = c(k);
+    if (k.length !== a.length) {
+      throw new Jc("Mismatched type converter count");
+    }
+    for (var p = 0; p < a.length; ++p) {
+      Rc(a[p], k[p]);
+    }
+  }
+  a.forEach(function(k) {
+    Qc[k] = b;
+  });
+  var e = Array(b.length), f = [], g = 0;
+  b.forEach((k, p) => {
+    zc.hasOwnProperty(k) ? e[p] = zc[k] : (f.push(k), Pc.hasOwnProperty(k) || (Pc[k] = []), Pc[k].push(() => {
+      e[p] = zc[k];
+      ++g;
+      g === f.length && d(e);
+    }));
+  });
+  0 === f.length && d(e);
+};
+function Sc(a, b, c = {}) {
+  var d = b.name;
+  if (!a) {
+    throw new P(`type "${d}" must have a positive integer typeid pointer`);
+  }
+  if (zc.hasOwnProperty(a)) {
+    if (c.Vb) {
+      return;
+    }
+    throw new P(`Cannot register type '${d}' twice`);
+  }
+  zc[a] = b;
+  delete Qc[a];
+  Pc.hasOwnProperty(a) && (b = Pc[a], delete Pc[a], b.forEach(e => e()));
+}
+function Rc(a, b, c = {}) {
+  if (!("argPackAdvance" in b)) {
+    throw new TypeError("registerType registeredInstance requires argPackAdvance");
+  }
+  return Sc(a, b, c);
+}
+var Tc = a => {
+  throw new P(a.g.u.i.name + " instance already deleted");
+};
+function Uc() {
+}
+var Vc = (a, b, c) => {
+  if (void 0 === a[b].A) {
+    var d = a[b];
+    a[b] = function(...e) {
+      if (!a[b].A.hasOwnProperty(e.length)) {
+        throw new P(`Function '${c}' called with an invalid number of arguments (${e.length}) - expects one of (${a[b].A})!`);
+      }
+      return a[b].A[e.length].apply(this, e);
+    };
+    a[b].A = [];
+    a[b].A[d.da] = d;
+  }
+}, Wc = (a, b, c) => {
+  if (m.hasOwnProperty(a)) {
+    if (void 0 === c || void 0 !== m[a].A && void 0 !== m[a].A[c]) {
+      throw new P(`Cannot register public name '${a}' twice`);
+    }
+    Vc(m, a, a);
+    if (m.hasOwnProperty(c)) {
+      throw new P(`Cannot register multiple overloads of a function with the same number of arguments (${c})!`);
+    }
+    m[a].A[c] = b;
+  } else {
+    m[a] = b, void 0 !== c && (m[a].Lc = c);
+  }
+}, Xc = a => {
+  if (void 0 === a) {
+    return "_unknown";
+  }
+  a = a.replace(/[^a-zA-Z0-9_]/g, "$");
+  var b = a.charCodeAt(0);
+  return 48 <= b && 57 >= b ? `_${a}` : a;
+};
+function Yc(a, b, c, d, e, f, g, k) {
+  this.name = a;
+  this.constructor = b;
+  this.M = c;
+  this.O = d;
+  this.C = e;
+  this.Qb = f;
+  this.ma = g;
+  this.Lb = k;
+  this.pb = [];
+}
+var Zc = (a, b, c) => {
+  for (; b !== c;) {
+    if (!b.ma) {
+      throw new P(`Expected null or instance of ${c.name}, got an instance of ${b.name}`);
+    }
+    a = b.ma(a);
+    b = b.C;
+  }
+  return a;
+};
+function $c(a, b) {
+  if (null === b) {
+    if (this.La) {
+      throw new P(`null is not a valid ${this.name}`);
+    }
+    return 0;
+  }
+  if (!b.g) {
+    throw new P(`Cannot pass "${ad(b)}" as a ${this.name}`);
+  }
+  if (!b.g.o) {
+    throw new P(`Cannot pass deleted object as a pointer of type ${this.name}`);
+  }
+  return Zc(b.g.o, b.g.u.i, this.i);
+}
+function bd(a, b) {
+  if (null === b) {
+    if (this.La) {
+      throw new P(`null is not a valid ${this.name}`);
+    }
+    if (this.sa) {
+      var c = this.Na();
+      null !== a && a.push(this.O, c);
+      return c;
+    }
+    return 0;
+  }
+  if (!b || !b.g) {
+    throw new P(`Cannot pass "${ad(b)}" as a ${this.name}`);
+  }
+  if (!b.g.o) {
+    throw new P(`Cannot pass deleted object as a pointer of type ${this.name}`);
+  }
+  if (!this.ra && b.g.u.ra) {
+    throw new P(`Cannot convert argument of type ${b.g.J ? b.g.J.name : b.g.u.name} to parameter type ${this.name}`);
+  }
+  c = Zc(b.g.o, b.g.u.i, this.i);
+  if (this.sa) {
+    if (void 0 === b.g.F) {
+      throw new P("Passing raw pointer to smart pointer is illegal");
+    }
+    switch(this.mc) {
+      case 0:
+        if (b.g.J === this) {
+          c = b.g.F;
+        } else {
+          throw new P(`Cannot convert argument of type ${b.g.J ? b.g.J.name : b.g.u.name} to parameter type ${this.name}`);
+        }
+        break;
+      case 1:
+        c = b.g.F;
+        break;
+      case 2:
+        if (b.g.J === this) {
+          c = b.g.F;
+        } else {
+          var d = b.clone();
+          c = this.ic(c, qc(() => d["delete"]()));
+          null !== a && a.push(this.O, c);
+        }
+        break;
+      default:
+        throw new P("Unsupporting sharing policy");
+    }
+  }
+  return c;
+}
+function cd(a, b) {
+  if (null === b) {
+    if (this.La) {
+      throw new P(`null is not a valid ${this.name}`);
+    }
+    return 0;
+  }
+  if (!b.g) {
+    throw new P(`Cannot pass "${ad(b)}" as a ${this.name}`);
+  }
+  if (!b.g.o) {
+    throw new P(`Cannot pass deleted object as a pointer of type ${this.name}`);
+  }
+  if (b.g.u.ra) {
+    throw new P(`Cannot convert argument of type ${b.g.u.name} to parameter type ${this.name}`);
+  }
+  return Zc(b.g.o, b.g.u.i, this.i);
+}
+function dd(a, b, c, d, e, f, g, k, p, n, t) {
+  this.name = a;
+  this.i = b;
+  this.La = c;
+  this.ra = d;
+  this.sa = e;
+  this.hc = f;
+  this.mc = g;
+  this.qb = k;
+  this.Na = p;
+  this.ic = n;
+  this.O = t;
+  e || void 0 !== b.C ? this.toWireType = bd : (this.toWireType = d ? $c : cd, this.L = null);
+}
+var ed = (a, b, c) => {
+  if (!m.hasOwnProperty(a)) {
+    throw new Jc("Replacing nonexistent public symbol");
+  }
+  void 0 !== m[a].A && void 0 !== c ? m[a].A[c] = b : (m[a] = b, m[a].da = c);
+}, fd = [], gd, hd = a => {
+  var b = fd[a];
+  b || (a >= fd.length && (fd.length = a + 1), fd[a] = b = gd.get(a));
+  return b;
+}, jd = (a, b, c = []) => {
+  a.includes("j") ? (a = a.replace(/p/g, "i"), b = (0,m["dynCall_" + a])(b, ...c)) : b = hd(b)(...c);
+  return b;
+}, md = (a, b) => (...c) => jd(a, b, c), V = (a, b) => {
+  a = Q(a);
+  var c = a.includes("j") ? md(a, b) : hd(b);
+  if ("function" != typeof c) {
+    throw new P(`unknown function pointer with signature ${a}: ${b}`);
+  }
+  return c;
+}, nd, od = (a, b) => {
+  function c(f) {
+    e[f] || zc[f] || (Qc[f] ? Qc[f].forEach(c) : (d.push(f), e[f] = !0));
+  }
+  var d = [], e = {};
+  b.forEach(c);
+  throw new nd(`${a}: ` + d.map(Cc).join([", "]));
+};
+function pd(a) {
+  for (var b = 1; b < a.length; ++b) {
+    if (null !== a[b] && void 0 === a[b].L) {
+      return !0;
+    }
+  }
+  return !1;
+}
+function qd(a, b, c, d, e) {
+  var f = b.length;
+  if (2 > f) {
+    throw new P("argTypes array size mismatch! Must at least get return value and 'this' types!");
+  }
+  var g = null !== b[1] && null !== c, k = pd(b), p = "void" !== b[0].name, n = f - 2, t = Array(n), x = [], y = [];
+  return mc(a, function(...l) {
+    if (l.length !== n) {
+      throw new P(`function ${a} called with ${l.length} arguments, expected ${n}`);
+    }
+    y.length = 0;
+    x.length = g ? 2 : 1;
+    x[0] = e;
+    if (g) {
+      var u = b[1].toWireType(y, this);
+      x[1] = u;
+    }
+    for (var q = 0; q < n; ++q) {
+      t[q] = b[q + 2].toWireType(y, l[q]), x.push(t[q]);
+    }
+    l = d(...x);
+    if (k) {
+      Nc(y);
+    } else {
+      for (q = g ? 1 : 2; q < b.length; q++) {
+        var C = 1 === q ? u : t[q - 2];
+        null !== b[q].L && b[q].L(C);
+      }
+    }
+    u = p ? b[0].fromWireType(l) : void 0;
+    return u;
+  });
+}
+var rd = (a, b) => {
+  for (var c = [], d = 0; d < a; d++) {
+    c.push(M[b + 4 * d >> 2]);
+  }
+  return c;
+}, sd = a => {
+  a = a.trim();
+  const b = a.indexOf("(");
+  return -1 !== b ? a.substr(0, b) : a;
+}, td = (a, b, c) => {
+  if (!(a instanceof Object)) {
+    throw new P(`${c} with invalid "this": ${a}`);
+  }
+  if (!(a instanceof b.i.constructor)) {
+    throw new P(`${c} incompatible with "this" of type ${a.constructor.name}`);
+  }
+  if (!a.g.o) {
+    throw new P(`cannot call emscripten binding method ${c} on deleted object`);
+  }
+  return Zc(a.g.o, a.g.u.i, b.i);
+}, ud = a => {
+  9 < a && 0 === --oc[a + 1] && (oc[a] = void 0, nc.push(a));
+}, vd = {name:"emscripten::val", fromWireType:a => {
+  var b = pc(a);
+  ud(a);
+  return b;
+}, toWireType:(a, b) => qc(b), argPackAdvance:8, readValueFromPointer:Oc, L:null,}, wd = (a, b, c) => {
+  switch(b) {
+    case 1:
+      return c ? function(d) {
+        return this.fromWireType(z[d]);
+      } : function(d) {
+        return this.fromWireType(A[d]);
+      };
+    case 2:
+      return c ? function(d) {
+        return this.fromWireType(Ca[d >> 1]);
+      } : function(d) {
+        return this.fromWireType(Fa[d >> 1]);
+      };
+    case 4:
+      return c ? function(d) {
+        return this.fromWireType(D[d >> 2]);
+      } : function(d) {
+        return this.fromWireType(M[d >> 2]);
+      };
+    default:
+      throw new TypeError(`invalid integer width (${b}): ${a}`);
+  }
+}, ad = a => {
+  if (null === a) {
+    return "null";
+  }
+  var b = typeof a;
+  return "object" === b || "array" === b || "function" === b ? a.toString() : "" + a;
+}, xd = (a, b) => {
+  switch(b) {
+    case 4:
+      return function(c) {
+        return this.fromWireType(Ga[c >> 2]);
+      };
+    case 8:
+      return function(c) {
+        return this.fromWireType(Ha[c >> 3]);
+      };
+    default:
+      throw new TypeError(`invalid float width (${b}): ${a}`);
+  }
+}, yd = (a, b, c) => {
+  switch(b) {
+    case 1:
+      return c ? d => z[d] : d => A[d];
+    case 2:
+      return c ? d => Ca[d >> 1] : d => Fa[d >> 1];
+    case 4:
+      return c ? d => D[d >> 2] : d => M[d >> 2];
+    default:
+      throw new TypeError(`invalid integer width (${b}): ${a}`);
+  }
+}, zd = "undefined" != typeof TextDecoder ? new TextDecoder("utf-16le") : void 0, Ad = (a, b) => {
+  var c = a >> 1;
+  for (var d = c + b / 2; !(c >= d) && Fa[c];) {
+    ++c;
+  }
+  c <<= 1;
+  if (32 < c - a && zd) {
+    return zd.decode(A.subarray(a, c));
+  }
+  c = "";
+  for (d = 0; !(d >= b / 2); ++d) {
+    var e = Ca[a + 2 * d >> 1];
+    if (0 == e) {
+      break;
+    }
+    c += String.fromCharCode(e);
+  }
+  return c;
+}, Bd = (a, b, c) => {
+  c ??= 2147483647;
+  if (2 > c) {
+    return 0;
+  }
+  c -= 2;
+  var d = b;
+  c = c < 2 * a.length ? c / 2 : a.length;
+  for (var e = 0; e < c; ++e) {
+    Ca[b >> 1] = a.charCodeAt(e), b += 2;
+  }
+  Ca[b >> 1] = 0;
+  return b - d;
+}, Cd = a => 2 * a.length, Dd = (a, b) => {
+  for (var c = 0, d = ""; !(c >= b / 4);) {
+    var e = D[a + 4 * c >> 2];
+    if (0 == e) {
+      break;
+    }
+    ++c;
+    65536 <= e ? (e -= 65536, d += String.fromCharCode(55296 | e >> 10, 56320 | e & 1023)) : d += String.fromCharCode(e);
+  }
+  return d;
+}, Ed = (a, b, c) => {
+  c ??= 2147483647;
+  if (4 > c) {
+    return 0;
+  }
+  var d = b;
+  c = d + c - 4;
+  for (var e = 0; e < a.length; ++e) {
+    var f = a.charCodeAt(e);
+    if (55296 <= f && 57343 >= f) {
+      var g = a.charCodeAt(++e);
+      f = 65536 + ((f & 1023) << 10) | g & 1023;
+    }
+    D[b >> 2] = f;
+    b += 4;
+    if (b + 4 > c) {
+      break;
+    }
+  }
+  D[b >> 2] = 0;
+  return b - d;
+}, Fd = a => {
+  for (var b = 0, c = 0; c < a.length; ++c) {
+    var d = a.charCodeAt(c);
+    55296 <= d && 57343 >= d && ++c;
+    b += 4;
+  }
+  return b;
+}, Gd = (a, b, c) => {
+  var d = [];
+  a = a.toWireType(d, c);
+  d.length && (M[b >> 2] = qc(d));
+  return a;
+}, Hd = {}, Id = a => {
+  var b = Hd[a];
+  return void 0 === b ? Q(a) : b;
+}, Jd = [], Kd = a => {
+  var b = Jd.length;
+  Jd.push(a);
+  return b;
+}, Ld = (a, b) => {
+  for (var c = Array(a), d = 0; d < a; ++d) {
+    c[d] = Dc(M[b + 4 * d >> 2], "parameter " + d);
+  }
+  return c;
+}, Md = Reflect.construct, Nd = [], Od = {}, Qd = () => {
+  if (!Pd) {
+    var a = {USER:"web_user", LOGNAME:"web_user", PATH:"/", PWD:"/", HOME:"/home/web_user", LANG:("object" == typeof navigator && navigator.languages && navigator.languages[0] || "C").replace("-", "_") + ".UTF-8", _:oa || "./this.program"}, b;
+    for (b in Od) {
+      void 0 === Od[b] ? delete a[b] : a[b] = Od[b];
+    }
+    var c = [];
+    for (b in a) {
+      c.push(`${b}=${a[b]}`);
+    }
+    Pd = c;
+  }
+  return Pd;
+}, Pd, Rd = a => 0 === a % 4 && (0 !== a % 100 || 0 === a % 400), Sd = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], Td = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], Ud = (a, b, c, d) => {
+  function e(l, u, q) {
+    for (l = "number" == typeof l ? l.toString() : l || ""; l.length < u;) {
+      l = q[0] + l;
+    }
+    return l;
+  }
+  function f(l, u) {
+    return e(l, u, "0");
+  }
+  function g(l, u) {
+    function q(E) {
+      return 0 > E ? -1 : 0 < E ? 1 : 0;
+    }
+    var C;
+    0 === (C = q(l.getFullYear() - u.getFullYear())) && 0 === (C = q(l.getMonth() - u.getMonth())) && (C = q(l.getDate() - u.getDate()));
+    return C;
+  }
+  function k(l) {
+    switch(l.getDay()) {
+      case 0:
+        return new Date(l.getFullYear() - 1, 11, 29);
+      case 1:
+        return l;
+      case 2:
+        return new Date(l.getFullYear(), 0, 3);
+      case 3:
+        return new Date(l.getFullYear(), 0, 2);
+      case 4:
+        return new Date(l.getFullYear(), 0, 1);
+      case 5:
+        return new Date(l.getFullYear() - 1, 11, 31);
+      case 6:
+        return new Date(l.getFullYear() - 1, 11, 30);
+    }
+  }
+  function p(l) {
+    var u = l.ba;
+    for (l = new Date((new Date(l.ca + 1900, 0, 1)).getTime()); 0 < u;) {
+      var q = l.getMonth(), C = (Rd(l.getFullYear()) ? Sd : Td)[q];
+      if (u > C - l.getDate()) {
+        u -= C - l.getDate() + 1, l.setDate(1), 11 > q ? l.setMonth(q + 1) : (l.setMonth(0), l.setFullYear(l.getFullYear() + 1));
+      } else {
+        l.setDate(l.getDate() + u);
+        break;
+      }
+    }
+    q = new Date(l.getFullYear() + 1, 0, 4);
+    u = k(new Date(l.getFullYear(), 0, 4));
+    q = k(q);
+    return 0 >= g(u, l) ? 0 >= g(q, l) ? l.getFullYear() + 1 : l.getFullYear() : l.getFullYear() - 1;
+  }
+  var n = M[d + 40 >> 2];
+  d = {pc:D[d >> 2], oc:D[d + 4 >> 2], Da:D[d + 8 >> 2], Qa:D[d + 12 >> 2], Ea:D[d + 16 >> 2], ca:D[d + 20 >> 2], R:D[d + 24 >> 2], ba:D[d + 28 >> 2], Nc:D[d + 32 >> 2], nc:D[d + 36 >> 2], qc:n ? n ? nb(A, n) : "" : ""};
+  c = c ? nb(A, c) : "";
+  n = {"%c":"%a %b %d %H:%M:%S %Y", "%D":"%m/%d/%y", "%F":"%Y-%m-%d", "%h":"%b", "%r":"%I:%M:%S %p", "%R":"%H:%M", "%T":"%H:%M:%S", "%x":"%m/%d/%y", "%X":"%H:%M:%S", "%Ec":"%c", "%EC":"%C", "%Ex":"%m/%d/%y", "%EX":"%H:%M:%S", "%Ey":"%y", "%EY":"%Y", "%Od":"%d", "%Oe":"%e", "%OH":"%H", "%OI":"%I", "%Om":"%m", "%OM":"%M", "%OS":"%S", "%Ou":"%u", "%OU":"%U", "%OV":"%V", "%Ow":"%w", "%OW":"%W", "%Oy":"%y",};
+  for (var t in n) {
+    c = c.replace(new RegExp(t, "g"), n[t]);
+  }
+  var x = "Sunday Monday Tuesday Wednesday Thursday Friday Saturday".split(" "), y = "January February March April May June July August September October November December".split(" ");
+  n = {"%a":l => x[l.R].substring(0, 3), "%A":l => x[l.R], "%b":l => y[l.Ea].substring(0, 3), "%B":l => y[l.Ea], "%C":l => f((l.ca + 1900) / 100 | 0, 2), "%d":l => f(l.Qa, 2), "%e":l => e(l.Qa, 2, " "), "%g":l => p(l).toString().substring(2), "%G":p, "%H":l => f(l.Da, 2), "%I":l => {
+    l = l.Da;
+    0 == l ? l = 12 : 12 < l && (l -= 12);
+    return f(l, 2);
+  }, "%j":l => {
+    for (var u = 0, q = 0; q <= l.Ea - 1; u += (Rd(l.ca + 1900) ? Sd : Td)[q++]) {
+    }
+    return f(l.Qa + u, 3);
+  }, "%m":l => f(l.Ea + 1, 2), "%M":l => f(l.oc, 2), "%n":() => "\n", "%p":l => 0 <= l.Da && 12 > l.Da ? "AM" : "PM", "%S":l => f(l.pc, 2), "%t":() => "\t", "%u":l => l.R || 7, "%U":l => f(Math.floor((l.ba + 7 - l.R) / 7), 2), "%V":l => {
+    var u = Math.floor((l.ba + 7 - (l.R + 6) % 7) / 7);
+    2 >= (l.R + 371 - l.ba - 2) % 7 && u++;
+    if (u) {
+      53 == u && (q = (l.R + 371 - l.ba) % 7, 4 == q || 3 == q && Rd(l.ca) || (u = 1));
+    } else {
+      u = 52;
+      var q = (l.R + 7 - l.ba - 1) % 7;
+      (4 == q || 5 == q && Rd(l.ca % 400 - 1)) && u++;
+    }
+    return f(u, 2);
+  }, "%w":l => l.R, "%W":l => f(Math.floor((l.ba + 7 - (l.R + 6) % 7) / 7), 2), "%y":l => (l.ca + 1900).toString().substring(2), "%Y":l => l.ca + 1900, "%z":l => {
+    l = l.nc;
+    var u = 0 <= l;
+    l = Math.abs(l) / 60;
+    return (u ? "+" : "-") + String("0000" + (l / 60 * 100 + l % 60)).slice(-4);
+  }, "%Z":l => l.qc, "%%":() => "%"};
+  c = c.replace(/%%/g, "\x00\x00");
+  for (t in n) {
+    c.includes(t) && (c = c.replace(new RegExp(t, "g"), n[t](d)));
+  }
+  c = c.replace(/\0\0/g, "%");
+  t = rb(c, !1);
+  if (t.length > b) {
+    return 0;
+  }
+  z.set(t, a);
+  return t.length - 1;
+};
+[44].forEach(a => {
+  Bb[a] = new N(a);
+  Bb[a].stack = "<generic error, no stack>";
+});
+Ib = Array(4096);
+ac(O, "/");
+cc("/tmp");
+cc("/home");
+cc("/home/web_user");
+(function() {
+  cc("/dev");
+  ub(259, {read:() => 0, write:(d, e, f, g) => g,});
+  dc("/dev/null", 259);
+  tb(1280, wb);
+  tb(1536, xb);
+  dc("/dev/tty", 1280);
+  dc("/dev/tty1", 1536);
+  var a = new Uint8Array(1024), b = 0, c = () => {
+    0 === b && (b = kb(a).byteLength);
+    return a[--b];
+  };
+  jc("random", c);
+  jc("urandom", c);
+  cc("/dev/shm");
+  cc("/dev/shm/tmp");
+})();
+(function() {
+  cc("/proc");
+  var a = cc("/proc/self");
+  cc("/proc/self/fd");
+  ac({U() {
+    var b = Ab(a, "fd", 16895, 73);
+    b.j = {ja(c, d) {
+      var e = Tb(+d);
+      c = {parent:null, U:{lb:"fake"}, j:{la:() => e.path},};
+      return c.parent = c;
+    }};
+    return b;
+  }}, "/proc/self/fd");
+})();
+P = m.BindingError = class extends Error {
+  constructor(a) {
+    super(a);
+    this.name = "BindingError";
+  }
+};
+oc.push(0, 1, void 0, 1, null, 1, !0, 1, !1, 1,);
+m.count_emval_handles = () => oc.length / 2 - 5 - nc.length;
+sc = m.PureVirtualError = rc("PureVirtualError");
+for (var Vd = Array(256), Wd = 0; 256 > Wd; ++Wd) {
+  Vd[Wd] = String.fromCharCode(Wd);
+}
+tc = Vd;
+m.getInheritedInstanceCount = () => Object.keys(xc).length;
+m.getLiveInheritedInstances = () => {
+  var a = [], b;
+  for (b in xc) {
+    xc.hasOwnProperty(b) && a.push(xc[b]);
+  }
+  return a;
+};
+m.flushPendingDeletes = vc;
+m.setDelayFunction = a => {
+  wc = a;
+  uc.length && wc && wc(vc);
+};
+Jc = m.InternalError = class extends Error {
+  constructor(a) {
+    super(a);
+    this.name = "InternalError";
+  }
+};
+Object.assign(Uc.prototype, {isAliasOf:function(a) {
+  if (!(this instanceof Uc && a instanceof Uc)) {
+    return !1;
+  }
+  var b = this.g.u.i, c = this.g.o;
+  a.g = a.g;
+  var d = a.g.u.i;
+  for (a = a.g.o; b.C;) {
+    c = b.ma(c), b = b.C;
+  }
+  for (; d.C;) {
+    a = d.ma(a), d = d.C;
+  }
+  return b === d && c === a;
+}, clone:function() {
+  this.g.o || Tc(this);
+  if (this.g.ha) {
+    return this.g.count.value += 1, this;
+  }
+  var a = Kc, b = Object, c = b.create, d = Object.getPrototypeOf(this), e = this.g;
+  a = a(c.call(b, d, {g:{value:{count:e.count, ea:e.ea, ha:e.ha, o:e.o, u:e.u, F:e.F, J:e.J,},}}));
+  a.g.count.value += 1;
+  a.g.ea = !1;
+  return a;
+}, ["delete"]() {
+  this.g.o || Tc(this);
+  if (this.g.ea && !this.g.ha) {
+    throw new P("Object already scheduled for deletion");
+  }
+  Ec(this);
+  var a = this.g;
+  --a.count.value;
+  0 === a.count.value && (a.F ? a.J.O(a.F) : a.u.i.O(a.o));
+  this.g.ha || (this.g.F = void 0, this.g.o = void 0);
+}, isDeleted:function() {
+  return !this.g.o;
+}, deleteLater:function() {
+  this.g.o || Tc(this);
+  if (this.g.ea && !this.g.ha) {
+    throw new P("Object already scheduled for deletion");
+  }
+  uc.push(this);
+  1 === uc.length && wc && wc(vc);
+  this.g.ea = !0;
+  return this;
+},});
+Object.assign(dd.prototype, {Rb(a) {
+  this.qb && (a = this.qb(a));
+  return a;
+}, ab(a) {
+  this.O?.(a);
+}, argPackAdvance:8, readValueFromPointer:Oc, fromWireType:function(a) {
+  function b() {
+    return this.sa ? Lc(this.i.M, {u:this.hc, o:c, J:this, F:a,}) : Lc(this.i.M, {u:this, o:a,});
+  }
+  var c = this.Rb(a);
+  if (!c) {
+    return this.ab(a), null;
+  }
+  var d = Ic(this.i, c);
+  if (void 0 !== d) {
+    if (0 === d.g.count.value) {
+      return d.g.o = c, d.g.F = a, d.clone();
+    }
+    d = d.clone();
+    this.ab(a);
+    return d;
+  }
+  d = this.i.Qb(c);
+  d = Hc[d];
+  if (!d) {
+    return b.call(this);
+  }
+  d = this.ra ? d.Hb : d.pointerType;
+  var e = Gc(c, this.i, d.i);
+  return null === e ? b.call(this) : this.sa ? Lc(d.i.M, {u:d, o:e, J:this, F:a,}) : Lc(d.i.M, {u:d, o:e,});
+},});
+nd = m.UnboundTypeError = rc("UnboundTypeError");
+var Yd = {__syscall_fcntl64:function(a, b, c) {
+  eb = c;
+  try {
+    var d = Tb(a);
+    switch(b) {
+      case 0:
+        var e = db();
+        if (0 > e) {
+          break;
+        }
+        for (; Gb[e];) {
+          e++;
+        }
+        return Vb(d, e).W;
+      case 1:
+      case 2:
+        return 0;
+      case 3:
+        return d.flags;
+      case 4:
+        return e = db(), d.flags |= e, 0;
+      case 12:
+        return e = db(), Ca[e + 0 >> 1] = 2, 0;
+      case 13:
+      case 14:
+        return 0;
+    }
+    return -28;
+  } catch (f) {
+    if ("undefined" == typeof lc || "ErrnoError" !== f.name) {
+      throw f;
+    }
+    return -f.$;
+  }
+}, __syscall_ioctl:function(a, b, c) {
+  eb = c;
+  try {
+    var d = Tb(a);
+    switch(b) {
+      case 21509:
+        return d.s ? 0 : -59;
+      case 21505:
+        if (!d.s) {
+          return -59;
+        }
+        if (d.s.V.Xb) {
+          a = [3, 28, 127, 21, 4, 0, 1, 0, 17, 19, 26, 0, 18, 15, 23, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
+          var e = db();
+          D[e >> 2] = 25856;
+          D[e + 4 >> 2] = 5;
+          D[e + 8 >> 2] = 191;
+          D[e + 12 >> 2] = 35387;
+          for (var f = 0; 32 > f; f++) {
+            z[e + f + 17] = a[f] || 0;
+          }
+        }
+        return 0;
+      case 21510:
+      case 21511:
+      case 21512:
+        return d.s ? 0 : -59;
+      case 21506:
+      case 21507:
+      case 21508:
+        if (!d.s) {
+          return -59;
+        }
+        if (d.s.V.Yb) {
+          for (e = db(), a = [], f = 0; 32 > f; f++) {
+            a.push(z[e + f + 17]);
+          }
+        }
+        return 0;
+      case 21519:
+        if (!d.s) {
+          return -59;
+        }
+        e = db();
+        return D[e >> 2] = 0;
+      case 21520:
+        return d.s ? -28 : -59;
+      case 21531:
+        e = db();
+        if (!d.m.Wb) {
+          throw new N(59);
+        }
+        return d.m.Wb(d, b, e);
+      case 21523:
+        if (!d.s) {
+          return -59;
+        }
+        d.s.V.Zb && (f = [24, 80], e = db(), Ca[e >> 1] = f[0], Ca[e + 2 >> 1] = f[1]);
+        return 0;
+      case 21524:
+        return d.s ? 0 : -59;
+      case 21515:
+        return d.s ? 0 : -59;
+      default:
+        return -28;
+    }
+  } catch (g) {
+    if ("undefined" == typeof lc || "ErrnoError" !== g.name) {
+      throw g;
+    }
+    return -g.$;
+  }
+}, __syscall_openat:function(a, b, c, d) {
+  eb = d;
+  try {
+    b = b ? nb(A, b) : "";
+    var e = b;
+    if ("/" === e.charAt(0)) {
+      b = e;
+    } else {
+      var f = -100 === a ? "/" : Tb(a).path;
+      if (0 == e.length) {
+        throw new N(44);
+      }
+      b = gb(f + "/" + e);
+    }
+    var g = d ? db() : 0;
+    return fc(b, c, g).W;
+  } catch (k) {
+    if ("undefined" == typeof lc || "ErrnoError" !== k.name) {
+      throw k;
+    }
+    return -k.$;
+  }
+}, _abort_js:() => {
+  Qa("");
+}, _embind_create_inheriting_constructor:(a, b, c) => {
+  a = Q(a);
+  b = Dc(b, "wrapper");
+  c = pc(c);
+  var d = b.i, e = d.M, f = d.C.M, g = d.C.constructor;
+  a = mc(a, function(...k) {
+    d.C.pb.forEach(function(p) {
+      if (this[p] === f[p]) {
+        throw new sc(`Pure virtual function ${p} must be implemented in JavaScript`);
+      }
+    }.bind(this));
+    Object.defineProperty(this, "__parent", {value:e});
+    this.__construct(...k);
+  });
+  e.__construct = function(...k) {
+    if (this === e) {
+      throw new P("Pass correct 'this' to __construct");
+    }
+    k = g.implement(this, ...k);
+    Ec(k);
+    var p = k.g;
+    k.notifyOnDestruction();
+    p.ha = !0;
+    Object.defineProperties(this, {g:{value:p}});
+    Kc(this);
+    k = p.o;
+    k = yc(d, k);
+    if (xc.hasOwnProperty(k)) {
+      throw new P(`Tried to register registered instance: ${k}`);
+    }
+    xc[k] = this;
+  };
+  e.__destruct = function() {
+    if (this === e) {
+      throw new P("Pass correct 'this' to __destruct");
+    }
+    Ec(this);
+    var k = this.g.o;
+    k = yc(d, k);
+    if (xc.hasOwnProperty(k)) {
+      delete xc[k];
+    } else {
+      throw new P(`Tried to unregister unregistered instance: ${k}`);
+    }
+  };
+  a.prototype = Object.create(e);
+  Object.assign(a.prototype, c);
+  return qc(a);
+}, _embind_finalize_value_object:a => {
+  var b = Mc[a];
+  delete Mc[a];
+  var c = b.Na, d = b.O, e = b.eb, f = e.map(g => g.Ub).concat(e.map(g => g.kc));
+  U([a], f, g => {
+    var k = {};
+    e.forEach((p, n) => {
+      var t = g[n], x = p.Sb, y = p.Tb, l = g[n + e.length], u = p.jc, q = p.lc;
+      k[p.Ob] = {read:C => t.fromWireType(x(y, C)), write:(C, E) => {
+        var w = [];
+        u(q, C, l.toWireType(w, E));
+        Nc(w);
+      }};
+    });
+    return [{name:b.name, fromWireType:p => {
+      var n = {}, t;
+      for (t in k) {
+        n[t] = k[t].read(p);
+      }
+      d(p);
+      return n;
+    }, toWireType:(p, n) => {
+      for (var t in k) {
+        if (!(t in n)) {
+          throw new TypeError(`Missing field: "${t}"`);
+        }
+      }
+      var x = c();
+      for (t in k) {
+        k[t].write(x, n[t]);
+      }
+      null !== p && p.push(d, x);
+      return x;
+    }, argPackAdvance:8, readValueFromPointer:Oc, L:d,}];
+  });
+}, _embind_register_bigint:() => {
+}, _embind_register_bool:(a, b, c, d) => {
+  b = Q(b);
+  Rc(a, {name:b, fromWireType:function(e) {
+    return !!e;
+  }, toWireType:function(e, f) {
+    return f ? c : d;
+  }, argPackAdvance:8, readValueFromPointer:function(e) {
+    return this.fromWireType(A[e]);
+  }, L:null,});
+}, _embind_register_class:(a, b, c, d, e, f, g, k, p, n, t, x, y) => {
+  t = Q(t);
+  f = V(e, f);
+  k &&= V(g, k);
+  n &&= V(p, n);
+  y = V(x, y);
+  var l = Xc(t);
+  Wc(l, function() {
+    od(`Cannot construct ${t} due to unbound types`, [d]);
+  });
+  U([a, b, c], d ? [d] : [], u => {
+    u = u[0];
+    if (d) {
+      var q = u.i;
+      var C = q.M;
+    } else {
+      C = Uc.prototype;
+    }
+    u = mc(t, function(...R) {
+      if (Object.getPrototypeOf(this) !== E) {
+        throw new P("Use 'new' to construct " + t);
+      }
+      if (void 0 === w.Z) {
+        throw new P(t + " has no accessible constructor");
+      }
+      var W = w.Z[R.length];
+      if (void 0 === W) {
+        throw new P(`Tried to invoke ctor of ${t} with invalid number of parameters (${R.length}) - expected (${Object.keys(w.Z).toString()}) parameters instead!`);
+      }
+      return W.apply(this, R);
+    });
+    var E = Object.create(C, {constructor:{value:u},});
+    u.prototype = E;
+    var w = new Yc(t, u, E, y, q, f, k, n);
+    if (w.C) {
+      var L;
+      (L = w.C).na ?? (L.na = []);
+      w.C.na.push(w);
+    }
+    q = new dd(t, w, !0, !1, !1);
+    L = new dd(t + "*", w, !1, !1, !1);
+    C = new dd(t + " const*", w, !1, !0, !1);
+    Hc[a] = {pointerType:L, Hb:C};
+    ed(l, u);
+    return [q, L, C];
+  });
+}, _embind_register_class_class_function:(a, b, c, d, e, f, g) => {
+  var k = rd(c, d);
+  b = Q(b);
+  b = sd(b);
+  f = V(e, f);
+  U([], [a], p => {
+    function n() {
+      od(`Cannot call ${t} due to unbound types`, k);
+    }
+    p = p[0];
+    var t = `${p.name}.${b}`;
+    b.startsWith("@@") && (b = Symbol[b.substring(2)]);
+    var x = p.i.constructor;
+    void 0 === x[b] ? (n.da = c - 1, x[b] = n) : (Vc(x, b, t), x[b].A[c - 1] = n);
+    U([], k, y => {
+      y = qd(t, [y[0], null].concat(y.slice(1)), null, f, g);
+      void 0 === x[b].A ? (y.da = c - 1, x[b] = y) : x[b].A[c - 1] = y;
+      if (p.i.na) {
+        for (const l of p.i.na) {
+          l.constructor.hasOwnProperty(b) || (l.constructor[b] = y);
+        }
+      }
+      return [];
+    });
+    return [];
+  });
+}, _embind_register_class_class_property:(a, b, c, d, e, f, g, k) => {
+  b = Q(b);
+  f = V(e, f);
+  U([], [a], p => {
+    p = p[0];
+    var n = `${p.name}.${b}`, t = {get() {
+      od(`Cannot access ${n} due to unbound types`, [c]);
+    }, enumerable:!0, configurable:!0};
+    t.set = k ? () => {
+      od(`Cannot access ${n} due to unbound types`, [c]);
+    } : () => {
+      throw new P(`${n} is a read-only property`);
+    };
+    Object.defineProperty(p.i.constructor, b, t);
+    U([], [c], x => {
+      x = x[0];
+      var y = {get() {
+        return x.fromWireType(f(d));
+      }, enumerable:!0};
+      k && (k = V(g, k), y.set = l => {
+        var u = [];
+        k(d, x.toWireType(u, l));
+        Nc(u);
+      });
+      Object.defineProperty(p.i.constructor, b, y);
+      return [];
+    });
+    return [];
+  });
+}, _embind_register_class_constructor:(a, b, c, d, e, f) => {
+  var g = rd(b, c);
+  e = V(d, e);
+  U([], [a], k => {
+    k = k[0];
+    var p = `constructor ${k.name}`;
+    void 0 === k.i.Z && (k.i.Z = []);
+    if (void 0 !== k.i.Z[b - 1]) {
+      throw new P(`Cannot register multiple constructors with identical number of parameters (${b - 1}) for class '${k.name}'! Overload resolution is currently only performed using the parameter count, not actual type info!`);
+    }
+    k.i.Z[b - 1] = () => {
+      od(`Cannot construct ${k.name} due to unbound types`, g);
+    };
+    U([], g, n => {
+      n.splice(1, 0, null);
+      k.i.Z[b - 1] = qd(p, n, null, e, f);
+      return [];
+    });
+    return [];
+  });
+}, _embind_register_class_function:(a, b, c, d, e, f, g, k) => {
+  var p = rd(c, d);
+  b = Q(b);
+  b = sd(b);
+  f = V(e, f);
+  U([], [a], n => {
+    function t() {
+      od(`Cannot call ${x} due to unbound types`, p);
+    }
+    n = n[0];
+    var x = `${n.name}.${b}`;
+    b.startsWith("@@") && (b = Symbol[b.substring(2)]);
+    k && n.i.pb.push(b);
+    var y = n.i.M, l = y[b];
+    void 0 === l || void 0 === l.A && l.className !== n.name && l.da === c - 2 ? (t.da = c - 2, t.className = n.name, y[b] = t) : (Vc(y, b, x), y[b].A[c - 2] = t);
+    U([], p, u => {
+      u = qd(x, u, n, f, g);
+      void 0 === y[b].A ? (u.da = c - 2, y[b] = u) : y[b].A[c - 2] = u;
+      return [];
+    });
+    return [];
+  });
+}, _embind_register_class_property:(a, b, c, d, e, f, g, k, p, n) => {
+  b = Q(b);
+  e = V(d, e);
+  U([], [a], t => {
+    t = t[0];
+    var x = `${t.name}.${b}`, y = {get() {
+      od(`Cannot access ${x} due to unbound types`, [c, g]);
+    }, enumerable:!0, configurable:!0};
+    y.set = p ? () => od(`Cannot access ${x} due to unbound types`, [c, g]) : () => {
+      throw new P(x + " is a read-only property");
+    };
+    Object.defineProperty(t.i.M, b, y);
+    U([], p ? [c, g] : [c], l => {
+      var u = l[0], q = {get() {
+        var E = td(this, t, x + " getter");
+        return u.fromWireType(e(f, E));
+      }, enumerable:!0};
+      if (p) {
+        p = V(k, p);
+        var C = l[1];
+        q.set = function(E) {
+          var w = td(this, t, x + " setter"), L = [];
+          p(n, w, C.toWireType(L, E));
+          Nc(L);
+        };
+      }
+      Object.defineProperty(t.i.M, b, q);
+      return [];
+    });
+    return [];
+  });
+}, _embind_register_emval:a => Rc(a, vd), _embind_register_enum:(a, b, c, d) => {
+  function e() {
+  }
+  b = Q(b);
+  e.values = {};
+  Rc(a, {name:b, constructor:e, fromWireType:function(f) {
+    return this.constructor.values[f];
+  }, toWireType:(f, g) => g.value, argPackAdvance:8, readValueFromPointer:wd(b, c, d), L:null,});
+  Wc(b, e);
+}, _embind_register_enum_value:(a, b, c) => {
+  var d = Dc(a, "enum");
+  b = Q(b);
+  a = d.constructor;
+  d = Object.create(d.constructor.prototype, {value:{value:c}, constructor:{value:mc(`${d.name}_${b}`, function() {
+  })},});
+  a.values[c] = d;
+  a[b] = d;
+}, _embind_register_float:(a, b, c) => {
+  b = Q(b);
+  Rc(a, {name:b, fromWireType:d => d, toWireType:(d, e) => e, argPackAdvance:8, readValueFromPointer:xd(b, c), L:null,});
+}, _embind_register_function:(a, b, c, d, e, f) => {
+  var g = rd(b, c);
+  a = Q(a);
+  a = sd(a);
+  e = V(d, e);
+  Wc(a, function() {
+    od(`Cannot call ${a} due to unbound types`, g);
+  }, b - 1);
+  U([], g, k => {
+    ed(a, qd(a, [k[0], null].concat(k.slice(1)), null, e, f), b - 1);
+    return [];
+  });
+}, _embind_register_integer:(a, b, c, d, e) => {
+  b = Q(b);
+  -1 === e && (e = 4294967295);
+  e = k => k;
+  if (0 === d) {
+    var f = 32 - 8 * c;
+    e = k => k << f >>> f;
+  }
+  var g = b.includes("unsigned") ? function(k, p) {
+    return p >>> 0;
+  } : function(k, p) {
+    return p;
+  };
+  Rc(a, {name:b, fromWireType:e, toWireType:g, argPackAdvance:8, readValueFromPointer:yd(b, c, 0 !== d), L:null,});
+}, _embind_register_memory_view:(a, b, c) => {
+  function d(f) {
+    return new e(z.buffer, M[f + 4 >> 2], M[f >> 2]);
+  }
+  var e = [Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array,][b];
+  c = Q(c);
+  Rc(a, {name:c, fromWireType:d, argPackAdvance:8, readValueFromPointer:d,}, {Vb:!0,});
+}, _embind_register_std_string:(a, b) => {
+  b = Q(b);
+  var c = "std::string" === b;
+  Rc(a, {name:b, fromWireType:function(d) {
+    var e = M[d >> 2], f = d + 4;
+    if (c) {
+      for (var g = f, k = 0; k <= e; ++k) {
+        var p = f + k;
+        if (k == e || 0 == A[p]) {
+          g = g ? nb(A, g, p - g) : "";
+          if (void 0 === n) {
+            var n = g;
+          } else {
+            n += String.fromCharCode(0), n += g;
+          }
+          g = p + 1;
+        }
+      }
+    } else {
+      n = Array(e);
+      for (k = 0; k < e; ++k) {
+        n[k] = String.fromCharCode(A[f + k]);
+      }
+      n = n.join("");
+    }
+    Bc(d);
+    return n;
+  }, toWireType:function(d, e) {
+    e instanceof ArrayBuffer && (e = new Uint8Array(e));
+    var f = "string" == typeof e;
+    if (!(f || e instanceof Uint8Array || e instanceof Uint8ClampedArray || e instanceof Int8Array)) {
+      throw new P("Cannot pass non-string to std::string");
+    }
+    var g = c && f ? pb(e) : e.length;
+    var k = Xd(4 + g + 1), p = k + 4;
+    M[k >> 2] = g;
+    if (c && f) {
+      qb(e, A, p, g + 1);
+    } else {
+      if (f) {
+        for (f = 0; f < g; ++f) {
+          var n = e.charCodeAt(f);
+          if (255 < n) {
+            throw Bc(p), new P("String has UTF-16 code units that do not fit in 8 bits");
+          }
+          A[p + f] = n;
+        }
+      } else {
+        for (f = 0; f < g; ++f) {
+          A[p + f] = e[f];
+        }
+      }
+    }
+    null !== d && d.push(Bc, k);
+    return k;
+  }, argPackAdvance:8, readValueFromPointer:Oc, L(d) {
+    Bc(d);
+  },});
+}, _embind_register_std_wstring:(a, b, c) => {
+  c = Q(c);
+  if (2 === b) {
+    var d = Ad;
+    var e = Bd;
+    var f = Cd;
+    var g = k => Fa[k >> 1];
+  } else {
+    4 === b && (d = Dd, e = Ed, f = Fd, g = k => M[k >> 2]);
+  }
+  Rc(a, {name:c, fromWireType:k => {
+    for (var p = M[k >> 2], n, t = k + 4, x = 0; x <= p; ++x) {
+      var y = k + 4 + x * b;
+      if (x == p || 0 == g(y)) {
+        t = d(t, y - t), void 0 === n ? n = t : (n += String.fromCharCode(0), n += t), t = y + b;
+      }
+    }
+    Bc(k);
+    return n;
+  }, toWireType:(k, p) => {
+    if ("string" != typeof p) {
+      throw new P(`Cannot pass non-string to C++ string type ${c}`);
+    }
+    var n = f(p), t = Xd(4 + n + b);
+    M[t >> 2] = n / b;
+    e(p, t + 4, n + b);
+    null !== k && k.push(Bc, t);
+    return t;
+  }, argPackAdvance:8, readValueFromPointer:Oc, L(k) {
+    Bc(k);
+  }});
+}, _embind_register_value_object:(a, b, c, d, e, f) => {
+  Mc[a] = {name:Q(b), Na:V(c, d), O:V(e, f), eb:[],};
+}, _embind_register_value_object_field:(a, b, c, d, e, f, g, k, p, n) => {
+  Mc[a].eb.push({Ob:Q(b), Ub:c, Sb:V(d, e), Tb:f, kc:g, jc:V(k, p), lc:n,});
+}, _embind_register_void:(a, b) => {
+  b = Q(b);
+  Rc(a, {Ic:!0, name:b, argPackAdvance:0, fromWireType:() => {
+  }, toWireType:() => {
+  },});
+}, _emscripten_get_now_is_monotonic:() => 1, _emscripten_memcpy_js:(a, b, c) => A.copyWithin(a, b, b + c), _emval_as:(a, b, c) => {
+  a = pc(a);
+  b = Dc(b, "emval::as");
+  return Gd(b, c, a);
+}, _emval_call_method:(a, b, c, d, e) => {
+  a = Jd[a];
+  b = pc(b);
+  c = Id(c);
+  return a(b, b[c], d, e);
+}, _emval_decref:ud, _emval_get_method_caller:(a, b, c) => {
+  var d = Ld(a, b), e = d.shift();
+  a--;
+  var f = Array(a);
+  b = `methodCaller<(${d.map(g => g.name).join(", ")}) => ${e.name}>`;
+  return Kd(mc(b, (g, k, p, n) => {
+    for (var t = 0, x = 0; x < a; ++x) {
+      f[x] = d[x].readValueFromPointer(n + t), t += d[x].argPackAdvance;
+    }
+    g = 1 === c ? Md(k, f) : k.apply(g, f);
+    return Gd(e, p, g);
+  }));
+}, _emval_get_module_property:a => {
+  a = Id(a);
+  return qc(m[a]);
+}, _emval_get_property:(a, b) => {
+  a = pc(a);
+  b = pc(b);
+  return qc(a[b]);
+}, _emval_incref:a => {
+  9 < a && (oc[a + 1] += 1);
+}, _emval_new_array:() => qc([]), _emval_new_cstring:a => qc(Id(a)), _emval_new_object:() => qc({}), _emval_run_destructors:a => {
+  var b = pc(a);
+  Nc(b);
+  ud(a);
+}, _emval_set_property:(a, b, c) => {
+  a = pc(a);
+  b = pc(b);
+  c = pc(c);
+  a[b] = c;
+}, _emval_take_value:(a, b) => {
+  a = Dc(a, "_emval_take_value");
+  a = a.readValueFromPointer(b);
+  return qc(a);
+}, emscripten_asm_const_int:(a, b, c) => {
+  Nd.length = 0;
+  for (var d; d = A[b++];) {
+    var e = 105 != d;
+    e &= 112 != d;
+    c += e && c % 8 ? 4 : 0;
+    Nd.push(112 == d ? M[c >> 2] : 105 == d ? D[c >> 2] : Ha[c >> 3]);
+    c += e ? 8 : 4;
+  }
+  return bb[a](...Nd);
+}, emscripten_date_now:() => Date.now(), emscripten_get_now:() => performance.now(), emscripten_resize_heap:a => {
+  var b = A.length;
+  a >>>= 0;
+  if (2147483648 < a) {
+    return !1;
+  }
+  for (var c = 1; 4 >= c; c *= 2) {
+    var d = b * (1 + 0.2 / c);
+    d = Math.min(d, a + 100663296);
+    var e = Math;
+    d = Math.max(a, d);
+    a: {
+      e = (e.min.call(e, 2147483648, d + (65536 - d % 65536) % 65536) - Aa.buffer.byteLength + 65535) / 65536;
+      try {
+        Aa.grow(e);
+        Ia();
+        var f = 1;
+        break a;
+      } catch (g) {
+      }
+      f = void 0;
+    }
+    if (f) {
+      return !0;
+    }
+  }
+  return !1;
+}, environ_get:(a, b) => {
+  var c = 0;
+  Qd().forEach((d, e) => {
+    var f = b + c;
+    e = M[a + 4 * e >> 2] = f;
+    for (f = 0; f < d.length; ++f) {
+      z[e++] = d.charCodeAt(f);
+    }
+    z[e] = 0;
+    c += d.length + 1;
+  });
+  return 0;
+}, environ_sizes_get:(a, b) => {
+  var c = Qd();
+  M[a >> 2] = c.length;
+  var d = 0;
+  c.forEach(e => d += e.length + 1);
+  M[b >> 2] = d;
+  return 0;
+}, fd_close:function(a) {
+  try {
+    var b = Tb(a);
+    if (null === b.W) {
+      throw new N(8);
+    }
+    b.Ka && (b.Ka = null);
+    try {
+      b.m.close && b.m.close(b);
+    } catch (c) {
+      throw c;
+    } finally {
+      Gb[b.W] = null;
+    }
+    b.W = null;
+    return 0;
+  } catch (c) {
+    if ("undefined" == typeof lc || "ErrnoError" !== c.name) {
+      throw c;
+    }
+    return c.$;
+  }
+}, fd_read:function(a, b, c, d) {
+  try {
+    a: {
+      var e = Tb(a);
+      a = b;
+      for (var f, g = b = 0; g < c; g++) {
+        var k = M[a >> 2], p = M[a + 4 >> 2];
+        a += 8;
+        var n = e, t = f, x = z;
+        if (0 > p || 0 > t) {
+          throw new N(28);
+        }
+        if (null === n.W) {
+          throw new N(8);
+        }
+        if (1 === (n.flags & 2097155)) {
+          throw new N(8);
+        }
+        if (16384 === (n.node.mode & 61440)) {
+          throw new N(31);
+        }
+        if (!n.m.read) {
+          throw new N(28);
+        }
+        var y = "undefined" != typeof t;
+        if (!y) {
+          t = n.position;
+        } else if (!n.seekable) {
+          throw new N(70);
+        }
+        var l = n.m.read(n, x, k, p, t);
+        y || (n.position += l);
+        var u = l;
+        if (0 > u) {
+          var q = -1;
+          break a;
+        }
+        b += u;
+        if (u < p) {
+          break;
+        }
+        "undefined" != typeof f && (f += u);
+      }
+      q = b;
+    }
+    M[d >> 2] = q;
+    return 0;
+  } catch (C) {
+    if ("undefined" == typeof lc || "ErrnoError" !== C.name) {
+      throw C;
+    }
+    return C.$;
+  }
+}, fd_seek:function(a, b, c, d, e) {
+  b = c + 2097152 >>> 0 < 4194305 - !!b ? (b >>> 0) + 4294967296 * c : NaN;
+  try {
+    if (isNaN(b)) {
+      return 61;
+    }
+    var f = Tb(a);
+    hc(f, b, d);
+    Ya = [f.position >>> 0, (Xa = f.position, 1.0 <= +Math.abs(Xa) ? 0.0 < Xa ? +Math.floor(Xa / 4294967296.0) >>> 0 : ~~+Math.ceil((Xa - +(~~Xa >>> 0)) / 4294967296.0) >>> 0 : 0)];
+    D[e >> 2] = Ya[0];
+    D[e + 4 >> 2] = Ya[1];
+    f.Ka && 0 === b && 0 === d && (f.Ka = null);
+    return 0;
+  } catch (g) {
+    if ("undefined" == typeof lc || "ErrnoError" !== g.name) {
+      throw g;
+    }
+    return g.$;
+  }
+}, fd_write:function(a, b, c, d) {
+  try {
+    a: {
+      var e = Tb(a);
+      a = b;
+      for (var f, g = b = 0; g < c; g++) {
+        var k = M[a >> 2], p = M[a + 4 >> 2];
+        a += 8;
+        var n = e, t = k, x = p, y = f, l = z;
+        if (0 > x || 0 > y) {
+          throw new N(28);
+        }
+        if (null === n.W) {
+          throw new N(8);
+        }
+        if (0 === (n.flags & 2097155)) {
+          throw new N(8);
+        }
+        if (16384 === (n.node.mode & 61440)) {
+          throw new N(31);
+        }
+        if (!n.m.write) {
+          throw new N(28);
+        }
+        n.seekable && n.flags & 1024 && hc(n, 0, 2);
+        var u = "undefined" != typeof y;
+        if (!u) {
+          y = n.position;
+        } else if (!n.seekable) {
+          throw new N(70);
+        }
+        var q = n.m.write(n, l, t, x, y, void 0);
+        u || (n.position += q);
+        var C = q;
+        if (0 > C) {
+          var E = -1;
+          break a;
+        }
+        b += C;
+        "undefined" != typeof f && (f += C);
+      }
+      E = b;
+    }
+    M[d >> 2] = E;
+    return 0;
+  } catch (w) {
+    if ("undefined" == typeof lc || "ErrnoError" !== w.name) {
+      throw w;
+    }
+    return w.$;
+  }
+}, strftime_l:(a, b, c, d) => Ud(a, b, c, d)}, X = function() {
+  function a(c) {
+    X = c.exports;
+    Aa = X.memory;
+    Ia();
+    gd = X.__indirect_function_table;
+    Ka.unshift(X.__wasm_call_ctors);
+    Na--;
+    m.monitorRunDependencies?.(Na);
+    0 == Na && (null !== Oa && (clearInterval(Oa), Oa = null), Pa && (c = Pa, Pa = null, c()));
+    return X;
+  }
+  var b = {env:Yd, wasi_snapshot_preview1:Yd,};
+  Na++;
+  m.monitorRunDependencies?.(Na);
+  if (m.instantiateWasm) {
+    try {
+      return m.instantiateWasm(b, a);
+    } catch (c) {
+      ya(`Module.instantiateWasm callback failed with error: ${c}`), ca(c);
+    }
+  }
+  Sa ||= Ra("canvas_advanced.wasm") ? "canvas_advanced.wasm" : m.locateFile ? m.locateFile("canvas_advanced.wasm", sa) : sa + "canvas_advanced.wasm";
+  Wa(b, function(c) {
+    a(c.instance);
+  }).catch(ca);
+  return {};
+}(), Bc = a => (Bc = X.free)(a), Xd = a => (Xd = X.malloc)(a), Ac = a => (Ac = X.__getTypeName)(a), Za = m._ma_device__on_notification_unlocked = a => (Za = m._ma_device__on_notification_unlocked = X.ma_device__on_notification_unlocked)(a);
+m._ma_malloc_emscripten = (a, b) => (m._ma_malloc_emscripten = X.ma_malloc_emscripten)(a, b);
+m._ma_free_emscripten = (a, b) => (m._ma_free_emscripten = X.ma_free_emscripten)(a, b);
+var $a = m._ma_device_process_pcm_frames_capture__webaudio = (a, b, c) => ($a = m._ma_device_process_pcm_frames_capture__webaudio = X.ma_device_process_pcm_frames_capture__webaudio)(a, b, c), ab = m._ma_device_process_pcm_frames_playback__webaudio = (a, b, c) => (ab = m._ma_device_process_pcm_frames_playback__webaudio = X.ma_device_process_pcm_frames_playback__webaudio)(a, b, c);
+m.dynCall_iiji = (a, b, c, d, e) => (m.dynCall_iiji = X.dynCall_iiji)(a, b, c, d, e);
+m.dynCall_jiji = (a, b, c, d, e) => (m.dynCall_jiji = X.dynCall_jiji)(a, b, c, d, e);
+m.dynCall_iiiji = (a, b, c, d, e, f) => (m.dynCall_iiiji = X.dynCall_iiiji)(a, b, c, d, e, f);
+m.dynCall_iij = (a, b, c, d) => (m.dynCall_iij = X.dynCall_iij)(a, b, c, d);
+m.dynCall_jii = (a, b, c) => (m.dynCall_jii = X.dynCall_jii)(a, b, c);
+m.dynCall_viijii = (a, b, c, d, e, f, g) => (m.dynCall_viijii = X.dynCall_viijii)(a, b, c, d, e, f, g);
+m.dynCall_iiiiij = (a, b, c, d, e, f, g) => (m.dynCall_iiiiij = X.dynCall_iiiiij)(a, b, c, d, e, f, g);
+m.dynCall_iiiiijj = (a, b, c, d, e, f, g, k, p) => (m.dynCall_iiiiijj = X.dynCall_iiiiijj)(a, b, c, d, e, f, g, k, p);
+m.dynCall_iiiiiijj = (a, b, c, d, e, f, g, k, p, n) => (m.dynCall_iiiiiijj = X.dynCall_iiiiiijj)(a, b, c, d, e, f, g, k, p, n);
+var Zd;
+Pa = function $d() {
+  Zd || ae();
+  Zd || (Pa = $d);
+};
+function ae() {
+  function a() {
+    if (!Zd && (Zd = !0, m.calledRun = !0, !Ba)) {
+      m.noFSInit || ic || (ic = !0, m.stdin = m.stdin, m.stdout = m.stdout, m.stderr = m.stderr, m.stdin ? jc("stdin", m.stdin) : ec("/dev/tty", "/dev/stdin"), m.stdout ? jc("stdout", null, m.stdout) : ec("/dev/tty", "/dev/stdout"), m.stderr ? jc("stderr", null, m.stderr) : ec("/dev/tty1", "/dev/stderr"), fc("/dev/stdin", 0), fc("/dev/stdout", 1), fc("/dev/stderr", 1));
+      Jb = !1;
+      cb(Ka);
+      ba(m);
+      if (m.onRuntimeInitialized) {
+        m.onRuntimeInitialized();
+      }
+      if (m.postRun) {
+        for ("function" == typeof m.postRun && (m.postRun = [m.postRun]); m.postRun.length;) {
+          var b = m.postRun.shift();
+          La.unshift(b);
+        }
+      }
+      cb(La);
+    }
+  }
+  if (!(0 < Na)) {
+    if (m.preRun) {
+      for ("function" == typeof m.preRun && (m.preRun = [m.preRun]); m.preRun.length;) {
+        Ma();
+      }
+    }
+    cb(Ja);
+    0 < Na || (m.setStatus ? (m.setStatus("Running..."), setTimeout(function() {
+      setTimeout(function() {
+        m.setStatus("");
+      }, 1);
+      a();
+    }, 1)) : a());
+  }
+}
+if (m.preInit) {
+  for ("function" == typeof m.preInit && (m.preInit = [m.preInit]); 0 < m.preInit.length;) {
+    m.preInit.pop()();
+  }
+}
+ae();
+moduleRtn = da;
+
+
+
+  return moduleRtn;
+}
+);
+})();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Rive);
+
+
+/***/ }),
+
+/***/ "./src/rive-block/block.json":
+/*!***********************************!*\
+  !*** ./src/rive-block/block.json ***!
+  \***********************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/rive-block","version":"0.1.0","title":"Rive Block","category":"widgets","icon":"format-video","description":"Import and use your Rive assets to add animated graphics, epic hero sections, and interactive product demos to your website.","example":{},"attributes":{"height":{"type":"string","default":"auto"},"width":{"type":"string","default":"100%"},"riveFileUrl":{"type":"string"},"riveFileId":{"type":"number"},"enableAutoplay":{"type":"boolean","default":false},"respectReducedMotion":{"type":"boolean","default":true},"ariaLabel":{"type":"string","default":""},"ariaDescription":{"type":"string","default":""}},"supports":{"html":false,"position":{"sticky":true},"color":{"background":true,"text":false}},"textdomain":"rive-block","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+
+/***/ }),
+
+/***/ "./src/rive-block/components/RiveCanvas.js":
+/*!*************************************************!*\
+  !*** ./src/rive-block/components/RiveCanvas.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ RiveCanvas)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _utils_RiveRuntime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/RiveRuntime */ "./src/rive-block/utils/RiveRuntime.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+/**
+ * RiveCanvas Component
+ *
+ * Wrapper component that handles Rive animation loading and display in the block editor.
+ * Uses @rive-app/canvas-advanced for full control over Rive runtime.
+ * Isolated component ensures proper cleanup when riveFileUrl changes.
+ */
+
+
+
+
+
+
+function RiveCanvas({
+  riveFileUrl,
+  width,
+  height,
+  enableAutoplay,
+  respectReducedMotion,
+  ariaLabel,
+  ariaDescription
+}) {
+  const canvasRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const riveInstanceRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const riveFileRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const artboardRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const rendererRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const animationFrameIdRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [loadError, setLoadError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+
+  // Initialize Rive animation when canvas is ready
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasRef.current || !riveFileUrl) return;
+    let mounted = true;
+    setIsLoading(true);
+    setLoadError(null);
+    (async () => {
+      try {
+        // Get Rive runtime instance
+        const rive = await _utils_RiveRuntime__WEBPACK_IMPORTED_MODULE_3__.riveRuntime.awaitInstance();
+        if (!mounted) return;
+
+        // Fetch Rive file
+        const response = await fetch(riveFileUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch Rive file: ${response.statusText}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        const fileBytes = new Uint8Array(arrayBuffer);
+
+        // Load Rive file
+        const file = await rive.load(fileBytes);
+        riveFileRef.current = file;
+        if (!mounted) return;
+
+        // Get default artboard
+        const artboard = file.defaultArtboard();
+        artboardRef.current = artboard;
+
+        // Create renderer
+        const renderer = rive.makeRenderer(canvasRef.current, true);
+        rendererRef.current = renderer;
+
+        // Check user's motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Determine if autoplay should be enabled
+        const shouldAutoplay = enableAutoplay && !(respectReducedMotion && prefersReducedMotion);
+
+        // Try to create animation or state machine instance
+        let animationInstance = null;
+        if (artboard.animationCount() > 0) {
+          const animation = artboard.animationByIndex(0);
+          animationInstance = new rive.LinearAnimationInstance(animation, artboard);
+        }
+        riveInstanceRef.current = {
+          rive,
+          file,
+          artboard,
+          renderer,
+          animation: animationInstance,
+          shouldAutoplay
+        };
+
+        // Start render loop if autoplay is enabled
+        if (shouldAutoplay && animationInstance) {
+          startRenderLoop(rive);
+        } else {
+          // Just render one frame
+          renderFrame(rive);
+        }
+        setIsLoading(false);
+        setLoadError(null);
+      } catch (error) {
+        console.error('[Rive Block] Error loading Rive animation:', error);
+        if (mounted) {
+          setLoadError((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Unable to load Rive animation. Please check the file and try again.', 'rive-block'));
+          setIsLoading(false);
+        }
+      }
+    })();
+
+    // Cleanup function
+    return () => {
+      mounted = false;
+      cleanup();
+    };
+  }, [riveFileUrl, enableAutoplay, respectReducedMotion]);
+
+  /**
+   * Start the render loop for animation
+   */
+  const startRenderLoop = rive => {
+    let lastTime = 0;
+    const draw = time => {
+      if (!riveInstanceRef.current) return;
+      const {
+        artboard,
+        renderer,
+        animation
+      } = riveInstanceRef.current;
+      const elapsed = lastTime ? (time - lastTime) / 1000 : 0;
+      lastTime = time;
+
+      // Clear canvas
+      renderer.clear();
+      renderer.save();
+
+      // Advance animation
+      if (animation) {
+        animation.advance(elapsed);
+        animation.apply(1.0); // Full mix
+      }
+
+      // Advance artboard
+      artboard.advance(elapsed);
+
+      // Align to canvas
+      renderer.align(rive.Fit.contain, rive.Alignment.center, {
+        minX: 0,
+        minY: 0,
+        maxX: canvasRef.current.width,
+        maxY: canvasRef.current.height
+      }, artboard.bounds);
+
+      // Draw artboard
+      artboard.draw(renderer);
+      renderer.restore();
+
+      // Request next frame
+      animationFrameIdRef.current = rive.requestAnimationFrame(draw);
+    };
+    animationFrameIdRef.current = rive.requestAnimationFrame(draw);
+  };
+
+  /**
+   * Render a single frame (for static display)
+   */
+  const renderFrame = rive => {
+    if (!riveInstanceRef.current) return;
+    const {
+      artboard,
+      renderer
+    } = riveInstanceRef.current;
+    renderer.clear();
+    renderer.save();
+
+    // Align to canvas
+    renderer.align(rive.Fit.contain, rive.Alignment.center, {
+      minX: 0,
+      minY: 0,
+      maxX: canvasRef.current.width,
+      maxY: canvasRef.current.height
+    }, artboard.bounds);
+
+    // Draw artboard
+    artboard.draw(renderer);
+    renderer.restore();
+  };
+
+  /**
+   * Cleanup Rive resources
+   */
+  const cleanup = () => {
+    // Cancel animation frame
+    if (animationFrameIdRef.current && riveInstanceRef.current) {
+      const {
+        rive
+      } = riveInstanceRef.current;
+      rive.cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+
+    // Delete Rive instances
+    if (riveInstanceRef.current) {
+      const {
+        animation,
+        renderer,
+        artboard
+      } = riveInstanceRef.current;
+      if (animation) {
+        animation.delete();
+      }
+      if (renderer) {
+        renderer.delete();
+      }
+      if (artboard) {
+        artboard.delete();
+      }
+    }
+
+    // Unref file
+    if (riveFileRef.current) {
+      riveFileRef.current.unref();
+      riveFileRef.current = null;
+    }
+    riveInstanceRef.current = null;
+    artboardRef.current = null;
+    rendererRef.current = null;
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+    style: {
+      position: 'relative',
+      width,
+      height
+    },
+    children: [isLoading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      style: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        zIndex: 1000
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, {})
+    }), loadError && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Notice, {
+      status: "error",
+      isDismissible: false,
+      children: loadError
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("canvas", {
+      ref: canvasRef,
+      style: {
+        width,
+        height
+      },
+      role: ariaLabel ? 'img' : undefined,
+      "aria-label": ariaLabel || undefined,
+      "aria-description": ariaDescription || undefined
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./src/rive-block/edit.js":
+/*!********************************!*\
+  !*** ./src/rive-block/edit.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Edit)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/rive-block/editor.scss");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./src/rive-block/block.json");
+/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./icon */ "./src/rive-block/icon.js");
+/* harmony import */ var _components_RiveCanvas__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/RiveCanvas */ "./src/rive-block/components/RiveCanvas.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
+/**
+ * Retrieves the translation of text.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
+ * @see https://www.w3.org/International/i18n-drafts/nav/about
+ */
+
+
+/**
+ * React hook that is used to mark the block wrapper element.
+ * It provides all the necessary props like the class name.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
+ */
+
+
+
+/**
+ * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
+ * Those files can contain any CSS code that gets applied to the editor.
+ *
+ * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+/**
+ * The edit function describes the structure of your block in the context of the
+ * editor. This represents what the editor will render when the block is used.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
+ *
+ * @return {Element} Element to render.
+ */
+
+function Edit({
+  attributes,
+  setAttributes
+}) {
+  const {
+    riveFileUrl,
+    riveFileId,
+    width = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.width.default,
+    height = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.height.default,
+    enableAutoplay = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.enableAutoplay.default,
+    respectReducedMotion = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.respectReducedMotion.default,
+    ariaLabel = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.ariaLabel.default,
+    ariaDescription = _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.ariaDescription.default
+  } = attributes;
+
+  // Handle Rive file selection from Media Library or Upload
+  const onSelectRiveFile = media => {
+    if (!media || !media.url) {
+      setAttributes({
+        riveFileUrl: undefined,
+        riveFileId: undefined
+      });
+      return;
+    }
+    setAttributes({
+      riveFileUrl: media.url,
+      riveFileId: media.id
+    });
+  };
+
+  // Show placeholder if no Rive file is selected
+  if (!riveFileUrl) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+      ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaPlaceholder, {
+        icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockIcon, {
+          icon: _icon__WEBPACK_IMPORTED_MODULE_5__["default"]
+        }),
+        onSelect: onSelectRiveFile,
+        accept: ".riv",
+        allowedTypes: ['application/octet-stream'],
+        labels: {
+          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Choose Rive Asset', 'rive-block'),
+          instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Upload a Rive file or choose from your Media Library.', 'rive-block')
+        }
+      })
+    });
+  }
+
+  // Show canvas with Rive animation when file is selected
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanel, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Settings", "rive-block"),
+        resetAll: () => {
+          setAttributes({
+            width: undefined,
+            height: undefined
+          });
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
+          hasValue: () => width !== undefined && width !== _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.width.default,
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Width", "rive-block"),
+          onDeselect: () => setAttributes({
+            width: undefined
+          }),
+          isShownByDefault: true,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Width", "rive-block"),
+            value: width,
+            onChange: value => setAttributes({
+              width: value || undefined
+            }),
+            units: [{
+              value: 'px',
+              label: 'px'
+            }, {
+              value: '%',
+              label: '%'
+            }, {
+              value: 'em',
+              label: 'em'
+            }, {
+              value: 'rem',
+              label: 'rem'
+            }, {
+              value: 'vh',
+              label: 'vh'
+            }, {
+              value: 'dvw',
+              label: 'dvw'
+            } // ← Din custom unit!
+            ]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalToolsPanelItem, {
+          hasValue: () => height !== undefined && height !== _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes.height.default,
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Height", "rive-block"),
+          onDeselect: () => setAttributes({
+            height: undefined
+          }),
+          isShownByDefault: true,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Height", "rive-block"),
+            value: height,
+            onChange: value => setAttributes({
+              height: value || undefined
+            }),
+            units: [{
+              value: 'px',
+              label: 'px'
+            }, {
+              value: '%',
+              label: '%'
+            }, {
+              value: 'em',
+              label: 'em'
+            }, {
+              value: 'rem',
+              label: 'rem'
+            }, {
+              value: 'vh',
+              label: 'vh'
+            }, {
+              value: 'dvh',
+              label: 'dvh'
+            }]
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rive File', 'rive-block'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Current file:', 'rive-block')
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+          style: {
+            wordBreak: 'break-all',
+            fontSize: '12px',
+            color: '#757575'
+          },
+          children: riveFileUrl
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+            onSelect: onSelectRiveFile,
+            allowedTypes: ['application/octet-stream'],
+            value: riveFileId,
+            render: ({
+              open
+            }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+              onClick: open,
+              variant: "secondary",
+              __next40pxDefaultSize: true,
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Replace Rive File', 'rive-block')
+            })
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Accessibility', 'rive-block'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("strong", {
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Animation from Interactions', 'rive-block'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('(Level AAA)', 'rive-block')]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Autoplay', 'rive-block'),
+          help: enableAutoplay ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Animation will start automatically. Consider accessibility: users with vestibular disorders may prefer animations that don\'t autoplay.', 'rive-block') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Animation will require user interaction to play. This is the recommended setting for WCAG AAA compliance.', 'rive-block'),
+          checked: enableAutoplay,
+          onChange: value => setAttributes({
+            enableAutoplay: value
+          })
+        }), enableAutoplay && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+          className: "rive-block-notice",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Notice, {
+            status: "warning",
+            isDismissible: false,
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay may violate WCAG AAA 2.3.3 (Animation from Interactions). Consider if this animation is essential to the user experience.', 'rive-block')
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("strong", {
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Pause, Stop, Hide', 'rive-block'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('(Level A)', 'rive-block')]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Respect Reduced Motion Preference', 'rive-block'),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Disable animation for users who have set "prefers-reduced-motion" in their system settings. Highly recommended for accessibility.', 'rive-block'),
+          checked: respectReducedMotion,
+          onChange: value => setAttributes({
+            respectReducedMotion: value
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("strong", {
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Non-text Content', 'rive-block'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('(Level A)', 'rive-block')]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('ARIA Label', 'rive-block'),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Accessible name for screen readers. Describe what this animation represents (e.g., "Company logo animation").', 'rive-block'),
+          value: ariaLabel,
+          onChange: value => setAttributes({
+            ariaLabel: value
+          }),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('e.g., Hero animation', 'rive-block')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextareaControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('ARIA Description', 'rive-block'),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Detailed description of the animation for screen readers. Explain what happens in the animation.', 'rive-block'),
+          value: ariaDescription,
+          onChange: value => setAttributes({
+            ariaDescription: value
+          }),
+          placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('e.g., An animated illustration showing...', 'rive-block'),
+          rows: 3
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+      ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_RiveCanvas__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        riveFileUrl: riveFileUrl,
+        width: width,
+        height: height,
+        enableAutoplay: enableAutoplay,
+        respectReducedMotion: respectReducedMotion,
+        ariaLabel: ariaLabel,
+        ariaDescription: ariaDescription
+      })
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./src/rive-block/editor.scss":
+/*!************************************!*\
+  !*** ./src/rive-block/editor.scss ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./src/rive-block/icon.js":
+/*!********************************!*\
+  !*** ./src/rive-block/icon.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * Rive block icon
+ *
+ * Single source of truth for the Rive block icon.
+ * Import this wherever the icon is needed.
+ */
+
+const riveIcon = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 150 150",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("path", {
+    fillRule: "evenodd",
+    d: "M19.18,23.33a7.46,7.46,0,0,0,7.5,7.42H88.84c20.52-1.39,33.1,24.78,17.5,38.65q-6.87,5.88-17.5,5.87h-27a7.43,7.43,0,1,0,0,14.85c.94,0,30.07,0,29.83,0l26.87,42.66a7.92,7.92,0,0,0,7,3.87c6.85.23,10-6.88,6.25-12.37l-23.9-38c37.3-17.51,21.54-71.94-19.07-70.34H26.68A7.47,7.47,0,0,0,19.18,23.33Z",
+    transform: "translate(0 -0.2)"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (riveIcon);
+
+/***/ }),
+
+/***/ "./src/rive-block/index.js":
+/*!*********************************!*\
+  !*** ./src/rive-block/index.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/rive-block/style.scss");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/rive-block/edit.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/rive-block/block.json");
+/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon */ "./src/rive-block/icon.js");
+/**
+ * Registers a new block provided a unique name and an object defining its behavior.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ */
+
+
+/**
+ * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
+ * All files containing `style` keyword are bundled together. The code used
+ * gets applied both to the front of your site and to the editor.
+ *
+ * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+/**
+ * Every block starts by registering a new block type definition.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ */
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_3__.name, {
+  /**
+   * @see ./edit.js
+   */
+  icon: _icon__WEBPACK_IMPORTED_MODULE_4__["default"],
+  edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"]
+});
+
+/***/ }),
+
+/***/ "./src/rive-block/style.scss":
+/*!***********************************!*\
+  !*** ./src/rive-block/style.scss ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./src/rive-block/utils/RiveRuntime.js":
+/*!*********************************************!*\
+  !*** ./src/rive-block/utils/RiveRuntime.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   riveRuntime: () => (/* binding */ riveRuntime)
+/* harmony export */ });
+/* harmony import */ var _rive_app_canvas_advanced__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @rive-app/canvas-advanced */ "./node_modules/@rive-app/canvas-advanced/canvas_advanced.mjs");
+/**
+ * RiveRuntime - Singleton manager for Rive WASM runtime
+ *
+ * Ensures only one instance of the Rive runtime is loaded across the entire application.
+ * Provides queue-based loading to handle multiple simultaneous requests.
+ */
+
+
+class RiveRuntimeManager {
+  constructor() {
+    this.runtime = null;
+    this.isLoading = false;
+    this.callbacks = [];
+    // Use unpkg CDN for WASM file - works both in development and production
+    this.wasmURL = 'https://unpkg.com/@rive-app/canvas-advanced@2.32.1/rive.wasm';
+  }
+
+  /**
+   * Load the Rive runtime (singleton pattern)
+   * @private
+   */
+  async loadRuntime() {
+    try {
+      this.runtime = await (0,_rive_app_canvas_advanced__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        locateFile: () => this.wasmURL
+      });
+
+      // Execute all queued callbacks
+      while (this.callbacks.length > 0) {
+        const callback = this.callbacks.shift();
+        if (callback) {
+          callback(this.runtime);
+        }
+      }
+    } catch (error) {
+      console.error('[Rive Block] Failed to load Rive runtime:', error);
+      // Reject all queued callbacks
+      while (this.callbacks.length > 0) {
+        this.callbacks.shift();
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get runtime instance via callback
+   * @param {Function} callback - Callback that receives the runtime instance
+   */
+  getInstance(callback) {
+    // If runtime already loaded, call immediately
+    if (this.runtime) {
+      callback(this.runtime);
+      return;
+    }
+
+    // Add to queue
+    this.callbacks.push(callback);
+
+    // Start loading if not already loading
+    if (!this.isLoading) {
+      this.isLoading = true;
+      this.loadRuntime();
+    }
+  }
+
+  /**
+   * Get runtime instance via Promise
+   * @returns {Promise} Promise that resolves with the runtime instance
+   */
+  awaitInstance() {
+    return new Promise((resolve, reject) => {
+      if (this.runtime) {
+        resolve(this.runtime);
+        return;
+      }
+      this.getInstance(runtime => {
+        if (runtime) {
+          resolve(runtime);
+        } else {
+          reject(new Error('Failed to load Rive runtime'));
+        }
+      });
+    });
+  }
+
+  /**
+   * Manually set the WASM URL (useful for custom CDN or local hosting)
+   * @param {string} url - URL to the rive.wasm file
+   */
+  setWasmUrl(url) {
+    if (this.runtime) {
+      console.warn('[Rive Block] Runtime already loaded. WASM URL change will not take effect.');
+      return;
+    }
+    this.wasmURL = url;
+  }
+}
+
+// Export singleton instance
+const riveRuntime = new RiveRuntimeManager();
+
+/***/ }),
+
+/***/ "@wordpress/block-editor":
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ }),
+
+/***/ "@wordpress/blocks":
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ }),
+
+/***/ "@wordpress/components":
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/i18n":
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ }),
+
+/***/ "react/jsx-runtime":
+/*!**********************************!*\
+  !*** external "ReactJSXRuntime" ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["ReactJSXRuntime"];
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"rive-block/index": 0,
+/******/ 			"rive-block/style-index": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkrive_block"] = globalThis["webpackChunkrive_block"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["rive-block/style-index"], () => (__webpack_require__("./src/rive-block/index.js")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=index.js.map

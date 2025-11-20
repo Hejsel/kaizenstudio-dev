@@ -64,7 +64,11 @@ async function initRiveAnimations() {
 		// Load Rive runtime once for all instances
 		const rive = await loadRiveRuntime();
 
-		// Check user's motion preference once for all instances
+		/**
+		 * Check user's motion preference once for all instances
+		 * 
+		 * @see https://www.w3.org/WAI/WCAG21/Techniques/client-side-script/SCR40
+		 */
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		// Initialize each canvas
