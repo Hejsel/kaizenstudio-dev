@@ -6,6 +6,12 @@
 
 .wp-block-create-block-rive-block {
 	border: 1px dotted #ffa41c;
+
+	// Ensure canvas always has minimum size in editor
+	// This prevents initialization issues with new blocks
+	min-width: 400px;
+	min-height: 300px;
+	display: block;
 }
 
 .rive-block-notice {

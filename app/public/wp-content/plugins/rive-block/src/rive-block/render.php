@@ -26,10 +26,12 @@ $aria_description = $attributes['ariaDescription'] ?? '';
 
 // Build wrapper attributes
 $wrapper_attributes = [
-	'style' => 'width: ' . esc_attr($width) . '; height: ' . esc_attr($height) . ';',
+	'style' => 'width: ' . esc_attr($width) . '; height: ' . esc_attr($height) . '; display: block;',
 	'data-rive-src' => esc_url($rive_file_url),
 	'data-enable-autoplay' => $enable_autoplay ? 'true' : 'false',
 	'data-respect-reduced-motion' => $respect_reduced_motion ? 'true' : 'false',
+	'data-width' => esc_attr($width),
+	'data-height' => esc_attr($height),
 ];
 
 // Add ARIA attributes if provided

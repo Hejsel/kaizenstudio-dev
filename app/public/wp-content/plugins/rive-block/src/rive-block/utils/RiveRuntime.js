@@ -1,11 +1,13 @@
 /**
- * RiveRuntime - Singleton manager for Rive WASM runtime
+ * RiveRuntime - Singleton manager for Rive WASM runtime (WebGL2)
  *
  * Ensures only one instance of the Rive runtime is loaded across the entire application.
  * Provides queue-based loading to handle multiple simultaneous requests.
+ *
+ * Uses @rive-app/webgl2-advanced for Rive Renderer support (required for vector feathering).
  */
 
-import RiveCanvas from '@rive-app/canvas-advanced';
+import RiveWebGL2 from '@rive-app/webgl2-advanced';
 
 class RiveRuntimeManager {
 	constructor() {
@@ -13,7 +15,7 @@ class RiveRuntimeManager {
 		this.isLoading = false;
 		this.callbacks = [];
 		// Use unpkg CDN for WASM file - works both in development and production
-		this.wasmURL = 'https://unpkg.com/@rive-app/canvas-advanced@2.32.1/rive.wasm';
+		this.wasmURL = 'https://unpkg.com/@rive-app/webgl2-advanced@2.32.1/rive.wasm';
 	}
 
 	/**
@@ -22,7 +24,7 @@ class RiveRuntimeManager {
 	 */
 	async loadRuntime() {
 		try {
-			this.runtime = await RiveCanvas({
+			this.runtime = await RiveWebGL2({
 				locateFile: () => this.wasmURL
 			});
 
@@ -34,7 +36,7 @@ class RiveRuntimeManager {
 				}
 			}
 		} catch (error) {
-			console.error('[Rive Block] Failed to load Rive runtime:', error);
+			console.error('[Rive Block] Failed to load Rive runtime (WebGL2):', error);
 			// Reject all queued callbacks
 			while (this.callbacks.length > 0) {
 				this.callbacks.shift();
@@ -79,7 +81,7 @@ class RiveRuntimeManager {
 				if (runtime) {
 					resolve(runtime);
 				} else {
-					reject(new Error('Failed to load Rive runtime'));
+					reject(new Error('Failed to load Rive runtime (WebGL2)'));
 				}
 			});
 		});
@@ -95,6 +97,16 @@ class RiveRuntimeManager {
 			return;
 		}
 		this.wasmURL = url;
+	}
+
+	/**
+	 * Check if WebGL2 is supported in the current browser
+	 * @returns {boolean} True if WebGL2 is supported
+	 */
+	isWebGL2Supported() {
+		const canvas = document.createElement('canvas');
+		const gl = canvas.getContext('webgl2');
+		return !!gl;
 	}
 }
 

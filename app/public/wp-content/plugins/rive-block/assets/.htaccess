@@ -1,0 +1,16 @@
+<IfModule mod_headers.c>
+    # Cache WASM files for 1 year
+    <FilesMatch "\.(wasm)$">
+        Header set Cache-Control "max-age=31536000, public, immutable"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/wasm "access plus 1 year"
+</IfModule>
+
+# Set correct MIME type for WASM files
+<IfModule mod_mime.c>
+    AddType application/wasm .wasm
+</IfModule>
