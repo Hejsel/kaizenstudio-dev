@@ -82,3 +82,21 @@ function rive_block_fix_riv_mime_type( $data, $_file, $filename ) {
 	return $data;
 }
 add_filter( 'wp_check_filetype_and_ext', 'rive_block_fix_riv_mime_type', 10, 3 );
+
+/**
+ * Localize plugin URL for JavaScript access to WASM files
+ */
+function rive_block_enqueue_scripts() {
+	// Only enqueue on frontend (not in editor)
+	if ( ! is_admin() ) {
+		// Localize the plugin URL for view.js to access WASM files
+		wp_localize_script(
+			'create-block-rive-block-view-script', // Handle from block.json viewScript
+			'riveBlockData',
+			array(
+				'pluginUrl' => plugin_dir_url( __FILE__ ),
+			)
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'rive_block_enqueue_scripts', 20 );

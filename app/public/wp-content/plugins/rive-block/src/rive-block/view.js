@@ -33,8 +33,14 @@ async function loadRiveRuntime() {
 	runtimeLoading = true;
 
 	try {
+		// Get the plugin URL from the localized script data (provided by PHP)
+		const pluginUrl = window.riveBlockData?.pluginUrl || '';
+
 		riveRuntime = await RiveCanvas({
-			locateFile: () => 'https://unpkg.com/@rive-app/canvas-advanced@2.32.1/rive.wasm'
+			locateFile: (file) => {
+				// Serve WASM files from plugin's build directory
+				return `${pluginUrl}/build/rive-block/${file}`;
+			}
 		});
 
 		// Resolve any waiting callbacks

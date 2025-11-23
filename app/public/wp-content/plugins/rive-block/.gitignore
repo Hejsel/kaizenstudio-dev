@@ -28,3 +28,7 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+# Rive WASM files (generated during build)
+build/rive-block/canvas_advanced.wasm
+build/rive-block/canvas_advanced_fallback.wasm

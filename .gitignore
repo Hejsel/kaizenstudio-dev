@@ -1,0 +1,13 @@
+
+# MCP Configuration
+.env
+.mcp.json
+
+# Claude Code
+.claude/
+
+# Logs
+logs/
+
+# WordPress uploads
+app/public/wp-content/uploads/
