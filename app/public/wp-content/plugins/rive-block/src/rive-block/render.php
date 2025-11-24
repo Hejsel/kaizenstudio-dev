@@ -42,6 +42,8 @@ if ( ! empty( $aria_description ) ) {
 	$wrapper_attributes['aria-description'] = esc_attr( $aria_description );
 }
 ?>
+<!-- Preload Rive animation file for faster initialization -->
+<link rel="preload" href="<?php echo esc_url( $rive_file_url ); ?>" as="fetch" crossorigin="anonymous">
 <canvas
 	<?php echo get_block_wrapper_attributes( $wrapper_attributes ); ?>>
 </canvas>
