@@ -41,9 +41,22 @@ if ( ! empty( $aria_label ) ) {
 if ( ! empty( $aria_description ) ) {
 	$wrapper_attributes['aria-description'] = esc_attr( $aria_description );
 }
+
+// Calculate aspect ratio for placeholder (prevent layout shift during lazy load)
+// Default to 16:9 if dimensions are not set or auto
+$aspect_ratio = '56.25%'; // 16:9 default
+if ( $width !== 'auto' && $height !== 'auto' && is_numeric( str_replace( ['px', '%', 'em', 'rem'], '', $width ) ) && is_numeric( str_replace( ['px', '%', 'em', 'rem'], '', $height ) ) ) {
+	$width_val = floatval( str_replace( ['px', '%', 'em', 'rem'], '', $width ) );
+	$height_val = floatval( str_replace( ['px', '%', 'em', 'rem'], '', $height ) );
+	if ( $width_val > 0 ) {
+		$aspect_ratio = ( $height_val / $width_val * 100 ) . '%';
+	}
+}
 ?>
-<!-- Preload Rive animation file for faster initialization -->
-<link rel="preload" href="<?php echo esc_url( $rive_file_url ); ?>" as="fetch" crossorigin="anonymous">
-<canvas
-	<?php echo get_block_wrapper_attributes( $wrapper_attributes ); ?>>
-</canvas>
+<div class="rive-block-container" style="position: relative; width: <?php echo esc_attr( $width ); ?>; padding-bottom: <?php echo esc_attr( $aspect_ratio ); ?>;">
+	<canvas
+		<?php echo get_block_wrapper_attributes( array_merge( $wrapper_attributes, [
+			'style' => 'position: absolute; top: 0; left: 0; width: 100%; height: 100%;'
+		] ) ); ?>>
+	</canvas>
+</div>
