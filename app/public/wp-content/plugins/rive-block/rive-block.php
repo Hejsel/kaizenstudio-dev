@@ -119,8 +119,9 @@ function rive_block_preload_wasm() {
 		return;
 	}
 
-	// Output preload link tag
+	// Output preload link tag for WASM file
+	// Using type="application/wasm" to ensure correct MIME type matching
 	$wasm_url = plugins_url( 'rive-block/build/rive-block/webgl2_advanced.wasm' );
-	echo '<link rel="preload" href="' . esc_url( $wasm_url ) . '" as="fetch" crossorigin="anonymous">' . "\n";
+	echo '<link rel="preload" href="' . esc_url( $wasm_url ) . '" as="fetch" type="application/wasm" crossorigin="anonymous">' . "\n";
 }
 add_action( 'wp_head', 'rive_block_preload_wasm', 1 );

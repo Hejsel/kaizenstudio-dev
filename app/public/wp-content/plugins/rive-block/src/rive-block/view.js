@@ -36,11 +36,13 @@ async function loadRiveRuntime() {
 	try {
 		// Get the plugin URL from the localized script data (provided by PHP)
 		const pluginUrl = window.riveBlockData?.pluginUrl || '';
+		// Remove trailing slash to prevent double slashes in URL
+		const baseUrl = pluginUrl.replace(/\/$/, '');
 
 		riveRuntime = await RiveWebGL2({
 			locateFile: (file) => {
 				// Serve WASM files from plugin's build directory
-				return `${pluginUrl}/build/rive-block/${file}`;
+				return `${baseUrl}/build/rive-block/${file}`;
 			}
 		});
 
