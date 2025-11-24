@@ -1,11 +1,12 @@
 /**
  * Frontend JavaScript for Rive Block
  *
- * Uses @rive-app/canvas-advanced for full control over Rive runtime.
+ * Uses @rive-app/webgl2-advanced for full control over Rive runtime with WebGL2 support.
  * Implements shared renderer pattern for optimal performance with multiple blocks.
+ * Supports vector feathering and advanced rendering features.
  */
 
-import RiveCanvas from '@rive-app/canvas-advanced';
+import RiveWebGL2 from '@rive-app/webgl2-advanced';
 
 // Rive runtime instance (singleton)
 let riveRuntime = null;
@@ -36,7 +37,7 @@ async function loadRiveRuntime() {
 		// Get the plugin URL from the localized script data (provided by PHP)
 		const pluginUrl = window.riveBlockData?.pluginUrl || '';
 
-		riveRuntime = await RiveCanvas({
+		riveRuntime = await RiveWebGL2({
 			locateFile: (file) => {
 				// Serve WASM files from plugin's build directory
 				return `${pluginUrl}/build/rive-block/${file}`;
@@ -211,6 +212,9 @@ function startRenderLoop(instanceData) {
 		artboard.draw(renderer);
 		renderer.restore();
 
+		// Flush renderer (required for WebGL2)
+		renderer.flush();
+
 		// Request next frame
 		instanceData.animationFrameId = rive.requestAnimationFrame(draw);
 	};
@@ -243,6 +247,9 @@ function renderFrame(instanceData) {
 	// Draw artboard
 	artboard.draw(renderer);
 	renderer.restore();
+
+	// Flush renderer (required for WebGL2)
+	renderer.flush();
 }
 
 /**

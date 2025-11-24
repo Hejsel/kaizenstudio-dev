@@ -9,14 +9,10 @@ module.exports = {
 		new CopyPlugin({
 			patterns: [
 				{
-					// Copy and rename rive.wasm to canvas_advanced.wasm (required by Emscripten)
-					from: path.resolve(__dirname, 'node_modules/@rive-app/canvas-advanced/rive.wasm'),
-					to: path.resolve(__dirname, 'build/rive-block/canvas_advanced.wasm'),
-				},
-				{
-					// Copy and rename rive_fallback.wasm (for older browsers without SIMD)
-					from: path.resolve(__dirname, 'node_modules/@rive-app/canvas-advanced/rive_fallback.wasm'),
-					to: path.resolve(__dirname, 'build/rive-block/canvas_advanced_fallback.wasm'),
+					// Copy and rename rive.wasm to webgl2_advanced.wasm (required by Emscripten)
+					// Note: WebGL2 only has one WASM file (no fallback needed for modern browsers)
+					from: path.resolve(__dirname, 'node_modules/@rive-app/webgl2-advanced/rive.wasm'),
+					to: path.resolve(__dirname, 'build/rive-block/webgl2_advanced.wasm'),
 				},
 			],
 		}),

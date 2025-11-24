@@ -2,7 +2,8 @@
  * RiveCanvas Component
  *
  * Wrapper component that handles Rive animation loading and display in the block editor.
- * Uses @rive-app/canvas-advanced for full control over Rive runtime.
+ * Uses @rive-app/webgl2-advanced for full control over Rive runtime with WebGL2 support.
+ * Supports vector feathering and advanced rendering features.
  * Isolated component ensures proper cleanup when riveFileUrl changes.
  */
 
@@ -160,6 +161,9 @@ export default function RiveCanvas({
 			artboard.draw(renderer);
 			renderer.restore();
 
+			// Flush renderer (required for WebGL2)
+			renderer.flush();
+
 			// Request next frame
 			animationFrameIdRef.current = rive.requestAnimationFrame(draw);
 		};
@@ -194,6 +198,9 @@ export default function RiveCanvas({
 		// Draw artboard
 		artboard.draw(renderer);
 		renderer.restore();
+
+		// Flush renderer (required for WebGL2)
+		renderer.flush();
 	};
 
 	/**

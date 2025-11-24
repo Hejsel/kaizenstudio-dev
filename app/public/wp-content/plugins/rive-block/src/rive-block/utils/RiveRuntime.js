@@ -5,15 +5,15 @@
  * Provides queue-based loading to handle multiple simultaneous requests.
  */
 
-import RiveCanvas from '@rive-app/canvas-advanced';
+import RiveWebGL2 from '@rive-app/webgl2-advanced';
 
 class RiveRuntimeManager {
 	constructor() {
 		this.runtime = null;
 		this.isLoading = false;
 		this.callbacks = [];
-		// Use unpkg CDN for WASM file - works both in development and production
-		this.wasmURL = 'https://unpkg.com/@rive-app/canvas-advanced@2.32.1/rive.wasm';
+		// WASM URL will be set dynamically based on WordPress plugin URL
+		this.wasmURL = null;
 	}
 
 	/**
@@ -22,8 +22,15 @@ class RiveRuntimeManager {
 	 */
 	async loadRuntime() {
 		try {
-			this.runtime = await RiveCanvas({
-				locateFile: () => this.wasmURL
+			this.runtime = await RiveWebGL2({
+				locateFile: (file) => {
+					// If custom WASM URL is set, use it
+					if (this.wasmURL) {
+						return `${this.wasmURL}/${file}`;
+					}
+					// Fallback to default path
+					return file;
+				}
 			});
 
 			// Execute all queued callbacks
@@ -86,8 +93,8 @@ class RiveRuntimeManager {
 	}
 
 	/**
-	 * Manually set the WASM URL (useful for custom CDN or local hosting)
-	 * @param {string} url - URL to the rive.wasm file
+	 * Manually set the WASM base URL (useful for custom CDN or local hosting)
+	 * @param {string} url - Base URL path to WASM files (without filename)
 	 */
 	setWasmUrl(url) {
 		if (this.runtime) {
