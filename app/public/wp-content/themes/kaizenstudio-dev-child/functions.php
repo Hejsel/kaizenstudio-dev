@@ -81,9 +81,9 @@ add_action( 'admin_menu', 'remove_dashboard_menu_items' );
 function myguten_remove_block_style() {
     wp_enqueue_script(
         'myguten-script',
-        get_template_directory_uri() . '/assets/js/editor/myguten.js', // URL, ikke lokal sti
+        get_stylesheet_directory_uri() . '/assets/js/editor/myguten.js', // URL, ikke lokal sti
         array( 'wp-blocks', 'wp-dom-ready', 'wp-edit-post' ),
-        filemtime( get_template_directory() . '/assets/js/editor/myguten.js' )
+        filemtime( get_stylesheet_directory() . '/assets/js/editor/myguten.js' )
     );
 }
 add_action( 'enqueue_block_editor_assets', 'myguten_remove_block_style' );
