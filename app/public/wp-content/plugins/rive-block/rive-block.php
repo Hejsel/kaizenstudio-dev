@@ -100,3 +100,27 @@ function rive_block_enqueue_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'rive_block_enqueue_scripts', 20 );
+
+/**
+ * Preload WASM file for faster Rive animation initialization
+ *
+ * Adds a <link rel="preload"> tag in the <head> to tell the browser to start
+ * downloading the WASM file as soon as possible, reducing animation load time.
+ */
+function rive_block_preload_wasm() {
+	// Only preload on frontend (not in editor)
+	if ( is_admin() ) {
+		return;
+	}
+
+	// Check if page contains any Rive blocks before preloading
+	global $post;
+	if ( ! $post || ! has_block( 'create-block/rive-block', $post ) ) {
+		return;
+	}
+
+	// Output preload link tag
+	$wasm_url = plugins_url( 'rive-block/build/rive-block/webgl2_advanced.wasm' );
+	echo '<link rel="preload" href="' . esc_url( $wasm_url ) . '" as="fetch" crossorigin="anonymous">' . "\n";
+}
+add_action( 'wp_head', 'rive_block_preload_wasm', 1 );
