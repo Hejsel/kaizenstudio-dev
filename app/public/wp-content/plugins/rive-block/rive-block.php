@@ -140,3 +140,34 @@ function rive_block_preload_wasm() {
 	echo '<link rel="preload" href="' . esc_url( $wasm_url ) . '" as="fetch" type="application/wasm" crossorigin="anonymous">' . "\n";
 }
 add_action( 'wp_head', 'rive_block_preload_wasm', 1 );
+
+/**
+ * Add HTTP cache headers for .riv files
+ *
+ * Sets aggressive caching for .riv files since they are immutable assets.
+ * This works in combination with in-memory caching on the client side:
+ * - In-memory cache: Prevents duplicate decoding on the same page
+ * - HTTP cache: Prevents duplicate downloads across page loads
+ *
+ * Cache-Control directives:
+ * - public: Can be cached by browsers and CDNs
+ * - max-age=31536000: Cache for 1 year (365 days)
+ * - immutable: Tells browser the file will never change at this URL
+ */
+function rive_block_add_cache_headers( $headers, $wp_object ) {
+	// Only apply to frontend requests
+	if ( is_admin() ) {
+		return $headers;
+	}
+
+	// Check if this is a .riv file request
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+	if ( strpos( $request_uri, '.riv' ) !== false ) {
+		// Set aggressive caching headers for immutable .riv files
+		$headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+		$headers['Expires'] = gmdate( 'D, d M Y H:i:s', time() + 31536000 ) . ' GMT';
+	}
+
+	return $headers;
+}
+add_filter( 'wp_headers', 'rive_block_add_cache_headers', 10, 2 );

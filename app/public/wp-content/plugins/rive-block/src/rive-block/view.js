@@ -16,6 +16,10 @@ let runtimeCallbacks = [];
 // Track all Rive instances for proper cleanup
 const riveInstances = new Map();
 
+// In-memory cache for Rive files to avoid duplicate decoding
+// Key: file URL, Value: decoded Rive file object
+const riveFileCache = new Map();
+
 /**
  * Load Rive runtime (singleton)
  */
@@ -56,6 +60,46 @@ async function loadRiveRuntime() {
 		runtimeLoading = false;
 		throw error;
 	}
+}
+
+/**
+ * Load and cache a Rive file
+ * Uses in-memory cache to avoid duplicate fetching and decoding of the same file
+ *
+ * @param {object} rive - Rive runtime instance
+ * @param {string} url - URL to the .riv file
+ * @returns {Promise<object>} Decoded Rive file object
+ */
+async function loadRiveFile(rive, url) {
+	// Check in-memory cache first
+	if (riveFileCache.has(url)) {
+		// Log cache hit in development
+		if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+			console.log(`[Rive Block] Cache hit: ${url}`);
+		}
+		return riveFileCache.get(url);
+	}
+
+	// Cache miss - fetch and decode the file
+	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+		console.log(`[Rive Block] Cache miss, loading: ${url}`);
+	}
+
+	const response = await fetch(url);
+	if (!response.ok) {
+		throw new Error(`Failed to fetch: ${response.statusText}`);
+	}
+
+	const arrayBuffer = await response.arrayBuffer();
+	const fileBytes = new Uint8Array(arrayBuffer);
+
+	// Decode Rive file
+	const file = await rive.load(fileBytes);
+
+	// Store in cache for future reuse
+	riveFileCache.set(url, file);
+
+	return file;
 }
 
 /**
@@ -155,17 +199,8 @@ async function initRiveInstance(rive, canvas, prefersReducedMotion) {
 	const shouldAutoplay = enableAutoplay && !(respectReducedMotion && prefersReducedMotion);
 
 	try {
-		// Fetch Rive file
-		const response = await fetch(riveSrc);
-		if (!response.ok) {
-			throw new Error(`Failed to fetch: ${response.statusText}`);
-		}
-
-		const arrayBuffer = await response.arrayBuffer();
-		const fileBytes = new Uint8Array(arrayBuffer);
-
-		// Load Rive file
-		const file = await rive.load(fileBytes);
+		// Load Rive file (uses in-memory cache if available)
+		const file = await loadRiveFile(rive, riveSrc);
 
 		// Get default artboard
 		const artboard = file.defaultArtboard();
@@ -335,7 +370,7 @@ function showErrorMessage(canvas, message) {
 function cleanupRiveInstances() {
 	riveInstances.forEach((instanceData, canvas) => {
 		try {
-			const { rive, animation, renderer, artboard, file, animationFrameId } = instanceData;
+			const { rive, animation, renderer, artboard, animationFrameId } = instanceData;
 
 			// Cancel animation frame
 			if (animationFrameId) {
@@ -353,16 +388,25 @@ function cleanupRiveInstances() {
 				artboard.delete();
 			}
 
-			// Unref file
-			if (file) {
-				file.unref();
-			}
+			// NOTE: We don't unref files here because they're stored in riveFileCache
+			// and may be reused by other instances. Files are unreffed during cache cleanup.
 		} catch (error) {
 			console.warn('[Rive Block] Error cleaning up instance:', error);
 		}
 	});
 
 	riveInstances.clear();
+
+	// Cleanup cached files
+	riveFileCache.forEach((file, url) => {
+		try {
+			file.unref();
+		} catch (error) {
+			console.warn(`[Rive Block] Error unreffing cached file ${url}:`, error);
+		}
+	});
+
+	riveFileCache.clear();
 }
 
 // Initialize when DOM is ready
