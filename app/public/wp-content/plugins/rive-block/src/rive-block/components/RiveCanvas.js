@@ -27,8 +27,32 @@ export default function RiveCanvas({
 	const artboardRef = useRef(null);
 	const rendererRef = useRef(null);
 	const animationFrameIdRef = useRef(null);
+	const resizeObserverRef = useRef(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [loadError, setLoadError] = useState(null);
+
+	/**
+	 * Set canvas internal resolution to match display size and device pixel ratio
+	 * This ensures crisp rendering and optimal GPU usage in the editor
+	 *
+	 * @param {HTMLCanvasElement} canvas - The canvas element to resize
+	 */
+	const setCanvasDPIAwareSize = (canvas) => {
+		if (!canvas) return;
+
+		// Get the display size of the canvas (CSS pixels)
+		const rect = canvas.getBoundingClientRect();
+		const displayWidth = rect.width;
+		const displayHeight = rect.height;
+
+		// Get device pixel ratio (typically 1, 1.5, 2, or 2.5)
+		const dpr = window.devicePixelRatio || 1;
+
+		// Set canvas internal resolution to match display size × DPI
+		// This prevents blurry rendering and reduces GPU scaling overhead
+		canvas.width = Math.round(displayWidth * dpr);
+		canvas.height = Math.round(displayHeight * dpr);
+	};
 
 	// Initialize Rive animation when canvas is ready
 	useEffect(() => {
@@ -64,9 +88,25 @@ export default function RiveCanvas({
 				const artboard = file.defaultArtboard();
 				artboardRef.current = artboard;
 
+				// Set canvas to DPI-aware size for crisp rendering
+				setCanvasDPIAwareSize(canvasRef.current);
+
 				// Create renderer
 				const renderer = rive.makeRenderer(canvasRef.current, true);
 				rendererRef.current = renderer;
+
+				// Setup ResizeObserver to handle canvas resizing
+				const resizeObserver = new ResizeObserver(() => {
+					if (canvasRef.current) {
+						setCanvasDPIAwareSize(canvasRef.current);
+						// Re-render current frame with new canvas size
+						if (riveInstanceRef.current) {
+							renderFrame(rive);
+						}
+					}
+				});
+				resizeObserver.observe(canvasRef.current);
+				resizeObserverRef.current = resizeObserver;
 
 				// Check user's motion preference
 				const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -207,6 +247,12 @@ export default function RiveCanvas({
 	 * Cleanup Rive resources
 	 */
 	const cleanup = () => {
+		// Disconnect resize observer
+		if (resizeObserverRef.current) {
+			resizeObserverRef.current.disconnect();
+			resizeObserverRef.current = null;
+		}
+
 		// Cancel animation frame
 		if (animationFrameIdRef.current && riveInstanceRef.current) {
 			const { rive } = riveInstanceRef.current;
