@@ -180,6 +180,32 @@ async function initRiveAnimations() {
 }
 
 /**
+ * Set canvas internal resolution to match display size and device pixel ratio
+ * This ensures crisp rendering and optimal GPU usage
+ *
+ * @param {HTMLCanvasElement} canvas - The canvas element to resize
+ */
+function setCanvasDPIAwareSize(canvas) {
+	// Get the display size of the canvas (CSS pixels)
+	const rect = canvas.getBoundingClientRect();
+	const displayWidth = rect.width;
+	const displayHeight = rect.height;
+
+	// Get device pixel ratio (typically 1, 1.5, 2, or 2.5)
+	const dpr = window.devicePixelRatio || 1;
+
+	// Set canvas internal resolution to match display size × DPI
+	// This prevents blurry rendering and reduces GPU scaling overhead
+	canvas.width = Math.round(displayWidth * dpr);
+	canvas.height = Math.round(displayHeight * dpr);
+
+	// Log in development
+	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+		console.log(`[Rive Block] Canvas DPI sizing: ${displayWidth}×${displayHeight} CSS → ${canvas.width}×${canvas.height} internal (DPR: ${dpr})`);
+	}
+}
+
+/**
  * Initialize a single Rive instance
  */
 async function initRiveInstance(rive, canvas, prefersReducedMotion) {
@@ -205,6 +231,9 @@ async function initRiveInstance(rive, canvas, prefersReducedMotion) {
 		// Get default artboard
 		const artboard = file.defaultArtboard();
 
+		// Set canvas to DPI-aware size for crisp rendering and optimal GPU usage
+		setCanvasDPIAwareSize(canvas);
+
 		// Create renderer
 		const renderer = rive.makeRenderer(canvas, true);
 
@@ -215,6 +244,18 @@ async function initRiveInstance(rive, canvas, prefersReducedMotion) {
 			animationInstance = new rive.LinearAnimationInstance(animation, artboard);
 		}
 
+		// Setup ResizeObserver to handle canvas resizing (window resize, orientation change)
+		const resizeObserver = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				if (entry.target === canvas) {
+					// Update canvas DPI-aware size
+					setCanvasDPIAwareSize(canvas);
+					// Renderer will automatically use new canvas size on next frame
+				}
+			}
+		});
+		resizeObserver.observe(canvas);
+
 		// Store instance data
 		const instanceData = {
 			rive,
@@ -224,7 +265,8 @@ async function initRiveInstance(rive, canvas, prefersReducedMotion) {
 			animation: animationInstance,
 			canvas,
 			shouldAutoplay,
-			animationFrameId: null
+			animationFrameId: null,
+			resizeObserver
 		};
 
 		riveInstances.set(canvas, instanceData);
@@ -447,7 +489,7 @@ function showErrorMessage(canvas, message) {
 function cleanupRiveInstances() {
 	riveInstances.forEach((instanceData, canvas) => {
 		try {
-			const { rive, animation, renderer, artboard, animationFrameId, viewportObserver } = instanceData;
+			const { rive, animation, renderer, artboard, animationFrameId, viewportObserver, resizeObserver } = instanceData;
 
 			// Cancel animation frame
 			if (animationFrameId) {
@@ -457,6 +499,11 @@ function cleanupRiveInstances() {
 			// Disconnect viewport observer
 			if (viewportObserver) {
 				viewportObserver.disconnect();
+			}
+
+			// Disconnect resize observer
+			if (resizeObserver) {
+				resizeObserver.disconnect();
 			}
 
 			// Delete instances
