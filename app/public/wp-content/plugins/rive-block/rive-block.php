@@ -84,7 +84,7 @@ function rive_block_fix_riv_mime_type( $data, $_file, $filename ) {
 add_filter( 'wp_check_filetype_and_ext', 'rive_block_fix_riv_mime_type', 10, 3 );
 
 /**
- * Localize plugin URL for JavaScript access to WASM files
+ * Localize plugin URL for JavaScript access to WASM files (frontend)
  */
 function rive_block_enqueue_scripts() {
 	// Only enqueue on frontend (not in editor)
@@ -100,6 +100,21 @@ function rive_block_enqueue_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'rive_block_enqueue_scripts', 20 );
+
+/**
+ * Localize plugin URL for JavaScript access to WASM files (editor)
+ */
+function rive_block_enqueue_editor_scripts() {
+	// Localize the plugin URL for editor scripts to access WASM files
+	wp_localize_script(
+		'create-block-rive-block-editor-script', // Handle from block.json editorScript
+		'riveBlockData',
+		array(
+			'pluginUrl' => plugin_dir_url( __FILE__ ),
+		)
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'rive_block_enqueue_editor_scripts', 20 );
 
 /**
  * Preload WASM file for faster Rive animation initialization
