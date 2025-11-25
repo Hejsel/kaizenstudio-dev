@@ -232,6 +232,10 @@ async function initRiveInstance(rive, canvas, prefersReducedMotion) {
 		// Start render loop if autoplay is enabled
 		if (shouldAutoplay && animationInstance) {
 			startRenderLoop(instanceData);
+
+			// Setup viewport observer to pause when not visible
+			// This follows Rive's best practice: "Pause when scrolled out of view"
+			setupViewportObserver(canvas, instanceData);
 		} else {
 			// Just render one frame
 			renderFrame(instanceData);
@@ -305,6 +309,79 @@ function startRenderLoop(instanceData) {
 }
 
 /**
+ * Pause the render loop for a single instance
+ * Used when animation is not in viewport to save GPU resources
+ */
+function pauseRenderLoop(instanceData) {
+	if (!instanceData) {
+		return;
+	}
+
+	const { rive, animationFrameId } = instanceData;
+
+	// Cancel animation frame if running
+	if (animationFrameId) {
+		rive.cancelAnimationFrame(animationFrameId);
+		instanceData.animationFrameId = null;
+	}
+}
+
+/**
+ * Resume the render loop for a single instance
+ * Called when animation enters viewport
+ */
+function resumeRenderLoop(instanceData) {
+	if (!instanceData || instanceData.animationFrameId) {
+		return; // Already running
+	}
+
+	// Only resume if autoplay is enabled
+	if (instanceData.shouldAutoplay) {
+		startRenderLoop(instanceData);
+	}
+}
+
+/**
+ * Setup Intersection Observer to pause/resume animation based on viewport visibility
+ * Implements Rive's best practice: "Pause when scrolled out of view; resume when needed"
+ *
+ * @param {HTMLCanvasElement} canvas - The canvas element to observe
+ * @param {object} instanceData - Rive instance data
+ * @see https://rive.app/docs/getting-started/best-practices#runtime-considerations
+ */
+function setupViewportObserver(canvas, instanceData) {
+	const observerOptions = {
+		root: null, // viewport
+		rootMargin: '0px', // Trigger exactly at viewport edge
+		threshold: 0.01 // At least 1% visible to be considered "in viewport"
+	};
+
+	const observer = new IntersectionObserver((entries) => {
+		entries.forEach((entry) => {
+			if (entry.isIntersecting) {
+				// Animation entered viewport - resume rendering
+				if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+					console.log(`[Rive Block] Resuming animation (entered viewport): ${canvas.dataset.riveSrc}`);
+				}
+				resumeRenderLoop(instanceData);
+			} else {
+				// Animation left viewport - pause rendering to save GPU
+				if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+					console.log(`[Rive Block] Pausing animation (left viewport): ${canvas.dataset.riveSrc}`);
+				}
+				pauseRenderLoop(instanceData);
+			}
+		});
+	}, observerOptions);
+
+	// Start observing the canvas
+	observer.observe(canvas);
+
+	// Store observer reference for cleanup
+	instanceData.viewportObserver = observer;
+}
+
+/**
  * Render a single frame (for static display)
  */
 function renderFrame(instanceData) {
@@ -370,11 +447,16 @@ function showErrorMessage(canvas, message) {
 function cleanupRiveInstances() {
 	riveInstances.forEach((instanceData, canvas) => {
 		try {
-			const { rive, animation, renderer, artboard, animationFrameId } = instanceData;
+			const { rive, animation, renderer, artboard, animationFrameId, viewportObserver } = instanceData;
 
 			// Cancel animation frame
 			if (animationFrameId) {
 				rive.cancelAnimationFrame(animationFrameId);
+			}
+
+			// Disconnect viewport observer
+			if (viewportObserver) {
+				viewportObserver.disconnect();
 			}
 
 			// Delete instances
