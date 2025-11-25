@@ -12,6 +12,53 @@ import { Spinner, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { riveRuntime } from '../utils/RiveRuntime';
 
+// In-memory cache for Rive files to avoid duplicate fetching and decoding
+// Key: file URL, Value: decoded Rive file object
+const riveFileCache = new Map();
+
+/**
+ * Load and cache a Rive file for the editor
+ * Uses in-memory cache to avoid duplicate fetching and decoding of the same file
+ *
+ * @param {object} rive - Rive runtime instance
+ * @param {string} url - URL of the Rive file to load
+ * @returns {Promise<object>} Decoded Rive file object
+ */
+async function loadRiveFile(rive, url) {
+	// Check cache first
+	if (riveFileCache.has(url)) {
+		if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+			console.log(`[Rive Editor] Cache hit: ${url}`);
+		}
+		return riveFileCache.get(url);
+	}
+
+	// Cache miss - fetch and decode the file
+	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+		console.log(`[Rive Editor] Cache miss, loading: ${url}`);
+	}
+
+	const response = await fetch(url);
+	if (!response.ok) {
+		throw new Error(`Failed to fetch Rive file: ${response.statusText}`);
+	}
+
+	const arrayBuffer = await response.arrayBuffer();
+	const fileBytes = new Uint8Array(arrayBuffer);
+
+	// Load and decode the file
+	const file = await rive.load(fileBytes);
+
+	// Store in cache for future use
+	riveFileCache.set(url, file);
+
+	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+		console.log(`[Rive Editor] Successfully loaded: ${url}`);
+	}
+
+	return file;
+}
+
 export default function RiveCanvas({
 	riveFileUrl,
 	width,
@@ -69,17 +116,8 @@ export default function RiveCanvas({
 
 				if (!mounted) return;
 
-				// Fetch Rive file
-				const response = await fetch(riveFileUrl);
-				if (!response.ok) {
-					throw new Error(`Failed to fetch Rive file: ${response.statusText}`);
-				}
-
-				const arrayBuffer = await response.arrayBuffer();
-				const fileBytes = new Uint8Array(arrayBuffer);
-
-				// Load Rive file
-				const file = await rive.load(fileBytes);
+				// Load Rive file (uses in-memory cache if available)
+				const file = await loadRiveFile(rive, riveFileUrl);
 				riveFileRef.current = file;
 
 				if (!mounted) return;
@@ -275,11 +313,10 @@ export default function RiveCanvas({
 			}
 		}
 
-		// Unref file
-		if (riveFileRef.current) {
-			riveFileRef.current.unref();
-			riveFileRef.current = null;
-		}
+		// NOTE: We don't unref files here because they're stored in riveFileCache
+		// and may be reused by other block instances in the editor.
+		// Files remain cached for optimal performance across multiple blocks.
+		riveFileRef.current = null;
 
 		riveInstanceRef.current = null;
 		artboardRef.current = null;
