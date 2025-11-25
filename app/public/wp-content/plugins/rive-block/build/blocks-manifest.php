@@ -43,6 +43,14 @@ return array(
 			'ariaDescription' => array(
 				'type' => 'string',
 				'default' => ''
+			),
+			'loadingPriority' => array(
+				'type' => 'string',
+				'enum' => array(
+					'high',
+					'low'
+				),
+				'default' => 'low'
 			)
 		),
 		'supports' => array(

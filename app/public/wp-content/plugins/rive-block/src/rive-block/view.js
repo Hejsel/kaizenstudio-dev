@@ -60,6 +60,7 @@ async function loadRiveRuntime() {
 
 /**
  * Initialize all Rive animations on the page
+ * Handles both eager loading (high priority) and lazy loading (low priority)
  */
 async function initRiveAnimations() {
 	// Find all Rive block canvas elements
@@ -75,14 +76,58 @@ async function initRiveAnimations() {
 
 		/**
 		 * Check user's motion preference once for all instances
-		 * 
+		 *
 		 * @see https://www.w3.org/WAI/WCAG21/Techniques/client-side-script/SCR40
 		 */
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-		// Initialize each canvas
-		for (const canvas of canvases) {
+		// Separate canvases by loading priority
+		const highPriorityCanvases = [];
+		const lowPriorityCanvases = [];
+
+		canvases.forEach(canvas => {
+			const priority = canvas.dataset.loadingPriority || 'low';
+			if (priority === 'high') {
+				highPriorityCanvases.push(canvas);
+			} else {
+				lowPriorityCanvases.push(canvas);
+			}
+		});
+
+		// Initialize high priority animations immediately (eager loading)
+		for (const canvas of highPriorityCanvases) {
 			await initRiveInstance(rive, canvas, prefersReducedMotion);
+		}
+
+		// Setup Intersection Observer for low priority animations (lazy loading)
+		if (lowPriorityCanvases.length > 0) {
+			const observerOptions = {
+				root: null, // viewport
+				rootMargin: '50px', // Start loading 50px before entering viewport
+				threshold: 0.01 // Trigger when at least 1% is visible
+			};
+
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(async (entry) => {
+					if (entry.isIntersecting) {
+						const canvas = entry.target;
+
+						// Skip if already initialized
+						if (riveInstances.has(canvas)) {
+							return;
+						}
+
+						// Initialize Rive instance when canvas becomes visible
+						await initRiveInstance(rive, canvas, prefersReducedMotion);
+
+						// Stop observing this canvas
+						observer.unobserve(canvas);
+					}
+				});
+			}, observerOptions);
+
+			// Observe low priority canvas elements
+			lowPriorityCanvases.forEach(canvas => observer.observe(canvas));
 		}
 
 	} catch (error) {

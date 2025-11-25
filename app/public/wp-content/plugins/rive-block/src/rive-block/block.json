@@ -38,6 +38,11 @@
 		"ariaDescription": {
 			"type": "string",
 			"default": ""
+		},
+		"loadingPriority": {
+			"type": "string",
+			"enum": ["high", "low"],
+			"default": "low"
 		}
 	},
 	"supports": {

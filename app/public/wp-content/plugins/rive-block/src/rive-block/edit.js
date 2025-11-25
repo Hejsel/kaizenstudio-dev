@@ -27,6 +27,7 @@ import {
 	ToggleControl,
 	TextControl,
 	TextareaControl,
+	SelectControl,
 	Notice,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
@@ -66,7 +67,8 @@ export default function Edit({ attributes, setAttributes }) {
 		enableAutoplay = metadata.attributes.enableAutoplay.default,
 		respectReducedMotion = metadata.attributes.respectReducedMotion.default,
 		ariaLabel = metadata.attributes.ariaLabel.default,
-		ariaDescription = metadata.attributes.ariaDescription.default
+		ariaDescription = metadata.attributes.ariaDescription.default,
+		loadingPriority = metadata.attributes.loadingPriority.default
 	} = attributes;
 
 	// Handle Rive file selection from Media Library or Upload
@@ -242,6 +244,28 @@ export default function Edit({ attributes, setAttributes }) {
 						onChange={(value) => setAttributes({ ariaDescription: value })}
 						placeholder={__('e.g., An animated illustration showing...', 'rive-block')}
 						rows={3}
+					/>
+				</PanelBody>
+				<PanelBody title={__('Performance', 'rive-block')} initialOpen={false}>
+					<SelectControl
+						label={__('Loading Priority', 'rive-block')}
+						value={loadingPriority}
+						options={[
+							{
+								label: __('High - Load immediately (above the fold)', 'rive-block'),
+								value: 'high'
+							},
+							{
+								label: __('Low - Load when visible (below the fold)', 'rive-block'),
+								value: 'low'
+							}
+						]}
+						onChange={(value) => setAttributes({ loadingPriority: value })}
+						help={
+							loadingPriority === 'high'
+								? __('Animation will be preloaded and initialized immediately. Use for critical above-the-fold content like hero animations.', 'rive-block')
+								: __('Animation will only load when scrolled into view. Recommended for below-the-fold content to improve initial page load performance.', 'rive-block')
+						}
 					/>
 				</PanelBody>
 			</InspectorControls>
