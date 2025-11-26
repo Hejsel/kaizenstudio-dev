@@ -246,6 +246,164 @@ sudo nginx -s reload
 
 Kontakt din hosting udbyders support for at tilføje `application/wasm` MIME type for `.wasm` filer.
 
+## HTTP Caching for .riv Files (Advanced - Optional)
+
+By default, the plugin uses **in-memory JavaScript caching** that automatically caches .riv files during a browsing session. This works perfectly on all servers without any configuration and provides excellent performance for multi-page browsing (zero HTTP requests after first load).
+
+For **power users** who want persistent cross-session caching, you can optionally configure HTTP cache headers on your web server. This allows browsers to cache .riv files on disk, so they persist even after closing and reopening the browser.
+
+### Performance Comparison
+
+| Scenario | In-Memory Cache (Built-in) | HTTP Cache (Optional) |
+|----------|----------------------------|----------------------|
+| **First page load** | Downloads .riv file | Downloads .riv file |
+| **Second page (same session)** | ✅ 0 requests (instant) | 304 response (minimal) |
+| **After browser restart** | Downloads .riv file again | ✅ 304 response (cached) |
+| **Configuration required** | ✅ None (works everywhere) | Server configuration needed |
+
+**Recommendation:** The built-in in-memory cache provides excellent performance for most use cases. Only configure HTTP caching if you need persistent cross-session caching.
+
+### Apache Configuration
+
+Add to your `.htaccess` file:
+
+```apache
+<IfModule mod_headers.c>
+    <FilesMatch "\.riv$">
+        # Cache for 7 days
+        Header set Cache-Control "public, max-age=604800, immutable"
+
+        # Allow CORS if needed
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+```
+
+### nginx Configuration
+
+Add to your nginx server configuration or site.conf:
+
+```nginx
+# Rive animation files (.riv)
+location ~* \.riv$ {
+    access_log        off;
+    log_not_found     off;
+
+    expires           7d;
+    add_header        Cache-Control "public, immutable";
+
+    # Allow CORS if needed
+    add_header        Access-Control-Allow-Origin *;
+}
+```
+
+Then reload nginx:
+
+```bash
+sudo nginx -s reload
+```
+
+### Local by Flywheel
+
+For local development, edit `conf/nginx/site.conf.hbs` in your Local site folder and add the nginx configuration above before the `# PHP-FPM` section.
+
+Then restart the site in Local.
+
+### Managed Hosting
+
+Contact your hosting provider's support to add cache headers for `.riv` files. Some hosts (like WP Engine, Kinsta) may already cache static files automatically.
+
+### Cache Duration Explained
+
+- **7 days (604800 seconds)**: Good balance for production sites
+- **immutable**: Tells browser file will never change (rename file if updated)
+- **public**: Allows CDNs and proxies to cache the file
+
+**Important:** If you update a .riv file, either:
+1. Upload it with a new filename, or
+2. Clear browser cache manually, or
+3. Add cache busting query parameters (handled automatically by WordPress Media Library)
+
+---
+
+## HTTP Caching for .riv Filer (Avanceret - Valgfrit)
+
+Som standard bruger plugin'et **in-memory JavaScript caching**, der automatisk cacher .riv filer under en browsing-session. Dette virker perfekt på alle servere uden konfiguration og giver fremragende performance til multi-side browsing (nul HTTP requests efter første load).
+
+For **power users**, der ønsker persistent cross-session caching, kan du valgfrit konfigurere HTTP cache headers på din webserver. Dette gør det muligt for browsere at cache .riv filer på disk, så de forbliver selv efter lukning og genåbning af browseren.
+
+### Performance Sammenligning
+
+| Scenario | In-Memory Cache (Indbygget) | HTTP Cache (Valgfrit) |
+|----------|-----------------------------|-----------------------|
+| **Første side load** | Downloader .riv fil | Downloader .riv fil |
+| **Anden side (samme session)** | ✅ 0 requests (øjeblikkelig) | 304 response (minimal) |
+| **Efter browser genstart** | Downloader .riv fil igen | ✅ 304 response (cached) |
+| **Konfiguration påkrævet** | ✅ Ingen (virker overalt) | Server konfiguration nødvendig |
+
+**Anbefaling:** Den indbyggede in-memory cache giver fremragende performance i de fleste tilfælde. Konfigurer kun HTTP caching hvis du har brug for persistent cross-session caching.
+
+### Apache Konfiguration
+
+Tilføj til din `.htaccess` fil:
+
+```apache
+<IfModule mod_headers.c>
+    <FilesMatch "\.riv$">
+        # Cache i 7 dage
+        Header set Cache-Control "public, max-age=604800, immutable"
+
+        # Tillad CORS hvis nødvendigt
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+```
+
+### nginx Konfiguration
+
+Tilføj til din nginx server konfiguration eller site.conf:
+
+```nginx
+# Rive animations filer (.riv)
+location ~* \.riv$ {
+    access_log        off;
+    log_not_found     off;
+
+    expires           7d;
+    add_header        Cache-Control "public, immutable";
+
+    # Tillad CORS hvis nødvendigt
+    add_header        Access-Control-Allow-Origin *;
+}
+```
+
+Genindlæs derefter nginx:
+
+```bash
+sudo nginx -s reload
+```
+
+### Local by Flywheel
+
+Til lokal udvikling, rediger `conf/nginx/site.conf.hbs` i din Local site mappe og tilføj nginx konfigurationen ovenfor før `# PHP-FPM` sektionen.
+
+Genstart derefter site'en i Local.
+
+### Managed Hosting
+
+Kontakt din hosting udbyders support for at tilføje cache headers til `.riv` filer. Nogle hosts (som WP Engine, Kinsta) cacher muligvis allerede statiske filer automatisk.
+
+### Cache Varighed Forklaret
+
+- **7 dage (604800 sekunder)**: God balance til produktions-sites
+- **immutable**: Fortæller browseren at filen aldrig ændres (omdøb fil hvis opdateret)
+- **public**: Tillader CDN'er og proxies at cache filen
+
+**Vigtigt:** Hvis du opdaterer en .riv fil, skal du enten:
+1. Uploade den med et nyt filnavn, eller
+2. Rydde browser cache manuelt, eller
+3. Tilføje cache busting query parameters (håndteres automatisk af WordPress Media Library)
+
 ## Teknisk Arkitektur
 
 ### Editor (edit.js)

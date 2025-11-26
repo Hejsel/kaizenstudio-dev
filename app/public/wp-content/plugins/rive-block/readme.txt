@@ -94,6 +94,62 @@ Edit the file: `conf/nginx/includes/mime-types.conf.hbs` in your site folder and
 
 Then restart the site in Local.
 
+== HTTP Caching for .riv Files (Advanced - Optional) ==
+
+By default, the plugin uses **in-memory JavaScript caching** that automatically caches .riv files during a browsing session. This works perfectly on all servers without any configuration and provides excellent performance for multi-page browsing (zero HTTP requests after first load).
+
+For **power users** who want persistent cross-session caching, you can optionally configure HTTP cache headers on your web server. This allows browsers to cache .riv files on disk, so they persist even after closing and reopening the browser.
+
+= Performance Comparison =
+
+* **First page load**: Both methods download .riv file
+* **Second page (same session)**: In-memory cache = 0 requests (instant) | HTTP cache = 304 response (minimal)
+* **After browser restart**: In-memory cache = downloads again | HTTP cache = 304 response (cached)
+* **Configuration required**: In-memory cache = None (works everywhere) | HTTP cache = Server configuration needed
+
+**Recommendation:** The built-in in-memory cache provides excellent performance for most use cases. Only configure HTTP caching if you need persistent cross-session caching.
+
+= For Apache Servers =
+
+Add to your `.htaccess` file:
+
+`<IfModule mod_headers.c>
+    <FilesMatch "\.riv$">
+        Header set Cache-Control "public, max-age=604800, immutable"
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>`
+
+= For nginx Servers =
+
+Add to your nginx server configuration:
+
+`location ~* \.riv$ {
+    access_log        off;
+    log_not_found     off;
+    expires           7d;
+    add_header        Cache-Control "public, immutable";
+    add_header        Access-Control-Allow-Origin *;
+}`
+
+Then reload nginx: `sudo nginx -s reload`
+
+= For Local by Flywheel =
+
+Edit `conf/nginx/site.conf.hbs` in your Local site folder and add the nginx configuration above before the `# PHP-FPM` section. Then restart the site in Local.
+
+= For Managed Hosting =
+
+Contact your hosting provider's support to add cache headers for `.riv` files. Some hosts (WP Engine, Kinsta) may already cache static files automatically.
+
+= Cache Duration Explained =
+
+* **7 days**: Good balance for production sites
+* **immutable**: Tells browser file will never change (rename file if updated)
+* **public**: Allows CDNs and proxies to cache the file
+
+**Important:** If you update a .riv file, upload it with a new filename or clear browser cache manually.
+
 == Screenshots ==
 
 1. Rive Block in the block editor with MediaPlaceholder
