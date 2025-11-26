@@ -96,18 +96,22 @@ Then restart the site in Local.
 
 == HTTP Caching for .riv Files (Advanced - Optional) ==
 
-By default, the plugin uses **in-memory JavaScript caching** that automatically caches .riv files during a browsing session. This works perfectly on all servers without any configuration and provides excellent performance for multi-page browsing (zero HTTP requests after first load).
+By default, the plugin uses **in-memory JavaScript caching** that automatically prevents duplicate loading when the **same .riv file is used multiple times on the same page**. This works perfectly on all servers without any configuration.
 
-For **power users** who want persistent cross-session caching, you can optionally configure HTTP cache headers on your web server. This allows browsers to cache .riv files on disk, so they persist even after closing and reopening the browser.
+**Important:** JavaScript in-memory cache does NOT persist across page navigations. When you navigate from Page A to Page B, the browser terminates the JavaScript execution context, and the cache is cleared. This is normal browser behavior.
+
+For **persistent cross-page caching**, you can optionally configure HTTP cache headers on your web server. This allows browsers to cache .riv files on disk, so they're instantly available on subsequent page loads.
 
 = Performance Comparison =
 
-* **First page load**: Both methods download .riv file
-* **Second page (same session)**: In-memory cache = 0 requests (instant) | HTTP cache = 304 response (minimal)
-* **After browser restart**: In-memory cache = downloads again | HTTP cache = 304 response (cached)
+* **Multiple instances on same page**: In-memory cache = 0 requests after first (instant) | HTTP cache = 1 request per file
+* **Navigating to different page**: In-memory cache = Full download (new context) | HTTP cache = 304 Not Modified
+* **After browser restart**: In-memory cache = Full download | HTTP cache = 304 Not Modified
 * **Configuration required**: In-memory cache = None (works everywhere) | HTTP cache = Server configuration needed
 
-**Recommendation:** The built-in in-memory cache provides excellent performance for most use cases. Only configure HTTP caching if you need persistent cross-session caching.
+**Recommendation:**
+* If you use the **same .riv file multiple times on one page** - In-memory cache handles it perfectly
+* If you use the **same .riv file across different pages** - Configure HTTP cache headers for instant loading
 
 = For Apache Servers =
 

@@ -248,20 +248,24 @@ Kontakt din hosting udbyders support for at tilføje `application/wasm` MIME typ
 
 ## HTTP Caching for .riv Files (Advanced - Optional)
 
-By default, the plugin uses **in-memory JavaScript caching** that automatically caches .riv files during a browsing session. This works perfectly on all servers without any configuration and provides excellent performance for multi-page browsing (zero HTTP requests after first load).
+By default, the plugin uses **in-memory JavaScript caching** that automatically prevents duplicate loading when the **same .riv file is used multiple times on the same page**. This works perfectly on all servers without any configuration.
 
-For **power users** who want persistent cross-session caching, you can optionally configure HTTP cache headers on your web server. This allows browsers to cache .riv files on disk, so they persist even after closing and reopening the browser.
+**Important:** JavaScript in-memory cache does NOT persist across page navigations. When you navigate from Page A to Page B, the browser terminates the JavaScript execution context, and the cache is cleared. This is normal browser behavior.
+
+For **persistent cross-page caching**, you can optionally configure HTTP cache headers on your web server. This allows browsers to cache .riv files on disk, so they're instantly available on subsequent page loads.
 
 ### Performance Comparison
 
 | Scenario | In-Memory Cache (Built-in) | HTTP Cache (Optional) |
 |----------|----------------------------|----------------------|
-| **First page load** | Downloads .riv file | Downloads .riv file |
-| **Second page (same session)** | ✅ 0 requests (instant) | 304 response (minimal) |
-| **After browser restart** | Downloads .riv file again | ✅ 304 response (cached) |
+| **Multiple instances on same page** | ✅ 0 requests after first (instant) | 1 request per file |
+| **Navigating to different page** | Full download (new context) | ✅ 304 Not Modified |
+| **After browser restart** | Full download | ✅ 304 Not Modified |
 | **Configuration required** | ✅ None (works everywhere) | Server configuration needed |
 
-**Recommendation:** The built-in in-memory cache provides excellent performance for most use cases. Only configure HTTP caching if you need persistent cross-session caching.
+**Recommendation:**
+- If you use the **same .riv file multiple times on one page** → In-memory cache handles it perfectly ✅
+- If you use the **same .riv file across different pages** → Configure HTTP cache headers for instant loading 🚀
 
 ### Apache Configuration
 
@@ -328,20 +332,24 @@ Contact your hosting provider's support to add cache headers for `.riv` files. S
 
 ## HTTP Caching for .riv Filer (Avanceret - Valgfrit)
 
-Som standard bruger plugin'et **in-memory JavaScript caching**, der automatisk cacher .riv filer under en browsing-session. Dette virker perfekt på alle servere uden konfiguration og giver fremragende performance til multi-side browsing (nul HTTP requests efter første load).
+Som standard bruger plugin'et **in-memory JavaScript caching**, der automatisk forhindrer duplikat indlæsning når **samme .riv fil bruges flere gange på samme side**. Dette virker perfekt på alle servere uden konfiguration.
 
-For **power users**, der ønsker persistent cross-session caching, kan du valgfrit konfigurere HTTP cache headers på din webserver. Dette gør det muligt for browsere at cache .riv filer på disk, så de forbliver selv efter lukning og genåbning af browseren.
+**Vigtigt:** JavaScript in-memory cache persisterer IKKE på tværs af side-navigationer. Når du navigerer fra Side A til Side B, terminerer browseren JavaScript execution context, og cachen bliver ryddet. Dette er normal browser-adfærd.
+
+For **persistent cross-page caching** kan du valgfrit konfigurere HTTP cache headers på din webserver. Dette gør det muligt for browsere at cache .riv filer på disk, så de er øjeblikkeligt tilgængelige ved efterfølgende side-loads.
 
 ### Performance Sammenligning
 
 | Scenario | In-Memory Cache (Indbygget) | HTTP Cache (Valgfrit) |
 |----------|-----------------------------|-----------------------|
-| **Første side load** | Downloader .riv fil | Downloader .riv fil |
-| **Anden side (samme session)** | ✅ 0 requests (øjeblikkelig) | 304 response (minimal) |
-| **Efter browser genstart** | Downloader .riv fil igen | ✅ 304 response (cached) |
+| **Flere instanser på samme side** | ✅ 0 requests efter første (øjeblikkelig) | 1 request per fil |
+| **Navigering til anden side** | Fuld download (ny context) | ✅ 304 Not Modified |
+| **Efter browser genstart** | Fuld download | ✅ 304 Not Modified |
 | **Konfiguration påkrævet** | ✅ Ingen (virker overalt) | Server konfiguration nødvendig |
 
-**Anbefaling:** Den indbyggede in-memory cache giver fremragende performance i de fleste tilfælde. Konfigurer kun HTTP caching hvis du har brug for persistent cross-session caching.
+**Anbefaling:**
+- Hvis du bruger **samme .riv fil flere gange på én side** → In-memory cache håndterer det perfekt ✅
+- Hvis du bruger **samme .riv fil på tværs af forskellige sider** → Konfigurer HTTP cache headers for øjeblikkelig loading 🚀
 
 ### Apache Konfiguration
 

@@ -485,6 +485,13 @@ function showErrorMessage(canvas, message) {
 
 /**
  * Cleanup all Rive instances when page is unloaded
+ *
+ * IMPORTANT: We do NOT clear the file cache here to enable cross-page caching.
+ * The file cache persists across page navigations within the same browser session,
+ * allowing instant loading when the same .riv file is used on multiple pages.
+ *
+ * The browser automatically cleans up all JavaScript memory (including the cache)
+ * when the tab is closed or the user navigates to a different domain.
  */
 function cleanupRiveInstances() {
 	riveInstances.forEach((instanceData, canvas) => {
@@ -517,8 +524,9 @@ function cleanupRiveInstances() {
 				artboard.delete();
 			}
 
-			// NOTE: We don't unref files here because they're stored in riveFileCache
-			// and may be reused by other instances. Files are unreffed during cache cleanup.
+			// NOTE: We intentionally do NOT unref files here to preserve the cache
+			// across page navigations. This enables zero-request loading when the
+			// same .riv file is used on multiple pages in the same session.
 		} catch (error) {
 			console.warn('[Rive Block] Error cleaning up instance:', error);
 		}
@@ -526,16 +534,10 @@ function cleanupRiveInstances() {
 
 	riveInstances.clear();
 
-	// Cleanup cached files
-	riveFileCache.forEach((file, url) => {
-		try {
-			file.unref();
-		} catch (error) {
-			console.warn(`[Rive Block] Error unreffing cached file ${url}:`, error);
-		}
-	});
-
-	riveFileCache.clear();
+	// IMPORTANT: We do NOT clear riveFileCache here!
+	// The cache persists across page navigations to enable instant loading
+	// of .riv files that appear on multiple pages. The browser will automatically
+	// free this memory when the tab is closed or user navigates away from the site.
 }
 
 // Initialize when DOM is ready
