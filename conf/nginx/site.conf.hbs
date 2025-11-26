@@ -66,6 +66,20 @@ server {
     }
 
     #
+    # Rive animation files (.riv)
+    #
+    location ~* \.riv$ {
+        access_log        off;
+        log_not_found     off;
+
+        expires           7d;
+        add_header        Cache-Control "public, immutable";
+
+        # allow CORS requests
+        add_header        Access-Control-Allow-Origin *;
+    }
+
+    #
     # PHP-FPM
     #
 	location ~ \.php$ {
