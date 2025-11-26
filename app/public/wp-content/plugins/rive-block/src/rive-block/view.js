@@ -486,12 +486,13 @@ function showErrorMessage(canvas, message) {
 /**
  * Cleanup all Rive instances when page is unloaded
  *
- * IMPORTANT: We do NOT clear the file cache here to enable cross-page caching.
- * The file cache persists across page navigations within the same browser session,
- * allowing instant loading when the same .riv file is used on multiple pages.
+ * IMPORTANT: We MUST unref files and clear the cache to prevent Rive WASM
+ * reference counting issues. When we delete artboards, the underlying files
+ * get unrefed in WASM. If we keep stale file references in the cache, they
+ * become invalid and cause animations to fail on subsequent pages.
  *
- * The browser automatically cleans up all JavaScript memory (including the cache)
- * when the tab is closed or the user navigates to a different domain.
+ * The in-memory cache only works for multiple instances on THE SAME PAGE.
+ * For cross-page caching, use HTTP cache headers (see README.md).
  */
 function cleanupRiveInstances() {
 	riveInstances.forEach((instanceData, canvas) => {
@@ -524,9 +525,8 @@ function cleanupRiveInstances() {
 				artboard.delete();
 			}
 
-			// NOTE: We intentionally do NOT unref files here to preserve the cache
-			// across page navigations. This enables zero-request loading when the
-			// same .riv file is used on multiple pages in the same session.
+			// NOTE: We don't explicitly unref files here because deleting artboards
+			// already unrefs them in WASM. But we MUST clear the cache below.
 		} catch (error) {
 			console.warn('[Rive Block] Error cleaning up instance:', error);
 		}
@@ -534,10 +534,19 @@ function cleanupRiveInstances() {
 
 	riveInstances.clear();
 
-	// IMPORTANT: We do NOT clear riveFileCache here!
-	// The cache persists across page navigations to enable instant loading
-	// of .riv files that appear on multiple pages. The browser will automatically
-	// free this memory when the tab is closed or user navigates away from the site.
+	// Clear the file cache to prevent stale WASM references
+	// After artboards are deleted, cached file references become invalid
+	riveFileCache.forEach((file, url) => {
+		try {
+			// Explicitly unref to be safe (may already be unrefed by artboard.delete)
+			file.unref();
+		} catch (error) {
+			// Ignore errors if already unrefed
+			console.warn(`[Rive Block] Error unreffing cached file ${url}:`, error);
+		}
+	});
+
+	riveFileCache.clear();
 }
 
 // Initialize when DOM is ready
