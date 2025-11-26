@@ -107,6 +107,10 @@ async function loadRiveFile(rive, url) {
  * Handles both eager loading (high priority) and lazy loading (low priority)
  */
 async function initRiveAnimations() {
+	// CRITICAL: Cleanup any existing instances first
+	// This handles SPA-style navigation where beforeunload doesn't fire
+	cleanupRiveInstances();
+
 	// Find all Rive block canvas elements
 	const canvases = document.querySelectorAll('canvas.wp-block-create-block-rive-block');
 
@@ -556,5 +560,21 @@ if (document.readyState === 'loading') {
 	initRiveAnimations();
 }
 
+// Re-initialize when page is restored from bfcache (back/forward cache)
+// This handles browser back/forward button navigation where DOMContentLoaded doesn't fire
+window.addEventListener('pageshow', (event) => {
+	if (event.persisted) {
+		// Page was restored from bfcache
+		if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+			console.log('[Rive Block] Page restored from bfcache, re-initializing animations');
+		}
+		initRiveAnimations();
+	}
+});
+
 // Cleanup on page unload to prevent memory leaks
+// Use both events for maximum compatibility:
+// - pagehide: Fires reliably even with bfcache (back/forward cache)
+// - beforeunload: Older browsers fallback
+window.addEventListener('pagehide', cleanupRiveInstances);
 window.addEventListener('beforeunload', cleanupRiveInstances);

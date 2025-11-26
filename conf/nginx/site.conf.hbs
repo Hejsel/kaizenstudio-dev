@@ -80,6 +80,23 @@ server {
     }
 
     #
+    # WebAssembly files (.wasm)
+    # Required for Rive block editor (runs on different port)
+    #
+    location ~* \.wasm$ {
+        access_log        off;
+        log_not_found     off;
+
+        expires           7d;
+        add_header        Cache-Control "public, immutable" always;
+        add_header        Content-Type "application/wasm" always;
+
+        # CORS header for cross-origin requests (editor on port 10010)
+        # 'always' ensures header is sent even on 304 Not Modified responses
+        add_header        Access-Control-Allow-Origin * always;
+    }
+
+    #
     # PHP-FPM
     #
 	location ~ \.php$ {
