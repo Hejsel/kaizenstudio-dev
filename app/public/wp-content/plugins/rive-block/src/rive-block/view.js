@@ -50,6 +50,13 @@ async function loadRiveRuntime() {
 			}
 		});
 
+		// Debug logging when WP_DEBUG is active
+		if (window.riveBlockData?.debug) {
+			console.log('[Rive Block] Rive runtime loaded successfully');
+			console.log('[Rive Block] Renderer: WebGL2-Advanced');
+			console.log('[Rive Block] WASM location:', `${baseUrl}/build/rive-block/`);
+		}
+
 		// Resolve any waiting callbacks
 		runtimeCallbacks.forEach(callback => callback(riveRuntime));
 		runtimeCallbacks = [];
@@ -240,6 +247,15 @@ async function initRiveInstance(rive, canvas, prefersReducedMotion) {
 
 		// Create renderer
 		const renderer = rive.makeRenderer(canvas, true);
+
+		// Debug logging when WP_DEBUG is active
+		if (window.riveBlockData?.debug) {
+			console.log('[Rive Block] Renderer created for:', riveSrc);
+			console.log('[Rive Block] Artboard:', artboard.name);
+			console.log('[Rive Block] Canvas size:', `${canvas.width}×${canvas.height}`);
+			console.log('[Rive Block] Animations available:', artboard.animationCount());
+			console.log('[Rive Block] Autoplay:', shouldAutoplay);
+		}
 
 		// Try to create animation instance
 		let animationInstance = null;

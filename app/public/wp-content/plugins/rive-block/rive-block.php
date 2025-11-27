@@ -95,6 +95,7 @@ function rive_block_enqueue_scripts() {
 			'riveBlockData',
 			array(
 				'pluginUrl' => plugin_dir_url( __FILE__ ),
+				'debug' => defined( 'WP_DEBUG' ) && WP_DEBUG,
 			)
 		);
 	}
@@ -111,6 +112,7 @@ function rive_block_enqueue_editor_scripts() {
 		'riveBlockData',
 		array(
 			'pluginUrl' => plugin_dir_url( __FILE__ ),
+			'debug' => defined( 'WP_DEBUG' ) && WP_DEBUG,
 		)
 	);
 }

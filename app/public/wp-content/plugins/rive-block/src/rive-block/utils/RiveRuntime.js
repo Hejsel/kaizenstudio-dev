@@ -33,6 +33,13 @@ class RiveRuntimeManager {
 				}
 			});
 
+			// Debug logging when WP_DEBUG is active
+			if (window.riveBlockData?.debug) {
+				console.log('[Rive Editor] Rive runtime loaded successfully');
+				console.log('[Rive Editor] Renderer: WebGL2-Advanced');
+				console.log('[Rive Editor] WASM location:', this.wasmURL || 'default');
+			}
+
 			// Execute all queued callbacks
 			while (this.callbacks.length > 0) {
 				const callback = this.callbacks.shift();

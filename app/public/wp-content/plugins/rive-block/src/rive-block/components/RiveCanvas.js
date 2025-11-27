@@ -133,6 +133,14 @@ export default function RiveCanvas({
 				const renderer = rive.makeRenderer(canvasRef.current, true);
 				rendererRef.current = renderer;
 
+				// Debug logging when WP_DEBUG is active
+				if (window.riveBlockData?.debug) {
+					console.log('[Rive Editor] Renderer created for:', riveFileUrl);
+					console.log('[Rive Editor] Artboard:', artboard.name);
+					console.log('[Rive Editor] Canvas size:', `${canvasRef.current.width}×${canvasRef.current.height}`);
+					console.log('[Rive Editor] Animations available:', artboard.animationCount());
+				}
+
 				// Setup ResizeObserver to handle canvas resizing
 				const resizeObserver = new ResizeObserver(() => {
 					if (canvasRef.current) {
