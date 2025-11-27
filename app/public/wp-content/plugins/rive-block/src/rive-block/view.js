@@ -20,6 +20,12 @@ const riveInstances = new Map();
 // Key: file URL, Value: decoded Rive file object
 const riveFileCache = new Map();
 
+// Track which URLs have been loaded at least once (for cache optimization)
+const riveFileLoadedOnce = new Set();
+
+// Track current page URL to detect actual navigation (not just reloads)
+let currentPageUrl = window.location.href;
+
 /**
  * Load Rive runtime (singleton)
  */
@@ -88,19 +94,41 @@ async function loadRiveFile(rive, url, priority = 'low') {
 		return riveFileCache.get(url);
 	}
 
-	// Cache miss - fetch and decode the file
+	// In-memory cache miss - will fetch (but may use HTTP browser cache)
+	const isFirstLoad = !riveFileLoadedOnce.has(url);
+
 	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-		console.log(`[Rive Block] Cache miss, loading: ${url}`);
+		console.log(`[Rive Block] In-memory cache miss, fetching: ${url}`);
+		console.log(`[Rive Block] Note: Browser HTTP cache may serve this without network transfer`);
 	}
 
-	// Choose cache mode based on loading priority:
-	// - High priority: force-cache (file is preloaded, use cache directly)
-	// - Low priority: default (respect HTTP cache headers, may send 304 conditional requests)
-	const cacheMode = priority === 'high' ? 'force-cache' : 'default';
+	// Choose cache mode based on loading priority AND whether file has been loaded before:
+	// - First time loading URL: 'default' (respect HTTP cache, may download)
+	// - Subsequent loads: 'force-cache' (use browser HTTP cache aggressively)
+	// This ensures browser cache is used after first load, maximizing performance
+	let cacheMode;
+	if (isFirstLoad) {
+		cacheMode = 'default';
+	} else {
+		cacheMode = 'force-cache';
+	}
 
 	const response = await fetch(url, { cache: cacheMode });
 	if (!response.ok) {
 		throw new Error(`Failed to fetch: ${response.statusText}`);
+	}
+
+	// Check if HTTP cache was used by examining response timing
+	// Note: DevTools may show "200" but Performance API reveals if bytes were transferred
+	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+		// Use Performance API to check if cached (transferSize = 0 means cached)
+		const perfEntries = performance.getEntriesByName(url, 'resource');
+		const latestEntry = perfEntries[perfEntries.length - 1];
+		if (latestEntry && latestEntry.transferSize === 0) {
+			console.log(`[Rive Block] ✓ HTTP cache hit (0 bytes transferred): ${url}`);
+		} else if (latestEntry) {
+			console.log(`[Rive Block] ↓ Downloaded ${latestEntry.transferSize} bytes: ${url}`);
+		}
 	}
 
 	const arrayBuffer = await response.arrayBuffer();
@@ -112,6 +140,9 @@ async function loadRiveFile(rive, url, priority = 'low') {
 	// Store in cache for future reuse
 	riveFileCache.set(url, file);
 
+	// Mark this URL as loaded once for future cache optimization
+	riveFileLoadedOnce.add(url);
+
 	return file;
 }
 
@@ -120,9 +151,13 @@ async function loadRiveFile(rive, url, priority = 'low') {
  * Handles both eager loading (high priority) and lazy loading (low priority)
  */
 async function initRiveAnimations() {
-	// CRITICAL: Cleanup any existing instances first
-	// This handles SPA-style navigation where beforeunload doesn't fire
-	cleanupRiveInstances();
+	// CRITICAL: Only cleanup if we navigated to a different page (not just a reload)
+	// This preserves in-memory cache for same-page reloads while still handling SPA navigation
+	const newPageUrl = window.location.href;
+	if (newPageUrl !== currentPageUrl) {
+		cleanupRiveInstances();
+		currentPageUrl = newPageUrl;
+	}
 
 	// Find all Rive block canvas elements
 	const canvases = document.querySelectorAll('canvas.wp-block-create-block-rive-block');
@@ -596,9 +631,14 @@ window.addEventListener('pageshow', (event) => {
 	}
 });
 
-// Cleanup on page unload to prevent memory leaks
-// Use both events for maximum compatibility:
-// - pagehide: Fires reliably even with bfcache (back/forward cache)
-// - beforeunload: Older browsers fallback
-window.addEventListener('pagehide', cleanupRiveInstances);
-window.addEventListener('beforeunload', cleanupRiveInstances);
+// NOTE: We do NOT cleanup on pagehide/beforeunload anymore!
+// Reason: These events fire on normal page reloads (Ctrl+R), which would
+// clear the in-memory cache that we want to preserve.
+//
+// Instead, cleanup happens conditionally in initRiveAnimations():
+// - Navigation to different page: cleanup + clear cache
+// - Same page reload: preserve cache for instant loading
+//
+// This achieves the best of both worlds:
+// 1. In-memory cache works for same-page reloads
+// 2. No stale WASM references when navigating to different pages
