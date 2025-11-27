@@ -72,8 +72,9 @@ server {
         access_log        off;
         log_not_found     off;
 
-        expires           7d;
-        add_header        Cache-Control "public, immutable" always;
+        # Set cache headers manually to avoid duplicate Cache-Control headers
+        # expires directive generates both Expires AND Cache-Control headers
+        add_header        Cache-Control "max-age=604800, public, immutable" always;
         add_header        Content-Type "application/octet-stream" always;
 
         # CORS header for cross-origin requests (editor on port 10010)
