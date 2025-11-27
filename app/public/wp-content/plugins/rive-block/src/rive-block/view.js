@@ -75,9 +75,10 @@ async function loadRiveRuntime() {
  *
  * @param {object} rive - Rive runtime instance
  * @param {string} url - URL to the .riv file
+ * @param {string} priority - Loading priority ('high' or 'low')
  * @returns {Promise<object>} Decoded Rive file object
  */
-async function loadRiveFile(rive, url) {
+async function loadRiveFile(rive, url, priority = 'low') {
 	// Check in-memory cache first
 	if (riveFileCache.has(url)) {
 		// Log cache hit in development
@@ -92,7 +93,12 @@ async function loadRiveFile(rive, url) {
 		console.log(`[Rive Block] Cache miss, loading: ${url}`);
 	}
 
-	const response = await fetch(url);
+	// Choose cache mode based on loading priority:
+	// - High priority: force-cache (file is preloaded, use cache directly)
+	// - Low priority: default (respect HTTP cache headers, may send 304 conditional requests)
+	const cacheMode = priority === 'high' ? 'force-cache' : 'default';
+
+	const response = await fetch(url, { cache: cacheMode });
 	if (!response.ok) {
 		throw new Error(`Failed to fetch: ${response.statusText}`);
 	}
@@ -231,13 +237,15 @@ async function initRiveInstance(rive, canvas, prefersReducedMotion) {
 	// Read accessibility settings from data attributes
 	const enableAutoplay = canvas.dataset.enableAutoplay === 'true';
 	const respectReducedMotion = canvas.dataset.respectReducedMotion !== 'false'; // Default to true
+	const loadingPriority = canvas.dataset.loadingPriority || 'low';
 
 	// Determine if autoplay should be enabled based on settings and user preference
 	const shouldAutoplay = enableAutoplay && !(respectReducedMotion && prefersReducedMotion);
 
 	try {
 		// Load Rive file (uses in-memory cache if available)
-		const file = await loadRiveFile(rive, riveSrc);
+		// Pass loadingPriority to optimize HTTP cache behavior
+		const file = await loadRiveFile(rive, riveSrc, loadingPriority);
 
 		// Get default artboard
 		const artboard = file.defaultArtboard();

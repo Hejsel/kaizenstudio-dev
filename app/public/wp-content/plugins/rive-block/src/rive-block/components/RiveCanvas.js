@@ -38,7 +38,9 @@ async function loadRiveFile(rive, url) {
 		console.log(`[Rive Editor] Cache miss, loading: ${url}`);
 	}
 
-	const response = await fetch(url);
+	// Use 'default' cache mode to respect HTTP cache headers
+	// Editor context doesn't use preload, so default caching is appropriate
+	const response = await fetch(url, { cache: 'default' });
 	if (!response.ok) {
 		throw new Error(`Failed to fetch Rive file: ${response.statusText}`);
 	}
