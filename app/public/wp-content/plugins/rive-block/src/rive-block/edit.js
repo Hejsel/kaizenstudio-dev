@@ -138,6 +138,7 @@ export default function Edit({ attributes, setAttributes }) {
 								{ value: 'vh', label: 'vh' },
 								{ value: 'dvw', label: 'dvw' }  // ← Din custom unit!
 							]}
+							__next40pxDefaultSize
                         />
                     </ToolsPanelItem>
                     <ToolsPanelItem
@@ -160,6 +161,7 @@ export default function Edit({ attributes, setAttributes }) {
 								{ value: 'vh', label: 'vh' },
 								{ value: 'dvh', label: 'dvh' }
 							]}
+							__next40pxDefaultSize
                         />
                     </ToolsPanelItem>
                 </ToolsPanel>
@@ -236,6 +238,7 @@ export default function Edit({ attributes, setAttributes }) {
 						value={ariaLabel}
 						onChange={(value) => setAttributes({ ariaLabel: value })}
 						placeholder={__('e.g., Hero animation', 'rive-block')}
+						__next40pxDefaultSize
 					/>
 					<TextareaControl
 						label={__('ARIA Description', 'rive-block')}
@@ -244,6 +247,7 @@ export default function Edit({ attributes, setAttributes }) {
 						onChange={(value) => setAttributes({ ariaDescription: value })}
 						placeholder={__('e.g., An animated illustration showing...', 'rive-block')}
 						rows={3}
+						__next40pxDefaultSize
 					/>
 				</PanelBody>
 				<PanelBody title={__('Performance', 'rive-block')} initialOpen={false}>
@@ -266,6 +270,7 @@ export default function Edit({ attributes, setAttributes }) {
 								? __('Animation will be preloaded and initialized immediately. Use for critical above-the-fold content like hero animations.', 'rive-block')
 								: __('Animation will only load when scrolled into view. Recommended for below-the-fold content to improve initial page load performance.', 'rive-block')
 						}
+						__next40pxDefaultSize
 					/>
 				</PanelBody>
 			</InspectorControls>
