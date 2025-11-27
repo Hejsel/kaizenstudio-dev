@@ -9,5 +9,6 @@
 # Logs
 logs/
 
-# WordPress uploads
+# WordPress uploads and upgrades
 app/public/wp-content/uploads/
+app/public/wp-content/upgrade/

@@ -73,10 +73,12 @@ server {
         log_not_found     off;
 
         expires           7d;
-        add_header        Cache-Control "public, immutable";
+        add_header        Cache-Control "public, immutable" always;
+        add_header        Content-Type "application/octet-stream" always;
 
-        # allow CORS requests
-        add_header        Access-Control-Allow-Origin *;
+        # CORS header for cross-origin requests (editor on port 10010)
+        # 'always' ensures header is sent even on 304 Not Modified responses
+        add_header        Access-Control-Allow-Origin * always;
     }
 
     #
