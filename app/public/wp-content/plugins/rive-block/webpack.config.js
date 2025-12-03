@@ -20,6 +20,17 @@ module.exports = {
 						'build/rive-block/webgl2_advanced.wasm'
 					),
 				},
+				{
+					// Copy Service Worker for caching and offline support
+					from: path.resolve(
+						__dirname,
+						'src/rive-block/rive-sw.js'
+					),
+					to: path.resolve(
+						__dirname,
+						'build/rive-block/rive-sw.js'
+					),
+				},
 			],
 		} ),
 	],
