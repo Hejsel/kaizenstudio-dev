@@ -30,15 +30,15 @@ let currentPageUrl = window.location.href;
  * Load Rive runtime (singleton)
  */
 async function loadRiveRuntime() {
-	if (riveRuntime) {
+	if ( riveRuntime ) {
 		return riveRuntime;
 	}
 
-	if (runtimeLoading) {
+	if ( runtimeLoading ) {
 		// Wait for existing load to complete
-		return new Promise((resolve) => {
-			runtimeCallbacks.push(resolve);
-		});
+		return new Promise( ( resolve ) => {
+			runtimeCallbacks.push( resolve );
+		} );
 	}
 
 	runtimeLoading = true;
@@ -47,29 +47,32 @@ async function loadRiveRuntime() {
 		// Get the plugin URL from the localized script data (provided by PHP)
 		const pluginUrl = window.riveBlockData?.pluginUrl || '';
 		// Remove trailing slash to prevent double slashes in URL
-		const baseUrl = pluginUrl.replace(/\/$/, '');
+		const baseUrl = pluginUrl.replace( /\/$/, '' );
 
-		riveRuntime = await RiveWebGL2({
-			locateFile: (file) => {
+		riveRuntime = await RiveWebGL2( {
+			locateFile: ( file ) => {
 				// Serve WASM files from plugin's build directory
-				return `${baseUrl}/build/rive-block/${file}`;
-			}
-		});
+				return `${ baseUrl }/build/rive-block/${ file }`;
+			},
+		} );
 
 		// Debug logging when WP_DEBUG is active
-		if (window.riveBlockData?.debug) {
-			console.log('[Rive Block] Rive runtime loaded successfully');
-			console.log('[Rive Block] Renderer: WebGL2-Advanced');
-			console.log('[Rive Block] WASM location:', `${baseUrl}/build/rive-block/`);
+		if ( window.riveBlockData?.debug ) {
+			console.log( '[Rive Block] Rive runtime loaded successfully' );
+			console.log( '[Rive Block] Renderer: WebGL2-Advanced' );
+			console.log(
+				'[Rive Block] WASM location:',
+				`${ baseUrl }/build/rive-block/`
+			);
 		}
 
 		// Resolve any waiting callbacks
-		runtimeCallbacks.forEach(callback => callback(riveRuntime));
+		runtimeCallbacks.forEach( ( callback ) => callback( riveRuntime ) );
 		runtimeCallbacks = [];
 
 		return riveRuntime;
-	} catch (error) {
-		console.error('[Rive Block] Failed to load Rive runtime:', error);
+	} catch ( error ) {
+		console.error( '[Rive Block] Failed to load Rive runtime:', error );
 		runtimeLoading = false;
 		throw error;
 	}
@@ -84,22 +87,30 @@ async function loadRiveRuntime() {
  * @param {string} priority - Loading priority ('high' or 'low')
  * @returns {Promise<object>} Decoded Rive file object
  */
-async function loadRiveFile(rive, url, priority = 'low') {
+async function loadRiveFile( rive, url, priority = 'low' ) {
 	// Check in-memory cache first
-	if (riveFileCache.has(url)) {
+	if ( riveFileCache.has( url ) ) {
 		// Log cache hit in development
-		if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-			console.log(`[Rive Block] Cache hit: ${url}`);
+		if (
+			window.location.hostname === 'localhost' ||
+			window.location.hostname.includes( 'local' )
+		) {
+			console.log( `[Rive Block] Cache hit: ${ url }` );
 		}
-		return riveFileCache.get(url);
+		return riveFileCache.get( url );
 	}
 
 	// In-memory cache miss - will fetch (but may use HTTP browser cache)
-	const isFirstLoad = !riveFileLoadedOnce.has(url);
+	const isFirstLoad = ! riveFileLoadedOnce.has( url );
 
-	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-		console.log(`[Rive Block] In-memory cache miss, fetching: ${url}`);
-		console.log(`[Rive Block] Note: Browser HTTP cache may serve this without network transfer`);
+	if (
+		window.location.hostname === 'localhost' ||
+		window.location.hostname.includes( 'local' )
+	) {
+		console.log( `[Rive Block] In-memory cache miss, fetching: ${ url }` );
+		console.log(
+			`[Rive Block] Note: Browser HTTP cache may serve this without network transfer`
+		);
 	}
 
 	// Choose cache mode based on loading priority AND whether file has been loaded before:
@@ -107,41 +118,48 @@ async function loadRiveFile(rive, url, priority = 'low') {
 	// - Subsequent loads: 'force-cache' (use browser HTTP cache aggressively)
 	// This ensures browser cache is used after first load, maximizing performance
 	let cacheMode;
-	if (isFirstLoad) {
+	if ( isFirstLoad ) {
 		cacheMode = 'default';
 	} else {
 		cacheMode = 'force-cache';
 	}
 
-	const response = await fetch(url, { cache: cacheMode });
-	if (!response.ok) {
-		throw new Error(`Failed to fetch: ${response.statusText}`);
+	const response = await fetch( url, { cache: cacheMode } );
+	if ( ! response.ok ) {
+		throw new Error( `Failed to fetch: ${ response.statusText }` );
 	}
 
 	// Check if HTTP cache was used by examining response timing
 	// Note: DevTools may show "200" but Performance API reveals if bytes were transferred
-	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
+	if (
+		window.location.hostname === 'localhost' ||
+		window.location.hostname.includes( 'local' )
+	) {
 		// Use Performance API to check if cached (transferSize = 0 means cached)
-		const perfEntries = performance.getEntriesByName(url, 'resource');
-		const latestEntry = perfEntries[perfEntries.length - 1];
-		if (latestEntry && latestEntry.transferSize === 0) {
-			console.log(`[Rive Block] ✓ HTTP cache hit (0 bytes transferred): ${url}`);
-		} else if (latestEntry) {
-			console.log(`[Rive Block] ↓ Downloaded ${latestEntry.transferSize} bytes: ${url}`);
+		const perfEntries = performance.getEntriesByName( url, 'resource' );
+		const latestEntry = perfEntries[ perfEntries.length - 1 ];
+		if ( latestEntry && latestEntry.transferSize === 0 ) {
+			console.log(
+				`[Rive Block] ✓ HTTP cache hit (0 bytes transferred): ${ url }`
+			);
+		} else if ( latestEntry ) {
+			console.log(
+				`[Rive Block] ↓ Downloaded ${ latestEntry.transferSize } bytes: ${ url }`
+			);
 		}
 	}
 
 	const arrayBuffer = await response.arrayBuffer();
-	const fileBytes = new Uint8Array(arrayBuffer);
+	const fileBytes = new Uint8Array( arrayBuffer );
 
 	// Decode Rive file
-	const file = await rive.load(fileBytes);
+	const file = await rive.load( fileBytes );
 
 	// Store in cache for future reuse
-	riveFileCache.set(url, file);
+	riveFileCache.set( url, file );
 
 	// Mark this URL as loaded once for future cache optimization
-	riveFileLoadedOnce.add(url);
+	riveFileLoadedOnce.add( url );
 
 	return file;
 }
@@ -154,15 +172,17 @@ async function initRiveAnimations() {
 	// CRITICAL: Only cleanup if we navigated to a different page (not just a reload)
 	// This preserves in-memory cache for same-page reloads while still handling SPA navigation
 	const newPageUrl = window.location.href;
-	if (newPageUrl !== currentPageUrl) {
+	if ( newPageUrl !== currentPageUrl ) {
 		cleanupRiveInstances();
 		currentPageUrl = newPageUrl;
 	}
 
 	// Find all Rive block canvas elements
-	const canvases = document.querySelectorAll('canvas.wp-block-create-block-rive-block');
+	const canvases = document.querySelectorAll(
+		'canvas.wp-block-create-block-rive-block'
+	);
 
-	if (canvases.length === 0) {
+	if ( canvases.length === 0 ) {
 		return;
 	}
 
@@ -175,59 +195,69 @@ async function initRiveAnimations() {
 		 *
 		 * @see https://www.w3.org/WAI/WCAG21/Techniques/client-side-script/SCR40
 		 */
-		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const prefersReducedMotion = window.matchMedia(
+			'(prefers-reduced-motion: reduce)'
+		).matches;
 
 		// Separate canvases by loading priority
 		const highPriorityCanvases = [];
 		const lowPriorityCanvases = [];
 
-		canvases.forEach(canvas => {
+		canvases.forEach( ( canvas ) => {
 			const priority = canvas.dataset.loadingPriority || 'low';
-			if (priority === 'high') {
-				highPriorityCanvases.push(canvas);
+			if ( priority === 'high' ) {
+				highPriorityCanvases.push( canvas );
 			} else {
-				lowPriorityCanvases.push(canvas);
+				lowPriorityCanvases.push( canvas );
 			}
-		});
+		} );
 
 		// Initialize high priority animations immediately (eager loading)
-		for (const canvas of highPriorityCanvases) {
-			await initRiveInstance(rive, canvas, prefersReducedMotion);
+		for ( const canvas of highPriorityCanvases ) {
+			await initRiveInstance( rive, canvas, prefersReducedMotion );
 		}
 
 		// Setup Intersection Observer for low priority animations (lazy loading)
-		if (lowPriorityCanvases.length > 0) {
+		if ( lowPriorityCanvases.length > 0 ) {
 			const observerOptions = {
 				root: null, // viewport
 				rootMargin: '50px', // Start loading 50px before entering viewport
-				threshold: 0.01 // Trigger when at least 1% is visible
+				threshold: 0.01, // Trigger when at least 1% is visible
 			};
 
-			const observer = new IntersectionObserver((entries) => {
-				entries.forEach(async (entry) => {
-					if (entry.isIntersecting) {
+			const observer = new IntersectionObserver( ( entries ) => {
+				entries.forEach( async ( entry ) => {
+					if ( entry.isIntersecting ) {
 						const canvas = entry.target;
 
 						// Skip if already initialized
-						if (riveInstances.has(canvas)) {
+						if ( riveInstances.has( canvas ) ) {
 							return;
 						}
 
 						// Initialize Rive instance when canvas becomes visible
-						await initRiveInstance(rive, canvas, prefersReducedMotion);
+						await initRiveInstance(
+							rive,
+							canvas,
+							prefersReducedMotion
+						);
 
 						// Stop observing this canvas
-						observer.unobserve(canvas);
+						observer.unobserve( canvas );
 					}
-				});
-			}, observerOptions);
+				} );
+			}, observerOptions );
 
 			// Observe low priority canvas elements
-			lowPriorityCanvases.forEach(canvas => observer.observe(canvas));
+			lowPriorityCanvases.forEach( ( canvas ) =>
+				observer.observe( canvas )
+			);
 		}
-
-	} catch (error) {
-		console.error('[Rive Block] Error initializing Rive animations:', error);
+	} catch ( error ) {
+		console.error(
+			'[Rive Block] Error initializing Rive animations:',
+			error
+		);
 	}
 }
 
@@ -235,91 +265,127 @@ async function initRiveAnimations() {
  * Set canvas internal resolution to match display size and device pixel ratio
  * This ensures crisp rendering and optimal GPU usage
  *
+ * PERFORMANCE: Only resizes if size actually changed to avoid expensive canvas resets
+ *
  * @param {HTMLCanvasElement} canvas - The canvas element to resize
+ * @returns {boolean} True if canvas was resized, false if no change
  */
-function setCanvasDPIAwareSize(canvas) {
+function setCanvasDPIAwareSize( canvas ) {
 	// Get the display size of the canvas (CSS pixels)
 	const rect = canvas.getBoundingClientRect();
 	const displayWidth = rect.width;
 	const displayHeight = rect.height;
 
-	// Get device pixel ratio (typically 1, 1.5, 2, or 2.5)
-	const dpr = window.devicePixelRatio || 1;
+	// Get device pixel ratio with adaptive scaling based on canvas size
+	// Larger canvas = lower DPR to prevent GPU compositor overload
+	const baseDpr = window.devicePixelRatio || 1;
+	const canvasArea = displayWidth * displayHeight; // CSS pixels
+
+	let dpr;
+	if ( canvasArea > 800000 ) {
+		// Very large canvas (>800k CSS pixels) - use minimal DPR
+		dpr = Math.min( baseDpr, 1.0 );
+	} else if ( canvasArea > 400000 ) {
+		// Large canvas (>400k CSS pixels) - cap at 1.5x
+		dpr = Math.min( baseDpr, 1.5 );
+	} else if ( canvasArea > 150000 ) {
+		// Medium canvas (>150k CSS pixels) - cap at 2.0x
+		dpr = Math.min( baseDpr, 2.0 );
+	} else {
+		// Small canvas - allow full DPR up to 2.5x for crisp rendering
+		dpr = Math.min( baseDpr, 2.5 );
+	}
+
+	// Calculate target internal resolution
+	const targetWidth = Math.round( displayWidth * dpr );
+	const targetHeight = Math.round( displayHeight * dpr );
+
+	// CRITICAL: Only resize if dimensions actually changed
+	// Setting canvas.width/height clears the canvas and triggers expensive reflow
+	if ( canvas.width === targetWidth && canvas.height === targetHeight ) {
+		return false; // No resize needed
+	}
 
 	// Set canvas internal resolution to match display size × DPI
 	// This prevents blurry rendering and reduces GPU scaling overhead
-	canvas.width = Math.round(displayWidth * dpr);
-	canvas.height = Math.round(displayHeight * dpr);
+	canvas.width = targetWidth;
+	canvas.height = targetHeight;
 
 	// Log in development
-	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-		console.log(`[Rive Block] Canvas DPI sizing: ${displayWidth}×${displayHeight} CSS → ${canvas.width}×${canvas.height} internal (DPR: ${dpr})`);
+	if (
+		window.location.hostname === 'localhost' ||
+		window.location.hostname.includes( 'local' )
+	) {
+		console.log(
+			`[Rive Block] Canvas DPI sizing: ${ displayWidth }×${ displayHeight } CSS → ${ canvas.width }×${ canvas.height } internal (DPR: ${ dpr })`
+		);
 	}
+
+	return true; // Canvas was resized
 }
 
 /**
  * Initialize a single Rive instance
  */
-async function initRiveInstance(rive, canvas, prefersReducedMotion) {
+async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 	const riveSrc = canvas.dataset.riveSrc;
 
 	// Skip if no Rive source URL is provided
-	if (!riveSrc) {
-		console.warn('[Rive Block] Canvas missing data-rive-src attribute');
+	if ( ! riveSrc ) {
+		console.warn( '[Rive Block] Canvas missing data-rive-src attribute' );
 		return;
 	}
 
 	// Read accessibility settings from data attributes
 	const enableAutoplay = canvas.dataset.enableAutoplay === 'true';
-	const respectReducedMotion = canvas.dataset.respectReducedMotion !== 'false'; // Default to true
+	const respectReducedMotion =
+		canvas.dataset.respectReducedMotion !== 'false'; // Default to true
 	const loadingPriority = canvas.dataset.loadingPriority || 'low';
 
 	// Determine if autoplay should be enabled based on settings and user preference
-	const shouldAutoplay = enableAutoplay && !(respectReducedMotion && prefersReducedMotion);
+	const shouldAutoplay =
+		enableAutoplay && ! ( respectReducedMotion && prefersReducedMotion );
 
 	try {
 		// Load Rive file (uses in-memory cache if available)
 		// Pass loadingPriority to optimize HTTP cache behavior
-		const file = await loadRiveFile(rive, riveSrc, loadingPriority);
+		const file = await loadRiveFile( rive, riveSrc, loadingPriority );
 
 		// Get default artboard
 		const artboard = file.defaultArtboard();
 
 		// Set canvas to DPI-aware size for crisp rendering and optimal GPU usage
-		setCanvasDPIAwareSize(canvas);
+		setCanvasDPIAwareSize( canvas );
 
 		// Create renderer
-		const renderer = rive.makeRenderer(canvas, true);
+		const renderer = rive.makeRenderer( canvas, true );
 
 		// Debug logging when WP_DEBUG is active
-		if (window.riveBlockData?.debug) {
-			console.log('[Rive Block] Renderer created for:', riveSrc);
-			console.log('[Rive Block] Artboard:', artboard.name);
-			console.log('[Rive Block] Canvas size:', `${canvas.width}×${canvas.height}`);
-			console.log('[Rive Block] Animations available:', artboard.animationCount());
-			console.log('[Rive Block] Autoplay:', shouldAutoplay);
+		if ( window.riveBlockData?.debug ) {
+			console.log( '[Rive Block] Renderer created for:', riveSrc );
+			console.log( '[Rive Block] Artboard:', artboard.name );
+			console.log(
+				'[Rive Block] Canvas size:',
+				`${ canvas.width }×${ canvas.height }`
+			);
+			console.log(
+				'[Rive Block] Animations available:',
+				artboard.animationCount()
+			);
+			console.log( '[Rive Block] Autoplay:', shouldAutoplay );
 		}
 
 		// Try to create animation instance
 		let animationInstance = null;
-		if (artboard.animationCount() > 0) {
-			const animation = artboard.animationByIndex(0);
-			animationInstance = new rive.LinearAnimationInstance(animation, artboard);
+		if ( artboard.animationCount() > 0 ) {
+			const animation = artboard.animationByIndex( 0 );
+			animationInstance = new rive.LinearAnimationInstance(
+				animation,
+				artboard
+			);
 		}
 
-		// Setup ResizeObserver to handle canvas resizing (window resize, orientation change)
-		const resizeObserver = new ResizeObserver((entries) => {
-			for (const entry of entries) {
-				if (entry.target === canvas) {
-					// Update canvas DPI-aware size
-					setCanvasDPIAwareSize(canvas);
-					// Renderer will automatically use new canvas size on next frame
-				}
-			}
-		});
-		resizeObserver.observe(canvas);
-
-		// Store instance data
+		// Store instance data (before ResizeObserver so it can reference instanceData)
 		const instanceData = {
 			rive,
 			file,
@@ -329,48 +395,86 @@ async function initRiveInstance(rive, canvas, prefersReducedMotion) {
 			canvas,
 			shouldAutoplay,
 			animationFrameId: null,
-			resizeObserver
+			resizeObserver: null, // Will be set below
 		};
 
-		riveInstances.set(canvas, instanceData);
+		riveInstances.set( canvas, instanceData );
+
+		// Setup ResizeObserver to handle canvas resizing (window resize, orientation change)
+		// PERFORMANCE: Debounce to prevent excessive resize operations during scroll
+		let resizeTimeout = null;
+		const resizeObserver = new ResizeObserver( ( entries ) => {
+			// Clear any pending resize
+			if ( resizeTimeout ) {
+				clearTimeout( resizeTimeout );
+			}
+
+			// Debounce resize operations to avoid layout thrashing during scroll
+			resizeTimeout = setTimeout( () => {
+				for ( const entry of entries ) {
+					if ( entry.target === canvas ) {
+						// Update canvas DPI-aware size (only if actually changed)
+						const didResize = setCanvasDPIAwareSize( canvas );
+
+						// If canvas was resized, re-render current frame
+						if ( didResize && ! instanceData.shouldAutoplay ) {
+							renderFrame( instanceData );
+						}
+						// Renderer will automatically use new canvas size on next frame for autoplay
+					}
+				}
+			}, 150 ); // 150ms debounce - balances responsiveness vs performance
+		} );
+		resizeObserver.observe( canvas );
+
+		// Store ResizeObserver reference for cleanup
+		instanceData.resizeObserver = resizeObserver;
 
 		// Start render loop if autoplay is enabled
-		if (shouldAutoplay && animationInstance) {
-			startRenderLoop(instanceData);
+		if ( shouldAutoplay && animationInstance ) {
+			startRenderLoop( instanceData );
 
 			// Setup viewport observer to pause when not visible
 			// This follows Rive's best practice: "Pause when scrolled out of view"
-			setupViewportObserver(canvas, instanceData);
+			setupViewportObserver( canvas, instanceData );
 		} else {
 			// Just render one frame
-			renderFrame(instanceData);
+			renderFrame( instanceData );
 		}
 
 		// Log success in development
-		if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-			console.log(`[Rive Block] Successfully loaded: ${riveSrc}`);
+		if (
+			window.location.hostname === 'localhost' ||
+			window.location.hostname.includes( 'local' )
+		) {
+			console.log( `[Rive Block] Successfully loaded: ${ riveSrc }` );
 		}
-
-	} catch (error) {
-		console.error(`[Rive Block] Failed to load Rive file: ${riveSrc}`, error);
-		showErrorMessage(canvas, 'Unable to load animation. Please refresh the page.');
+	} catch ( error ) {
+		console.error(
+			`[Rive Block] Failed to load Rive file: ${ riveSrc }`,
+			error
+		);
+		showErrorMessage(
+			canvas,
+			'Unable to load animation. Please refresh the page.'
+		);
 	}
 }
 
 /**
  * Start the render loop for a single instance
  */
-function startRenderLoop(instanceData) {
+function startRenderLoop( instanceData ) {
 	const { rive, artboard, renderer, animation, canvas } = instanceData;
 	let lastTime = 0;
 
-	const draw = (time) => {
+	const draw = ( time ) => {
 		// Check if instance still exists
-		if (!riveInstances.has(canvas)) {
+		if ( ! riveInstances.has( canvas ) ) {
 			return;
 		}
 
-		const elapsed = lastTime ? (time - lastTime) / 1000 : 0;
+		const elapsed = lastTime ? ( time - lastTime ) / 1000 : 0;
 		lastTime = time;
 
 		// Clear canvas
@@ -378,13 +482,13 @@ function startRenderLoop(instanceData) {
 		renderer.save();
 
 		// Advance animation
-		if (animation) {
-			animation.advance(elapsed);
-			animation.apply(1.0); // Full mix
+		if ( animation ) {
+			animation.advance( elapsed );
+			animation.apply( 1.0 ); // Full mix
 		}
 
 		// Advance artboard
-		artboard.advance(elapsed);
+		artboard.advance( elapsed );
 
 		// Align to canvas
 		renderer.align(
@@ -394,39 +498,39 @@ function startRenderLoop(instanceData) {
 				minX: 0,
 				minY: 0,
 				maxX: canvas.width,
-				maxY: canvas.height
+				maxY: canvas.height,
 			},
 			artboard.bounds
 		);
 
 		// Draw artboard
-		artboard.draw(renderer);
+		artboard.draw( renderer );
 		renderer.restore();
 
 		// Flush renderer (required for WebGL2)
 		renderer.flush();
 
 		// Request next frame
-		instanceData.animationFrameId = rive.requestAnimationFrame(draw);
+		instanceData.animationFrameId = rive.requestAnimationFrame( draw );
 	};
 
-	instanceData.animationFrameId = rive.requestAnimationFrame(draw);
+	instanceData.animationFrameId = rive.requestAnimationFrame( draw );
 }
 
 /**
  * Pause the render loop for a single instance
  * Used when animation is not in viewport to save GPU resources
  */
-function pauseRenderLoop(instanceData) {
-	if (!instanceData) {
+function pauseRenderLoop( instanceData ) {
+	if ( ! instanceData ) {
 		return;
 	}
 
 	const { rive, animationFrameId } = instanceData;
 
 	// Cancel animation frame if running
-	if (animationFrameId) {
-		rive.cancelAnimationFrame(animationFrameId);
+	if ( animationFrameId ) {
+		rive.cancelAnimationFrame( animationFrameId );
 		instanceData.animationFrameId = null;
 	}
 }
@@ -435,14 +539,14 @@ function pauseRenderLoop(instanceData) {
  * Resume the render loop for a single instance
  * Called when animation enters viewport
  */
-function resumeRenderLoop(instanceData) {
-	if (!instanceData || instanceData.animationFrameId) {
+function resumeRenderLoop( instanceData ) {
+	if ( ! instanceData || instanceData.animationFrameId ) {
 		return; // Already running
 	}
 
 	// Only resume if autoplay is enabled
-	if (instanceData.shouldAutoplay) {
-		startRenderLoop(instanceData);
+	if ( instanceData.shouldAutoplay ) {
+		startRenderLoop( instanceData );
 	}
 }
 
@@ -454,33 +558,43 @@ function resumeRenderLoop(instanceData) {
  * @param {object} instanceData - Rive instance data
  * @see https://rive.app/docs/getting-started/best-practices#runtime-considerations
  */
-function setupViewportObserver(canvas, instanceData) {
+function setupViewportObserver( canvas, instanceData ) {
 	const observerOptions = {
 		root: null, // viewport
 		rootMargin: '0px', // Trigger exactly at viewport edge
-		threshold: 0.01 // At least 1% visible to be considered "in viewport"
+		threshold: 0.5, // At least 50% visible to keep animation running (PERFORMANCE: reduces simultaneous animations)
 	};
 
-	const observer = new IntersectionObserver((entries) => {
-		entries.forEach((entry) => {
-			if (entry.isIntersecting) {
+	const observer = new IntersectionObserver( ( entries ) => {
+		entries.forEach( ( entry ) => {
+			if ( entry.isIntersecting ) {
 				// Animation entered viewport - resume rendering
-				if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-					console.log(`[Rive Block] Resuming animation (entered viewport): ${canvas.dataset.riveSrc}`);
+				if (
+					window.location.hostname === 'localhost' ||
+					window.location.hostname.includes( 'local' )
+				) {
+					console.log(
+						`[Rive Block] Resuming animation (entered viewport): ${ canvas.dataset.riveSrc }`
+					);
 				}
-				resumeRenderLoop(instanceData);
+				resumeRenderLoop( instanceData );
 			} else {
 				// Animation left viewport - pause rendering to save GPU
-				if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-					console.log(`[Rive Block] Pausing animation (left viewport): ${canvas.dataset.riveSrc}`);
+				if (
+					window.location.hostname === 'localhost' ||
+					window.location.hostname.includes( 'local' )
+				) {
+					console.log(
+						`[Rive Block] Pausing animation (left viewport): ${ canvas.dataset.riveSrc }`
+					);
 				}
-				pauseRenderLoop(instanceData);
+				pauseRenderLoop( instanceData );
 			}
-		});
-	}, observerOptions);
+		} );
+	}, observerOptions );
 
 	// Start observing the canvas
-	observer.observe(canvas);
+	observer.observe( canvas );
 
 	// Store observer reference for cleanup
 	instanceData.viewportObserver = observer;
@@ -489,7 +603,7 @@ function setupViewportObserver(canvas, instanceData) {
 /**
  * Render a single frame (for static display)
  */
-function renderFrame(instanceData) {
+function renderFrame( instanceData ) {
 	const { rive, artboard, renderer, canvas } = instanceData;
 
 	renderer.clear();
@@ -503,13 +617,13 @@ function renderFrame(instanceData) {
 			minX: 0,
 			minY: 0,
 			maxX: canvas.width,
-			maxY: canvas.height
+			maxY: canvas.height,
 		},
 		artboard.bounds
 	);
 
 	// Draw artboard
-	artboard.draw(renderer);
+	artboard.draw( renderer );
 	renderer.restore();
 
 	// Flush renderer (required for WebGL2)
@@ -519,16 +633,16 @@ function renderFrame(instanceData) {
 /**
  * Display user-friendly error message when Rive fails to load
  */
-function showErrorMessage(canvas, message) {
+function showErrorMessage( canvas, message ) {
 	// Create error message container
-	const errorDiv = document.createElement('div');
+	const errorDiv = document.createElement( 'div' );
 	errorDiv.className = 'rive-block-error';
 	errorDiv.style.cssText = `
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: ${canvas.style.width || '100%'};
-		height: ${canvas.style.height || 'auto'};
+		width: ${ canvas.style.width || '100%' };
+		height: ${ canvas.style.height || 'auto' };
 		background-color: #f0f0f0;
 		color: #666;
 		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -541,8 +655,8 @@ function showErrorMessage(canvas, message) {
 	errorDiv.textContent = message;
 
 	// Replace canvas with error message
-	if (canvas.parentNode) {
-		canvas.parentNode.replaceChild(errorDiv, canvas);
+	if ( canvas.parentNode ) {
+		canvas.parentNode.replaceChild( errorDiv, canvas );
 	}
 }
 
@@ -558,78 +672,94 @@ function showErrorMessage(canvas, message) {
  * For cross-page caching, use HTTP cache headers (see README.md).
  */
 function cleanupRiveInstances() {
-	riveInstances.forEach((instanceData, canvas) => {
+	riveInstances.forEach( ( instanceData, canvas ) => {
 		try {
-			const { rive, animation, renderer, artboard, animationFrameId, viewportObserver, resizeObserver } = instanceData;
+			const {
+				rive,
+				animation,
+				renderer,
+				artboard,
+				animationFrameId,
+				viewportObserver,
+				resizeObserver,
+			} = instanceData;
 
 			// Cancel animation frame
-			if (animationFrameId) {
-				rive.cancelAnimationFrame(animationFrameId);
+			if ( animationFrameId ) {
+				rive.cancelAnimationFrame( animationFrameId );
 			}
 
 			// Disconnect viewport observer
-			if (viewportObserver) {
+			if ( viewportObserver ) {
 				viewportObserver.disconnect();
 			}
 
 			// Disconnect resize observer
-			if (resizeObserver) {
+			if ( resizeObserver ) {
 				resizeObserver.disconnect();
 			}
 
 			// Delete instances
-			if (animation) {
+			if ( animation ) {
 				animation.delete();
 			}
-			if (renderer) {
+			if ( renderer ) {
 				renderer.delete();
 			}
-			if (artboard) {
+			if ( artboard ) {
 				artboard.delete();
 			}
 
 			// NOTE: We don't explicitly unref files here because deleting artboards
 			// already unrefs them in WASM. But we MUST clear the cache below.
-		} catch (error) {
-			console.warn('[Rive Block] Error cleaning up instance:', error);
+		} catch ( error ) {
+			console.warn( '[Rive Block] Error cleaning up instance:', error );
 		}
-	});
+	} );
 
 	riveInstances.clear();
 
 	// Clear the file cache to prevent stale WASM references
 	// After artboards are deleted, cached file references become invalid
-	riveFileCache.forEach((file, url) => {
+	riveFileCache.forEach( ( file, url ) => {
 		try {
 			// Explicitly unref to be safe (may already be unrefed by artboard.delete)
 			file.unref();
-		} catch (error) {
+		} catch ( error ) {
 			// Ignore errors if already unrefed
-			console.warn(`[Rive Block] Error unreffing cached file ${url}:`, error);
+			console.warn(
+				`[Rive Block] Error unreffing cached file ${ url }:`,
+				error
+			);
 		}
-	});
+	} );
 
 	riveFileCache.clear();
 }
 
 // Initialize when DOM is ready
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', initRiveAnimations);
+if ( document.readyState === 'loading' ) {
+	document.addEventListener( 'DOMContentLoaded', initRiveAnimations );
 } else {
 	initRiveAnimations();
 }
 
 // Re-initialize when page is restored from bfcache (back/forward cache)
 // This handles browser back/forward button navigation where DOMContentLoaded doesn't fire
-window.addEventListener('pageshow', (event) => {
-	if (event.persisted) {
+window.addEventListener( 'pageshow', ( event ) => {
+	if ( event.persisted ) {
 		// Page was restored from bfcache
-		if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-			console.log('[Rive Block] Page restored from bfcache, re-initializing animations');
+		if (
+			window.location.hostname === 'localhost' ||
+			window.location.hostname.includes( 'local' )
+		) {
+			console.log(
+				'[Rive Block] Page restored from bfcache, re-initializing animations'
+			);
 		}
 		initRiveAnimations();
 	}
-});
+} );
 
 // NOTE: We do NOT cleanup on pagehide/beforeunload anymore!
 // Reason: These events fire on normal page reloads (Ctrl+R), which would
