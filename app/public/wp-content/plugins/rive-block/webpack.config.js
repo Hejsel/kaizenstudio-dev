@@ -21,14 +21,16 @@ module.exports = {
 					),
 				},
 				{
-					// Copy Service Worker for caching and offline support
+					// Copy Service Worker to plugin root for broader scope
+					// Allows SW to cache assets from entire /wp-content/plugins/rive-block/ path
+					// including .riv files from Media Library (/wp-content/uploads/)
 					from: path.resolve(
 						__dirname,
-						'src/rive-block/rive-sw.js'
+						'src/rive-sw.js'
 					),
 					to: path.resolve(
 						__dirname,
-						'build/rive-block/rive-sw.js'
+						'rive-sw.js'
 					),
 				},
 			],

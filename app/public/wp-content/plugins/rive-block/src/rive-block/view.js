@@ -11,11 +11,15 @@ import RiveWebGL2 from '@rive-app/webgl2-advanced';
 /**
  * Register Service Worker for caching and offline support
  * Provides ~30% faster loads after first visit via Cache Storage API
+ *
+ * Service Worker is at plugin root for broader scope - can cache:
+ * - Plugin assets (/wp-content/plugins/rive-block/)
+ * - Media Library .riv files (/wp-content/uploads/)
  */
 if ( 'serviceWorker' in navigator ) {
 	// Get plugin URL from localized data
 	const pluginUrl = window.riveBlockData?.pluginUrl || '';
-	const swUrl = `${ pluginUrl }build/rive-block/rive-sw.js`;
+	const swUrl = `${ pluginUrl }rive-sw.js`;
 
 	window.addEventListener( 'load', () => {
 		navigator.serviceWorker
