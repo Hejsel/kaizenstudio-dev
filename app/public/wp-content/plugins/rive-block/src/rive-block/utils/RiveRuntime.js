@@ -7,11 +7,11 @@
 
 import RiveWebGL2 from '@rive-app/webgl2-advanced';
 
-class RiveRuntimeManager {
+class RiveRuntimeLoader {
 	constructor() {
 		this.runtime = null;
 		this.isLoading = false;
-		this.callbacks = [];
+		this.callBackQueue = [];
 		// WASM URL will be set dynamically based on WordPress plugin URL
 		this.wasmURL = null;
 	}
@@ -22,36 +22,39 @@ class RiveRuntimeManager {
 	 */
 	async loadRuntime() {
 		try {
-			this.runtime = await RiveWebGL2({
-				locateFile: (file) => {
+			this.runtime = await RiveWebGL2( {
+				locateFile: ( file ) => {
 					// If custom WASM URL is set, use it
-					if (this.wasmURL) {
-						return `${this.wasmURL}/${file}`;
+					if ( this.wasmURL ) {
+						return `${ this.wasmURL }/${ file }`;
 					}
 					// Fallback to default path
 					return file;
-				}
-			});
+				},
+			} );
 
 			// Debug logging when WP_DEBUG is active
-			if (window.riveBlockData?.debug) {
-				console.log('[Rive Editor] Rive runtime loaded successfully');
-				console.log('[Rive Editor] Renderer: WebGL2-Advanced');
-				console.log('[Rive Editor] WASM location:', this.wasmURL || 'default');
+			if ( window.riveBlockData?.debug ) {
+				console.log( '[Rive Editor] Rive runtime loaded successfully' );
+				console.log( '[Rive Editor] Renderer: WebGL2-Advanced' );
+				console.log(
+					'[Rive Editor] WASM location:',
+					this.wasmURL || 'default'
+				);
 			}
 
 			// Execute all queued callbacks
-			while (this.callbacks.length > 0) {
-				const callback = this.callbacks.shift();
-				if (callback) {
-					callback(this.runtime);
+			while ( this.callBackQueue.length > 0 ) {
+				const callback = this.callBackQueue.shift();
+				if ( callback ) {
+					callback( this.runtime );
 				}
 			}
-		} catch (error) {
-			console.error('[Rive Block] Failed to load Rive runtime:', error);
+		} catch ( error ) {
+			console.error( '[Rive Block] Failed to load Rive runtime:', error );
 			// Reject all queued callbacks
-			while (this.callbacks.length > 0) {
-				this.callbacks.shift();
+			while ( this.callBackQueue.length > 0 ) {
+				this.callBackQueue.shift();
 			}
 			throw error;
 		}
@@ -61,18 +64,18 @@ class RiveRuntimeManager {
 	 * Get runtime instance via callback
 	 * @param {Function} callback - Callback that receives the runtime instance
 	 */
-	getInstance(callback) {
+	getInstance( callback ) {
 		// If runtime already loaded, call immediately
-		if (this.runtime) {
-			callback(this.runtime);
+		if ( this.runtime ) {
+			callback( this.runtime );
 			return;
 		}
 
 		// Add to queue
-		this.callbacks.push(callback);
+		this.callBackQueue.push( callback );
 
 		// Start loading if not already loading
-		if (!this.isLoading) {
+		if ( ! this.isLoading ) {
 			this.isLoading = true;
 			this.loadRuntime();
 		}
@@ -83,29 +86,31 @@ class RiveRuntimeManager {
 	 * @returns {Promise} Promise that resolves with the runtime instance
 	 */
 	awaitInstance() {
-		return new Promise((resolve, reject) => {
-			if (this.runtime) {
-				resolve(this.runtime);
+		return new Promise( ( resolve, reject ) => {
+			if ( this.runtime ) {
+				resolve( this.runtime );
 				return;
 			}
 
-			this.getInstance((runtime) => {
-				if (runtime) {
-					resolve(runtime);
+			this.getInstance( ( runtime ) => {
+				if ( runtime ) {
+					resolve( runtime );
 				} else {
-					reject(new Error('Failed to load Rive runtime'));
+					reject( new Error( 'Failed to load Rive runtime' ) );
 				}
-			});
-		});
+			} );
+		} );
 	}
 
 	/**
 	 * Manually set the WASM base URL (useful for custom CDN or local hosting)
 	 * @param {string} url - Base URL path to WASM files (without filename)
 	 */
-	setWasmUrl(url) {
-		if (this.runtime) {
-			console.warn('[Rive Block] Runtime already loaded. WASM URL change will not take effect.');
+	setWasmUrl( url ) {
+		if ( this.runtime ) {
+			console.warn(
+				'[Rive Block] Runtime already loaded. WASM URL change will not take effect.'
+			);
 			return;
 		}
 		this.wasmURL = url;
@@ -113,4 +118,4 @@ class RiveRuntimeManager {
 }
 
 // Export singleton instance
-export const riveRuntime = new RiveRuntimeManager();
+export const riveRuntime = new RiveRuntimeLoader();

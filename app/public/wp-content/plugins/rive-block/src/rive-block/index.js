@@ -26,9 +26,9 @@ import { riveRuntime } from './utils/RiveRuntime';
  * Set WASM URL for editor from localized script data
  * This must happen before any blocks attempt to load the Rive runtime
  */
-if (window.riveBlockData?.pluginUrl) {
-	const baseUrl = window.riveBlockData.pluginUrl.replace(/\/$/, '');
-	riveRuntime.setWasmUrl(`${baseUrl}/build/rive-block`);
+if ( window.riveBlockData?.pluginUrl ) {
+	const baseUrl = window.riveBlockData.pluginUrl.replace( /\/$/, '' );
+	riveRuntime.setWasmUrl( `${ baseUrl }/build/rive-block` );
 }
 
 /**

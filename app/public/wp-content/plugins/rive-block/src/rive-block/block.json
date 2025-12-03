@@ -41,7 +41,7 @@
 		},
 		"loadingPriority": {
 			"type": "string",
-			"enum": ["high", "low"],
+			"enum": [ "high", "low" ],
 			"default": "low"
 		}
 	},

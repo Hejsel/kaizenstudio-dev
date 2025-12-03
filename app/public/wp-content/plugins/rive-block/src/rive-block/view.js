@@ -377,12 +377,21 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 
 		// Try to create animation instance
 		let animationInstance = null;
+		let animationFPS = 60; // Default fallback
 		if ( artboard.animationCount() > 0 ) {
 			const animation = artboard.animationByIndex( 0 );
 			animationInstance = new rive.LinearAnimationInstance(
 				animation,
 				artboard
 			);
+
+			// Get animation's native FPS from .riv file
+			animationFPS = animation.fps || 60;
+
+			// Debug log animation FPS
+			if ( window.riveBlockData?.debug ) {
+				console.log( '[Rive Block] Animation FPS (from .riv):', animationFPS );
+			}
 		}
 
 		// Store instance data (before ResizeObserver so it can reference instanceData)
@@ -392,6 +401,7 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 			artboard,
 			renderer,
 			animation: animationInstance,
+			animationFPS, // Store native FPS from .riv file
 			canvas,
 			shouldAutoplay,
 			animationFrameId: null,
@@ -463,18 +473,22 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 
 /**
  * Start the render loop for a single instance
- * Uses adaptive frame rate based on canvas size to reduce GPU load
+ * Respects animation's native FPS from .riv file to avoid wasted GPU cycles
  */
 function startRenderLoop( instanceData ) {
-	const { rive, artboard, renderer, animation, canvas } = instanceData;
+	const { rive, artboard, renderer, animation, canvas, animationFPS } = instanceData;
 	let lastTime = 0;
 	let lastRenderTime = 0;
 
-	// Determine target FPS based on canvas size (GPU optimization)
-	const rect = canvas.getBoundingClientRect();
-	const canvasArea = rect.width * rect.height;
-	const targetFPS = canvasArea > 400000 ? 30 : 60; // Large canvas = 30fps
+	// Use animation's native FPS from .riv file (set in Rive Editor)
+	// This prevents wasted GPU cycles from rendering identical frames
+	const targetFPS = animationFPS || 60; // Fallback to 60 if not available
 	const frameInterval = 1000 / targetFPS; // ms between frames
+
+	// Debug log target FPS
+	if ( window.riveBlockData?.debug ) {
+		console.log( `[Rive Block] Render loop FPS: ${ targetFPS } (matching animation FPS)` );
+	}
 
 	const draw = ( time ) => {
 		// Check if instance still exists
