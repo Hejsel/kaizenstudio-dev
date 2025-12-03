@@ -24,150 +24,235 @@ const riveFileCache = new Map();
  * @param {string} url - URL of the Rive file to load
  * @returns {Promise<object>} Decoded Rive file object
  */
-async function loadRiveFile(rive, url) {
+async function loadRiveFile( rive, url ) {
 	// Check cache first
-	if (riveFileCache.has(url)) {
-		if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-			console.log(`[Rive Editor] Cache hit: ${url}`);
+	if ( riveFileCache.has( url ) ) {
+		if (
+			window.location.hostname === 'localhost' ||
+			window.location.hostname.includes( 'local' )
+		) {
+			console.log( `[Rive Editor] Cache hit: ${ url }` );
 		}
-		return riveFileCache.get(url);
+		return riveFileCache.get( url );
 	}
 
 	// Cache miss - fetch and decode the file
-	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-		console.log(`[Rive Editor] Cache miss, loading: ${url}`);
+	if (
+		window.location.hostname === 'localhost' ||
+		window.location.hostname.includes( 'local' )
+	) {
+		console.log( `[Rive Editor] Cache miss, loading: ${ url }` );
 	}
 
 	// Use 'default' cache mode to respect HTTP cache headers
 	// Editor context doesn't use preload, so default caching is appropriate
-	const response = await fetch(url, { cache: 'default' });
-	if (!response.ok) {
-		throw new Error(`Failed to fetch Rive file: ${response.statusText}`);
+	const response = await fetch( url, { cache: 'default' } );
+	if ( ! response.ok ) {
+		throw new Error(
+			`Failed to fetch Rive file: ${ response.statusText }`
+		);
 	}
 
 	const arrayBuffer = await response.arrayBuffer();
-	const fileBytes = new Uint8Array(arrayBuffer);
+	const fileBytes = new Uint8Array( arrayBuffer );
 
 	// Load and decode the file
-	const file = await rive.load(fileBytes);
+	const file = await rive.load( fileBytes );
 
 	// Store in cache for future use
-	riveFileCache.set(url, file);
+	riveFileCache.set( url, file );
 
-	if (window.location.hostname === 'localhost' || window.location.hostname.includes('local')) {
-		console.log(`[Rive Editor] Successfully loaded: ${url}`);
+	if (
+		window.location.hostname === 'localhost' ||
+		window.location.hostname.includes( 'local' )
+	) {
+		console.log( `[Rive Editor] Successfully loaded: ${ url }` );
 	}
 
 	return file;
 }
 
-export default function RiveCanvas({
+export default function RiveCanvas( {
 	riveFileUrl,
 	width,
 	height,
 	enableAutoplay,
 	respectReducedMotion,
 	ariaLabel,
-	ariaDescription
-}) {
-	const canvasRef = useRef(null);
-	const riveInstanceRef = useRef(null);
-	const riveFileRef = useRef(null);
-	const artboardRef = useRef(null);
-	const rendererRef = useRef(null);
-	const animationFrameIdRef = useRef(null);
-	const resizeObserverRef = useRef(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [loadError, setLoadError] = useState(null);
+	ariaDescription,
+} ) {
+	const canvasRef = useRef( null );
+	const riveInstanceRef = useRef( null );
+	const riveFileRef = useRef( null );
+	const artboardRef = useRef( null );
+	const rendererRef = useRef( null );
+	const animationFrameIdRef = useRef( null );
+	const resizeObserverRef = useRef( null );
+	const [ isLoading, setIsLoading ] = useState( true );
+	const [ loadError, setLoadError ] = useState( null );
 
 	/**
 	 * Set canvas internal resolution to match display size and device pixel ratio
 	 * This ensures crisp rendering and optimal GPU usage in the editor
 	 *
+	 * PERFORMANCE: Uses adaptive DPR scaling to reduce GPU load on large canvas
+	 *
 	 * @param {HTMLCanvasElement} canvas - The canvas element to resize
+	 * @returns {boolean} True if canvas was resized, false if no change
 	 */
-	const setCanvasDPIAwareSize = (canvas) => {
-		if (!canvas) return;
+	const setCanvasDPIAwareSize = ( canvas ) => {
+		if ( ! canvas ) return false;
 
 		// Get the display size of the canvas (CSS pixels)
 		const rect = canvas.getBoundingClientRect();
 		const displayWidth = rect.width;
 		const displayHeight = rect.height;
 
-		// Get device pixel ratio (typically 1, 1.5, 2, or 2.5)
-		const dpr = window.devicePixelRatio || 1;
+		// Get device pixel ratio with AGGRESSIVE scaling to reduce GPU load
+		// Optimized for integrated GPUs (Intel Iris Xe, etc.)
+		const baseDpr = window.devicePixelRatio || 1;
+		const canvasArea = displayWidth * displayHeight; // CSS pixels
+
+		let dpr;
+		if ( canvasArea > 800000 ) {
+			// Very large canvas (>800k CSS pixels) - aggressive DPR reduction
+			dpr = Math.min( baseDpr, 0.75 );
+		} else if ( canvasArea > 400000 ) {
+			// Large canvas (>400k CSS pixels) - moderate DPR
+			dpr = Math.min( baseDpr, 1.0 );
+		} else if ( canvasArea > 150000 ) {
+			// Medium canvas (>150k CSS pixels) - balanced DPR
+			dpr = Math.min( baseDpr, 1.5 );
+		} else {
+			// Small canvas - good DPR for crisp rendering
+			dpr = Math.min( baseDpr, 2.0 );
+		}
+
+		// Calculate target internal resolution
+		const targetWidth = Math.round( displayWidth * dpr );
+		const targetHeight = Math.round( displayHeight * dpr );
+
+		// CRITICAL: Only resize if dimensions actually changed
+		// Setting canvas.width/height clears the canvas and triggers expensive reflow
+		if ( canvas.width === targetWidth && canvas.height === targetHeight ) {
+			return false; // No resize needed
+		}
 
 		// Set canvas internal resolution to match display size × DPI
 		// This prevents blurry rendering and reduces GPU scaling overhead
-		canvas.width = Math.round(displayWidth * dpr);
-		canvas.height = Math.round(displayHeight * dpr);
+		canvas.width = targetWidth;
+		canvas.height = targetHeight;
+
+		// Debug log when WP_DEBUG is active
+		if ( window.riveBlockData?.debug ) {
+			console.log(
+				`[Rive Editor] Canvas DPI sizing: ${ displayWidth }×${ displayHeight } CSS → ${ canvas.width }×${ canvas.height } internal (DPR: ${ dpr })`
+			);
+		}
+
+		return true; // Canvas was resized
 	};
 
 	// Initialize Rive animation when canvas is ready
-	useEffect(() => {
-		if (!canvasRef.current || !riveFileUrl) return;
+	useEffect( () => {
+		if ( ! canvasRef.current || ! riveFileUrl ) return;
 
 		let mounted = true;
-		setIsLoading(true);
-		setLoadError(null);
+		setIsLoading( true );
+		setLoadError( null );
 
-		(async () => {
+		( async () => {
 			try {
 				// Get Rive runtime instance
 				const rive = await riveRuntime.awaitInstance();
 
-				if (!mounted) return;
+				if ( ! mounted ) return;
 
 				// Load Rive file (uses in-memory cache if available)
-				const file = await loadRiveFile(rive, riveFileUrl);
+				const file = await loadRiveFile( rive, riveFileUrl );
 				riveFileRef.current = file;
 
-				if (!mounted) return;
+				if ( ! mounted ) return;
 
 				// Get default artboard
 				const artboard = file.defaultArtboard();
 				artboardRef.current = artboard;
 
 				// Set canvas to DPI-aware size for crisp rendering
-				setCanvasDPIAwareSize(canvasRef.current);
+				setCanvasDPIAwareSize( canvasRef.current );
 
 				// Create renderer
-				const renderer = rive.makeRenderer(canvasRef.current, true);
+				const renderer = rive.makeRenderer( canvasRef.current, true );
 				rendererRef.current = renderer;
 
 				// Debug logging when WP_DEBUG is active
-				if (window.riveBlockData?.debug) {
-					console.log('[Rive Editor] Renderer created for:', riveFileUrl);
-					console.log('[Rive Editor] Artboard:', artboard.name);
-					console.log('[Rive Editor] Canvas size:', `${canvasRef.current.width}×${canvasRef.current.height}`);
-					console.log('[Rive Editor] Animations available:', artboard.animationCount());
+				if ( window.riveBlockData?.debug ) {
+					console.log(
+						'[Rive Editor] Renderer created for:',
+						riveFileUrl
+					);
+					console.log( '[Rive Editor] Artboard:', artboard.name );
+					console.log(
+						'[Rive Editor] Canvas size:',
+						`${ canvasRef.current.width }×${ canvasRef.current.height }`
+					);
+					console.log(
+						'[Rive Editor] Animations available:',
+						artboard.animationCount()
+					);
 				}
 
 				// Setup ResizeObserver to handle canvas resizing
-				const resizeObserver = new ResizeObserver(() => {
-					if (canvasRef.current) {
-						setCanvasDPIAwareSize(canvasRef.current);
-						// Re-render current frame with new canvas size
-						if (riveInstanceRef.current) {
-							renderFrame(rive);
-						}
+				// PERFORMANCE: Debounce to prevent excessive resize operations
+				let resizeTimeout = null;
+				const resizeObserver = new ResizeObserver( () => {
+					// Clear any pending resize
+					if ( resizeTimeout ) {
+						clearTimeout( resizeTimeout );
 					}
-				});
-				resizeObserver.observe(canvasRef.current);
+
+					// Debounce resize operations to avoid layout thrashing
+					resizeTimeout = setTimeout( () => {
+						if ( canvasRef.current ) {
+							const didResize = setCanvasDPIAwareSize( canvasRef.current );
+							// Re-render current frame with new canvas size (only if actually resized)
+							if ( didResize && riveInstanceRef.current ) {
+								renderFrame( rive );
+							}
+						}
+					}, 150 ); // 150ms debounce - balances responsiveness vs performance
+				} );
+				resizeObserver.observe( canvasRef.current );
 				resizeObserverRef.current = resizeObserver;
 
 				// Check user's motion preference
-				const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				const prefersReducedMotion = window.matchMedia(
+					'(prefers-reduced-motion: reduce)'
+				).matches;
 
 				// Determine if autoplay should be enabled
-				const shouldAutoplay = enableAutoplay && !(respectReducedMotion && prefersReducedMotion);
+				const shouldAutoplay =
+					enableAutoplay &&
+					! ( respectReducedMotion && prefersReducedMotion );
 
 				// Try to create animation or state machine instance
 				let animationInstance = null;
+				let animationFPS = 60; // Default fallback
 
-				if (artboard.animationCount() > 0) {
-					const animation = artboard.animationByIndex(0);
-					animationInstance = new rive.LinearAnimationInstance(animation, artboard);
+				if ( artboard.animationCount() > 0 ) {
+					const animation = artboard.animationByIndex( 0 );
+					animationInstance = new rive.LinearAnimationInstance(
+						animation,
+						artboard
+					);
+
+					// Get animation's native FPS from .riv file
+					animationFPS = animation.fps || 60;
+
+					// Debug log animation FPS
+					if ( window.riveBlockData?.debug ) {
+						console.log( '[Rive Editor] Animation FPS (from .riv):', animationFPS );
+					}
 				}
 
 				riveInstanceRef.current = {
@@ -176,47 +261,76 @@ export default function RiveCanvas({
 					artboard,
 					renderer,
 					animation: animationInstance,
-					shouldAutoplay
+					animationFPS, // Store native FPS from .riv file
+					shouldAutoplay,
 				};
 
 				// Start render loop if autoplay is enabled
-				if (shouldAutoplay && animationInstance) {
-					startRenderLoop(rive);
+				if ( shouldAutoplay && animationInstance ) {
+					startRenderLoop( rive );
 				} else {
 					// Just render one frame
-					renderFrame(rive);
+					renderFrame( rive );
 				}
 
-				setIsLoading(false);
-				setLoadError(null);
-
-			} catch (error) {
-				console.error('[Rive Block] Error loading Rive animation:', error);
-				if (mounted) {
-					setLoadError(__('Unable to load Rive animation. Please check the file and try again.', 'rive-block'));
-					setIsLoading(false);
+				setIsLoading( false );
+				setLoadError( null );
+			} catch ( error ) {
+				console.error(
+					'[Rive Block] Error loading Rive animation:',
+					error
+				);
+				if ( mounted ) {
+					setLoadError(
+						__(
+							'Unable to load Rive animation. Please check the file and try again.',
+							'rive-block'
+						)
+					);
+					setIsLoading( false );
 				}
 			}
-		})();
+		} )();
 
 		// Cleanup function
 		return () => {
 			mounted = false;
 			cleanup();
 		};
-	}, [riveFileUrl, enableAutoplay, respectReducedMotion]);
+	}, [ riveFileUrl, enableAutoplay, respectReducedMotion ] );
 
 	/**
 	 * Start the render loop for animation
+	 * Respects animation's native FPS from .riv file to avoid wasted GPU cycles
 	 */
-	const startRenderLoop = (rive) => {
+	const startRenderLoop = ( rive ) => {
 		let lastTime = 0;
+		let lastRenderTime = 0;
 
-		const draw = (time) => {
-			if (!riveInstanceRef.current) return;
+		// Use animation's native FPS from .riv file (set in Rive Editor)
+		// This prevents wasted GPU cycles from rendering identical frames
+		const targetFPS = riveInstanceRef.current?.animationFPS || 60; // Fallback to 60 if not available
+		const frameInterval = 1000 / targetFPS; // ms between frames
+
+		// Debug log target FPS
+		if ( window.riveBlockData?.debug ) {
+			console.log( `[Rive Editor] Render loop FPS: ${ targetFPS } (matching animation FPS)` );
+		}
+
+		const draw = ( time ) => {
+			if ( ! riveInstanceRef.current ) return;
+
+			// Frame rate limiting to match animation's native FPS
+			if ( time - lastRenderTime < frameInterval ) {
+				// Skip this frame to maintain target FPS
+				animationFrameIdRef.current = rive.requestAnimationFrame( draw );
+				return;
+			}
+
+			lastRenderTime = time;
 
 			const { artboard, renderer, animation } = riveInstanceRef.current;
-			const elapsed = lastTime ? (time - lastTime) / 1000 : 0;
+			const elapsed = lastTime ? ( time - lastTime ) / 1000 : 0;
 			lastTime = time;
 
 			// Clear canvas
@@ -224,13 +338,13 @@ export default function RiveCanvas({
 			renderer.save();
 
 			// Advance animation
-			if (animation) {
-				animation.advance(elapsed);
-				animation.apply(1.0); // Full mix
+			if ( animation ) {
+				animation.advance( elapsed );
+				animation.apply( 1.0 ); // Full mix
 			}
 
 			// Advance artboard
-			artboard.advance(elapsed);
+			artboard.advance( elapsed );
 
 			// Align to canvas
 			renderer.align(
@@ -240,30 +354,30 @@ export default function RiveCanvas({
 					minX: 0,
 					minY: 0,
 					maxX: canvasRef.current.width,
-					maxY: canvasRef.current.height
+					maxY: canvasRef.current.height,
 				},
 				artboard.bounds
 			);
 
 			// Draw artboard
-			artboard.draw(renderer);
+			artboard.draw( renderer );
 			renderer.restore();
 
 			// Flush renderer (required for WebGL2)
 			renderer.flush();
 
 			// Request next frame
-			animationFrameIdRef.current = rive.requestAnimationFrame(draw);
+			animationFrameIdRef.current = rive.requestAnimationFrame( draw );
 		};
 
-		animationFrameIdRef.current = rive.requestAnimationFrame(draw);
+		animationFrameIdRef.current = rive.requestAnimationFrame( draw );
 	};
 
 	/**
 	 * Render a single frame (for static display)
 	 */
-	const renderFrame = (rive) => {
-		if (!riveInstanceRef.current) return;
+	const renderFrame = ( rive ) => {
+		if ( ! riveInstanceRef.current ) return;
 
 		const { artboard, renderer } = riveInstanceRef.current;
 
@@ -278,13 +392,13 @@ export default function RiveCanvas({
 				minX: 0,
 				minY: 0,
 				maxX: canvasRef.current.width,
-				maxY: canvasRef.current.height
+				maxY: canvasRef.current.height,
 			},
 			artboard.bounds
 		);
 
 		// Draw artboard
-		artboard.draw(renderer);
+		artboard.draw( renderer );
 		renderer.restore();
 
 		// Flush renderer (required for WebGL2)
@@ -296,29 +410,29 @@ export default function RiveCanvas({
 	 */
 	const cleanup = () => {
 		// Disconnect resize observer
-		if (resizeObserverRef.current) {
+		if ( resizeObserverRef.current ) {
 			resizeObserverRef.current.disconnect();
 			resizeObserverRef.current = null;
 		}
 
 		// Cancel animation frame
-		if (animationFrameIdRef.current && riveInstanceRef.current) {
+		if ( animationFrameIdRef.current && riveInstanceRef.current ) {
 			const { rive } = riveInstanceRef.current;
-			rive.cancelAnimationFrame(animationFrameIdRef.current);
+			rive.cancelAnimationFrame( animationFrameIdRef.current );
 			animationFrameIdRef.current = null;
 		}
 
 		// Delete Rive instances
-		if (riveInstanceRef.current) {
+		if ( riveInstanceRef.current ) {
 			const { animation, renderer, artboard } = riveInstanceRef.current;
 
-			if (animation) {
+			if ( animation ) {
 				animation.delete();
 			}
-			if (renderer) {
+			if ( renderer ) {
 				renderer.delete();
 			}
-			if (artboard) {
+			if ( artboard ) {
 				artboard.delete();
 			}
 		}
@@ -334,11 +448,11 @@ export default function RiveCanvas({
 	};
 
 	return (
-		<div style={{ position: 'relative', width, height }}>
-			{/* Loading indicator */}
-			{isLoading && (
+		<div style={ { position: 'relative', width, height } }>
+			{ /* Loading indicator */ }
+			{ isLoading && (
 				<div
-					style={{
+					style={ {
 						position: 'absolute',
 						top: 0,
 						left: 0,
@@ -348,27 +462,27 @@ export default function RiveCanvas({
 						alignItems: 'center',
 						justifyContent: 'center',
 						backgroundColor: 'rgba(255, 255, 255, 0.8)',
-						zIndex: 1000
-					}}
+						zIndex: 1000,
+					} }
 				>
 					<Spinner />
 				</div>
-			)}
+			) }
 
-			{/* Error notice */}
-			{loadError && (
-				<Notice status="error" isDismissible={false}>
-					{loadError}
+			{ /* Error notice */ }
+			{ loadError && (
+				<Notice status="error" isDismissible={ false }>
+					{ loadError }
 				</Notice>
-			)}
+			) }
 
-			{/* Rive animation canvas - identical markup to frontend */}
+			{ /* Rive animation canvas - identical markup to frontend */ }
 			<canvas
-				ref={canvasRef}
-				style={{ width, height }}
-				role={ariaLabel ? 'img' : undefined}
-				aria-label={ariaLabel || undefined}
-				aria-description={ariaDescription || undefined}
+				ref={ canvasRef }
+				style={ { width, height } }
+				role={ ariaLabel ? 'img' : undefined }
+				aria-label={ ariaLabel || undefined }
+				aria-description={ ariaDescription || undefined }
 			/>
 		</div>
 	);
