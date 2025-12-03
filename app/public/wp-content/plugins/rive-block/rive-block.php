@@ -153,8 +153,11 @@ add_action( 'wp_head', 'rive_block_preload_wasm', 1 );
  *
  * Cache-Control directives:
  * - public: Can be cached by browsers and CDNs
- * - max-age=31536000: Cache for 1 year (365 days)
+ * - max-age=604800: Cache for 7 days (matches Nginx configuration)
  * - immutable: Tells browser the file will never change at this URL
+ *
+ * Note: This is a backup for environments without Nginx custom config.
+ * Nginx configuration takes precedence when available.
  */
 function rive_block_add_cache_headers( $headers, $wp_object ) {
 	// Only apply to frontend requests
@@ -165,9 +168,9 @@ function rive_block_add_cache_headers( $headers, $wp_object ) {
 	// Check if this is a .riv file request
 	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
 	if ( strpos( $request_uri, '.riv' ) !== false ) {
-		// Set aggressive caching headers for immutable .riv files
-		$headers['Cache-Control'] = 'public, max-age=31536000, immutable';
-		$headers['Expires'] = gmdate( 'D, d M Y H:i:s', time() + 31536000 ) . ' GMT';
+		// Set caching headers for immutable .riv files (7 days, matching Nginx config)
+		$headers['Cache-Control'] = 'public, max-age=604800, immutable';
+		$headers['Expires'] = gmdate( 'D, d M Y H:i:s', time() + 604800 ) . ' GMT';
 	}
 
 	return $headers;

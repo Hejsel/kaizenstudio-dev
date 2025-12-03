@@ -56,8 +56,15 @@ if ( $width !== 'auto' && $height !== 'auto' && is_numeric( str_replace( ['px', 
 }
 ?>
 <?php if ( $loading_priority === 'high' ) : ?>
+	<?php
+	// Prevent duplicate preload tags for the same Rive file
+	static $preloaded_riv_files = [];
+	if ( ! in_array( $rive_file_url, $preloaded_riv_files, true ) ) :
+		$preloaded_riv_files[] = $rive_file_url;
+	?>
 <!-- Preload Rive animation file for faster initialization (high priority) -->
 <link rel="preload" href="<?php echo esc_url( $rive_file_url ); ?>" as="fetch" crossorigin="anonymous">
+	<?php endif; ?>
 <?php endif; ?>
 <div class="rive-block-container" style="position: relative; width: <?php echo esc_attr( $width ); ?>; padding-bottom: <?php echo esc_attr( $aspect_ratio ); ?>;">
 	<canvas
