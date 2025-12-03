@@ -276,24 +276,24 @@ function setCanvasDPIAwareSize( canvas ) {
 	const displayWidth = rect.width;
 	const displayHeight = rect.height;
 
-	// Get device pixel ratio with adaptive scaling based on canvas size
-	// Larger canvas = lower DPR to prevent GPU compositor overload
+	// Get device pixel ratio with AGGRESSIVE scaling to reduce GPU load
+	// Optimized for integrated GPUs (Intel Iris Xe, etc.) that struggle with high pixel counts
 	const baseDpr = window.devicePixelRatio || 1;
 	const canvasArea = displayWidth * displayHeight; // CSS pixels
 
 	let dpr;
 	if ( canvasArea > 800000 ) {
-		// Very large canvas (>800k CSS pixels) - use minimal DPR
-		dpr = Math.min( baseDpr, 1.0 );
+		// Very large canvas (>800k CSS pixels) - aggressive DPR reduction
+		dpr = Math.min( baseDpr, 0.75 );
 	} else if ( canvasArea > 400000 ) {
-		// Large canvas (>400k CSS pixels) - cap at 1.5x
-		dpr = Math.min( baseDpr, 1.5 );
+		// Large canvas (>400k CSS pixels) - moderate DPR
+		dpr = Math.min( baseDpr, 1.0 );
 	} else if ( canvasArea > 150000 ) {
-		// Medium canvas (>150k CSS pixels) - cap at 2.0x
-		dpr = Math.min( baseDpr, 2.0 );
+		// Medium canvas (>150k CSS pixels) - balanced DPR
+		dpr = Math.min( baseDpr, 1.5 );
 	} else {
-		// Small canvas - allow full DPR up to 2.5x for crisp rendering
-		dpr = Math.min( baseDpr, 2.5 );
+		// Small canvas - good DPR for crisp rendering
+		dpr = Math.min( baseDpr, 2.0 );
 	}
 
 	// Calculate target internal resolution
@@ -463,10 +463,18 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 
 /**
  * Start the render loop for a single instance
+ * Uses adaptive frame rate based on canvas size to reduce GPU load
  */
 function startRenderLoop( instanceData ) {
 	const { rive, artboard, renderer, animation, canvas } = instanceData;
 	let lastTime = 0;
+	let lastRenderTime = 0;
+
+	// Determine target FPS based on canvas size (GPU optimization)
+	const rect = canvas.getBoundingClientRect();
+	const canvasArea = rect.width * rect.height;
+	const targetFPS = canvasArea > 400000 ? 30 : 60; // Large canvas = 30fps
+	const frameInterval = 1000 / targetFPS; // ms between frames
 
 	const draw = ( time ) => {
 		// Check if instance still exists
@@ -474,6 +482,14 @@ function startRenderLoop( instanceData ) {
 			return;
 		}
 
+		// Frame rate limiting for large canvas to reduce GPU load
+		if ( time - lastRenderTime < frameInterval ) {
+			// Skip this frame to maintain target FPS
+			instanceData.animationFrameId = rive.requestAnimationFrame( draw );
+			return;
+		}
+
+		lastRenderTime = time;
 		const elapsed = lastTime ? ( time - lastTime ) / 1000 : 0;
 		lastTime = time;
 
@@ -562,7 +578,7 @@ function setupViewportObserver( canvas, instanceData ) {
 	const observerOptions = {
 		root: null, // viewport
 		rootMargin: '0px', // Trigger exactly at viewport edge
-		threshold: 0.5, // At least 50% visible to keep animation running (PERFORMANCE: reduces simultaneous animations)
+		threshold: 0.3, // At least 30% visible to keep animation running (AGGRESSIVE: minimizes GPU load)
 	};
 
 	const observer = new IntersectionObserver( ( entries ) => {
