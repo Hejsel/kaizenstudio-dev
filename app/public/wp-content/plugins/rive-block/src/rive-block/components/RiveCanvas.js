@@ -108,25 +108,8 @@ export default function RiveCanvas( {
 		const displayWidth = rect.width;
 		const displayHeight = rect.height;
 
-		// Get device pixel ratio with AGGRESSIVE scaling to reduce GPU load
-		// Optimized for integrated GPUs (Intel Iris Xe, etc.)
-		const baseDpr = window.devicePixelRatio || 1;
-		const canvasArea = displayWidth * displayHeight; // CSS pixels
-
-		let dpr;
-		if ( canvasArea > 800000 ) {
-			// Very large canvas (>800k CSS pixels) - aggressive DPR reduction
-			dpr = Math.min( baseDpr, 0.75 );
-		} else if ( canvasArea > 400000 ) {
-			// Large canvas (>400k CSS pixels) - moderate DPR
-			dpr = Math.min( baseDpr, 1.0 );
-		} else if ( canvasArea > 150000 ) {
-			// Medium canvas (>150k CSS pixels) - balanced DPR
-			dpr = Math.min( baseDpr, 1.5 );
-		} else {
-			// Small canvas - good DPR for crisp rendering
-			dpr = Math.min( baseDpr, 2.0 );
-		}
+		// Use full device pixel ratio for crisp rendering
+		const dpr = window.devicePixelRatio || 1;
 
 		// Calculate target internal resolution
 		const targetWidth = Math.round( displayWidth * dpr );
