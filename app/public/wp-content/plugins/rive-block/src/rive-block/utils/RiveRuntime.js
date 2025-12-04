@@ -9,12 +9,13 @@
 import RiveWebGL2 from '@rive-app/webgl2-advanced';
 
 /**
- * IndexedDB Helper: Open or create database for WASM module caching
- * Stores compiled WebAssembly.Module objects for instant initialization
+ * IndexedDB Helper: Open or create database for WASM bytes caching
+ * Stores raw WASM bytes (ArrayBuffer) to skip network download
+ * Note: WebAssembly.Module cannot be stored due to browser security restrictions
  */
 const DB_NAME = 'rive-block-wasm-cache';
-const DB_VERSION = 1;
-const STORE_NAME = 'compiled-modules';
+const DB_VERSION = 2;
+const STORE_NAME = 'wasm-bytes';
 
 async function openWASMDatabase() {
 	return new Promise( ( resolve, reject ) => {
@@ -25,11 +26,18 @@ async function openWASMDatabase() {
 
 		request.onupgradeneeded = ( event ) => {
 			const db = event.target.result;
+
+			// Delete old store from v1 (if exists)
+			if ( db.objectStoreNames.contains( 'compiled-modules' ) ) {
+				db.deleteObjectStore( 'compiled-modules' );
+			}
+
+			// Create new store for v2
 			if ( ! db.objectStoreNames.contains( STORE_NAME ) ) {
 				// Create object store with filename as key
 				db.createObjectStore( STORE_NAME, { keyPath: 'filename' } );
 				if ( window.riveBlockData?.debug ) {
-					console.log( '[Rive Editor IDB] Database created' );
+					console.log( '[Rive Editor IDB] Database upgraded to v2 (raw bytes storage)' );
 				}
 			}
 		};
@@ -37,9 +45,11 @@ async function openWASMDatabase() {
 }
 
 /**
- * IndexedDB Helper: Save compiled WASM module
+ * IndexedDB Helper: Save WASM bytes
+ * @param {string} filename - WASM filename (e.g., 'webgl2_advanced.wasm')
+ * @param {ArrayBuffer} wasmBytes - Raw WASM bytes
  */
-async function saveCompiledWASM( filename, module ) {
+async function saveWASMBytes( filename, wasmBytes ) {
 	try {
 		const db = await openWASMDatabase();
 		const transaction = db.transaction( [ STORE_NAME ], 'readwrite' );
@@ -47,7 +57,7 @@ async function saveCompiledWASM( filename, module ) {
 
 		const data = {
 			filename,
-			module, // WebAssembly.Module is structured-cloneable!
+			bytes: wasmBytes, // ArrayBuffer is structured-cloneable
 			timestamp: Date.now(),
 		};
 
@@ -58,19 +68,22 @@ async function saveCompiledWASM( filename, module ) {
 		} );
 
 		if ( window.riveBlockData?.debug ) {
-			console.log( '[Rive Editor IDB] Saved compiled WASM:', filename );
+			const sizeKB = Math.round( wasmBytes.byteLength / 1024 );
+			console.log( `[Rive Editor IDB] Saved WASM bytes: ${ filename } (${ sizeKB } KB)` );
 		}
 
 		db.close();
 	} catch ( error ) {
-		console.error( '[Rive Editor IDB] Failed to save compiled WASM:', error );
+		console.error( '[Rive Editor IDB] Failed to save WASM bytes:', error );
 	}
 }
 
 /**
- * IndexedDB Helper: Load compiled WASM module
+ * IndexedDB Helper: Load WASM bytes
+ * @param {string} filename - WASM filename
+ * @returns {ArrayBuffer|null} Raw WASM bytes or null if not cached
  */
-async function loadCompiledWASM( filename ) {
+async function loadWASMBytes( filename ) {
 	try {
 		const db = await openWASMDatabase();
 		const transaction = db.transaction( [ STORE_NAME ], 'readonly' );
@@ -84,17 +97,18 @@ async function loadCompiledWASM( filename ) {
 
 		db.close();
 
-		if ( data && data.module ) {
+		if ( data && data.bytes ) {
 			if ( window.riveBlockData?.debug ) {
 				const age = Math.round( ( Date.now() - data.timestamp ) / 1000 );
-				console.log( `[Rive Editor IDB] Loaded compiled WASM: ${ filename } (cached ${ age }s ago)` );
+				const sizeKB = Math.round( data.bytes.byteLength / 1024 );
+				console.log( `[Rive Editor IDB] Loaded WASM bytes: ${ filename } (${ sizeKB } KB, cached ${ age }s ago)` );
 			}
-			return data.module;
+			return data.bytes;
 		}
 
 		return null;
 	} catch ( error ) {
-		console.error( '[Rive Editor IDB] Failed to load compiled WASM:', error );
+		console.error( '[Rive Editor IDB] Failed to load WASM bytes:', error );
 		return null;
 	}
 }
@@ -118,8 +132,8 @@ class RiveRuntimeLoader {
 			const wasmFilename = 'webgl2_advanced.wasm';
 			const wasmUrl = this.wasmURL ? `${ this.wasmURL }/${ wasmFilename }` : wasmFilename;
 
-			// Try to load compiled WASM from IndexedDB
-			const compiledModule = await loadCompiledWASM( wasmFilename );
+			// Try to load WASM bytes from IndexedDB
+			const cachedBytes = await loadWASMBytes( wasmFilename );
 
 			const startTime = performance.now();
 
@@ -136,31 +150,36 @@ class RiveRuntimeLoader {
 				instantiateWasm: async ( imports, successCallback ) => {
 					try {
 						let instance;
+						let module;
 
-						if ( compiledModule ) {
-							// IDB Cache hit: Instantiate from cached compiled module (~30ms)
+						if ( cachedBytes ) {
+							// IDB Cache hit: Compile from cached bytes + instantiate
 							if ( window.riveBlockData?.debug ) {
-								console.log( '[Rive Editor IDB] Using cached compiled WASM' );
+								console.log( '[Rive Editor IDB] Compiling from cached WASM bytes' );
 							}
-							instance = await WebAssembly.instantiate( compiledModule, imports );
+							module = await WebAssembly.compile( cachedBytes );
+							instance = await WebAssembly.instantiate( module, imports );
 						} else {
-							// IDB Cache miss: Compile + instantiate + cache for next time
+							// IDB Cache miss: Fetch + compile + instantiate + cache bytes
 							if ( window.riveBlockData?.debug ) {
-								console.log( '[Rive Editor IDB] Compiling WASM (first load)' );
+								console.log( '[Rive Editor IDB] Fetching and compiling WASM (first load)' );
 							}
 
 							const response = await fetch( wasmUrl );
-							const { instance: wasmInstance, module } = await WebAssembly.instantiateStreaming( response, imports );
-							instance = wasmInstance;
+							const wasmBytes = await response.arrayBuffer();
 
-							// Save compiled module to IndexedDB for next load (don't await)
-							saveCompiledWASM( wasmFilename, module )
+							// Compile and instantiate
+							module = await WebAssembly.compile( wasmBytes );
+							instance = await WebAssembly.instantiate( module, imports );
+
+							// Save WASM bytes to IndexedDB for next load (don't await)
+							saveWASMBytes( wasmFilename, wasmBytes )
 								.catch( ( error ) => {
-									console.error( '[Rive Editor IDB] Failed to cache compiled WASM:', error );
+									console.error( '[Rive Editor IDB] Failed to cache WASM bytes:', error );
 								} );
 						}
 
-						successCallback( instance, compiledModule || undefined );
+						successCallback( instance, module );
 						return instance.exports;
 					} catch ( error ) {
 						console.error( '[Rive Editor IDB] WASM instantiation failed:', error );
@@ -175,7 +194,7 @@ class RiveRuntimeLoader {
 			if ( window.riveBlockData?.debug ) {
 				console.log( `[Rive Editor] Rive runtime loaded in ${ loadTime }ms` );
 				console.log( '[Rive Editor] Renderer: WebGL2-Advanced' );
-				console.log( '[Rive Editor] WASM caching: IndexedDB (compiled modules)' );
+				console.log( '[Rive Editor] WASM caching: IndexedDB (raw bytes)' );
 			}
 
 			// Execute all queued callbacks
