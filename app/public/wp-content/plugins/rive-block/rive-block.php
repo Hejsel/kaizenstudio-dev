@@ -123,6 +123,10 @@ add_action( 'enqueue_block_editor_assets', 'rive_block_enqueue_editor_scripts', 
  *
  * Adds a <link rel="preload"> tag in the <head> to tell the browser to start
  * downloading the WASM file as soon as possible, reducing animation load time.
+ *
+ * Note: Browser may show warning on subsequent loads when IndexedDB cache is active.
+ * This is expected behavior - IndexedDB cache serves WASM bytes directly, bypassing
+ * the preloaded resource. The warning is harmless and indicates optimal caching.
  */
 function rive_block_preload_wasm() {
 	// Only preload on frontend (not in editor)

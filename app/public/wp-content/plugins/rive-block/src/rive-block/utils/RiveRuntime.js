@@ -50,6 +50,10 @@ async function openWASMDatabase() {
  * @param {ArrayBuffer} wasmBytes - Raw WASM bytes
  */
 async function saveWASMBytes( filename, wasmBytes ) {
+	if ( window.riveBlockData?.debug ) {
+		console.log( `[Rive Editor IDB] Starting save: ${ filename }` );
+	}
+
 	try {
 		const db = await openWASMDatabase();
 		const transaction = db.transaction( [ STORE_NAME ], 'readwrite' );
@@ -61,10 +65,17 @@ async function saveWASMBytes( filename, wasmBytes ) {
 			timestamp: Date.now(),
 		};
 
+		// Wait for the put operation to complete
+		const request = store.put( data );
+
 		await new Promise( ( resolve, reject ) => {
-			const request = store.put( data );
-			request.onsuccess = () => resolve();
+			request.onsuccess = () => {
+				// Request succeeded, now wait for transaction to commit
+			};
 			request.onerror = () => reject( request.error );
+
+			transaction.oncomplete = () => resolve();
+			transaction.onerror = () => reject( transaction.error );
 		} );
 
 		if ( window.riveBlockData?.debug ) {
@@ -172,11 +183,8 @@ class RiveRuntimeLoader {
 							module = await WebAssembly.compile( wasmBytes );
 							instance = await WebAssembly.instantiate( module, imports );
 
-							// Save WASM bytes to IndexedDB for next load (don't await)
-							saveWASMBytes( wasmFilename, wasmBytes )
-								.catch( ( error ) => {
-									console.error( '[Rive Editor IDB] Failed to cache WASM bytes:', error );
-								} );
+						// Save WASM bytes to IndexedDB for next load (await to ensure transaction completes)
+						await saveWASMBytes( wasmFilename, wasmBytes );
 						}
 
 						successCallback( instance, module );
