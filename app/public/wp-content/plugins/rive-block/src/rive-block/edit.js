@@ -29,6 +29,7 @@ import {
 	TextareaControl,
 	SelectControl,
 	Notice,
+	Spinner,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 	__experimentalUnitControl as UnitControl,
@@ -43,11 +44,100 @@ import {
 import './editor.scss';
 
 /**
+ * React hooks
+ */
+import { useEffect, useState } from '@wordpress/element';
+
+/**
  * Internal dependencies
  */
 import metadata from './block.json';
 import riveIcon from './icon';
 import RiveCanvas from './components/RiveCanvas';
+import { riveRuntime } from './utils/RiveRuntime';
+
+/**
+ * Automatically generate poster frame from first frame of Rive animation
+ * Uses off-screen canvas to render and capture the first frame as a data URL
+ *
+ * @param {string} riveFileUrl - URL of the .riv file
+ * @returns {Promise<string|null>} Data URL of poster frame (WebP), or null if failed
+ */
+async function generatePosterFrame( riveFileUrl ) {
+	try {
+		// Get Rive runtime instance
+		const rive = await riveRuntime.awaitInstance();
+
+		// Fetch and decode .riv file
+		const response = await fetch( riveFileUrl, { cache: 'default' } );
+		if ( ! response.ok ) {
+			throw new Error( `Failed to fetch Rive file: ${ response.statusText }` );
+		}
+
+		const arrayBuffer = await response.arrayBuffer();
+		const fileBytes = new Uint8Array( arrayBuffer );
+		const file = await rive.load( fileBytes );
+
+		// Get default artboard
+		const artboard = file.defaultArtboard();
+
+		// Create off-screen canvas for rendering
+		// Use reasonable size for poster frame (optimize for file size vs quality)
+		const posterWidth = 800;
+		const posterHeight = Math.round(
+			( artboard.bounds.maxY / artboard.bounds.maxX ) * posterWidth
+		);
+
+		const offscreenCanvas = document.createElement( 'canvas' );
+		offscreenCanvas.width = posterWidth;
+		offscreenCanvas.height = posterHeight;
+
+		// Create renderer on off-screen canvas
+		const renderer = rive.makeRenderer( offscreenCanvas, true );
+
+		// Render first frame
+		renderer.clear();
+		renderer.save();
+		renderer.align(
+			rive.Fit.contain,
+			rive.Alignment.center,
+			{
+				minX: 0,
+				minY: 0,
+				maxX: posterWidth,
+				maxY: posterHeight,
+			},
+			artboard.bounds
+		);
+		artboard.draw( renderer );
+		renderer.restore();
+		renderer.flush();
+
+		// Convert canvas to data URL (WebP format for best compression)
+		// Quality 0.85 balances file size and visual quality
+		const posterDataURL = offscreenCanvas.toDataURL( 'image/webp', 0.85 );
+
+		// Cleanup
+		renderer.delete();
+		artboard.delete();
+		file.delete();
+
+		// Debug log in development
+		if (
+			window.location.hostname === 'localhost' ||
+			window.location.hostname.includes( 'local' )
+		) {
+			// Calculate approximate size in KB
+			const sizeKB = Math.round( ( posterDataURL.length * 0.75 ) / 1024 );
+			console.log( `[Rive Block] Auto-generated poster frame: ~${ sizeKB } KB` );
+		}
+
+		return posterDataURL;
+	} catch ( error ) {
+		console.error( '[Rive Block] Failed to generate poster frame:', error );
+		return null;
+	}
+}
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -72,6 +162,46 @@ export default function Edit( { attributes, setAttributes } ) {
 		loadingPriority = metadata.attributes.loadingPriority.default,
 	} = attributes;
 
+	// Track poster frame generation status
+	const [ isGeneratingPoster, setIsGeneratingPoster ] = useState( false );
+
+	// Auto-generate poster frame when Rive file URL changes
+	useEffect( () => {
+		if ( ! riveFileUrl ) {
+			// No Rive file, clear poster frame
+			if ( posterFrameUrl ) {
+				setAttributes( {
+					posterFrameUrl: undefined,
+					posterFrameId: undefined,
+				} );
+			}
+			return;
+		}
+
+		// Generate poster frame automatically
+		( async () => {
+			setIsGeneratingPoster( true );
+
+			const posterDataURL = await generatePosterFrame( riveFileUrl );
+
+			if ( posterDataURL ) {
+				// Successfully generated poster frame
+				setAttributes( {
+					posterFrameUrl: posterDataURL,
+					posterFrameId: undefined, // Data URLs don't have Media Library IDs
+				} );
+			} else {
+				// Failed to generate, clear poster
+				setAttributes( {
+					posterFrameUrl: undefined,
+					posterFrameId: undefined,
+				} );
+			}
+
+			setIsGeneratingPoster( false );
+		} )();
+	}, [ riveFileUrl ] ); // Re-run when Rive file URL changes
+
 	// Handle Rive file selection from Media Library or Upload
 	const onSelectRiveFile = ( media ) => {
 		if ( ! media || ! media.url ) {
@@ -85,30 +215,6 @@ export default function Edit( { attributes, setAttributes } ) {
 		setAttributes( {
 			riveFileUrl: media.url,
 			riveFileId: media.id,
-		} );
-	};
-
-	// Handle Poster Frame selection from Media Library or Upload
-	const onSelectPosterFrame = ( media ) => {
-		if ( ! media || ! media.url ) {
-			setAttributes( {
-				posterFrameUrl: undefined,
-				posterFrameId: undefined,
-			} );
-			return;
-		}
-
-		setAttributes( {
-			posterFrameUrl: media.url,
-			posterFrameId: media.id,
-		} );
-	};
-
-	// Remove poster frame
-	const onRemovePosterFrame = () => {
-		setAttributes( {
-			posterFrameUrl: undefined,
-			posterFrameId: undefined,
 		} );
 	};
 
@@ -246,11 +352,37 @@ export default function Edit( { attributes, setAttributes } ) {
 				>
 					<p>
 						{ __(
-							'Upload a static image to show instantly while the Rive animation loads. This creates a perceived instant load time.',
+							'A poster frame is automatically generated from the first frame of your Rive animation. This creates a perceived instant load time - users see the animation immediately!',
 							'rive-block'
 						) }
 					</p>
-					{ posterFrameUrl ? (
+
+					{ /* Generating state */ }
+					{ isGeneratingPoster && (
+						<div
+							className="rive-block-notice"
+							style={ { marginTop: '12px' } }
+						>
+							<Notice status="info" isDismissible={ false }>
+								<div
+									style={ {
+										display: 'flex',
+										alignItems: 'center',
+										gap: '8px',
+									} }
+								>
+									<Spinner />
+									{ __(
+										'Generating poster frame from first frame...',
+										'rive-block'
+									) }
+								</div>
+							</Notice>
+						</div>
+					) }
+
+					{ /* Success state with preview */ }
+					{ posterFrameUrl && ! isGeneratingPoster && (
 						<>
 							<div
 								style={ {
@@ -263,7 +395,7 @@ export default function Edit( { attributes, setAttributes } ) {
 								<img
 									src={ posterFrameUrl }
 									alt={ __(
-										'Poster frame preview',
+										'Auto-generated poster frame preview',
 										'rive-block'
 									) }
 									style={ {
@@ -274,69 +406,28 @@ export default function Edit( { attributes, setAttributes } ) {
 								/>
 							</div>
 							<div
-								style={ {
-									display: 'flex',
-									gap: '8px',
-								} }
+								className="rive-block-notice"
+								style={ { marginTop: '12px' } }
 							>
-								<MediaUploadCheck>
-									<MediaUpload
-										onSelect={ onSelectPosterFrame }
-										allowedTypes={ [ 'image' ] }
-										value={ posterFrameId }
-										render={ ( { open } ) => (
-											<Button
-												onClick={ open }
-												variant="secondary"
-												__next40pxDefaultSize
-											>
-												{ __(
-													'Replace Image',
-													'rive-block'
-												) }
-											</Button>
-										) }
-									/>
-								</MediaUploadCheck>
-								<Button
-									onClick={ onRemovePosterFrame }
-									variant="secondary"
-									isDestructive
-									__next40pxDefaultSize
-								>
-									{ __( 'Remove', 'rive-block' ) }
-								</Button>
+								<Notice status="success" isDismissible={ false }>
+									{ __(
+										'✓ Poster frame auto-generated! Animation will appear instantly on page load.',
+										'rive-block'
+									) }
+								</Notice>
 							</div>
 						</>
-					) : (
-						<MediaUploadCheck>
-							<MediaUpload
-								onSelect={ onSelectPosterFrame }
-								allowedTypes={ [ 'image' ] }
-								value={ posterFrameId }
-								render={ ( { open } ) => (
-									<Button
-										onClick={ open }
-										variant="primary"
-										__next40pxDefaultSize
-									>
-										{ __(
-											'Upload Poster Frame',
-											'rive-block'
-										) }
-									</Button>
-								) }
-							/>
-						</MediaUploadCheck>
 					) }
-					{ posterFrameUrl && (
+
+					{ /* Error/no poster state */ }
+					{ ! posterFrameUrl && ! isGeneratingPoster && riveFileUrl && (
 						<div
 							className="rive-block-notice"
 							style={ { marginTop: '12px' } }
 						>
-							<Notice status="success" isDismissible={ false }>
+							<Notice status="warning" isDismissible={ false }>
 								{ __(
-									'✓ Poster frame will display instantly while Rive animation loads.',
+									'Failed to auto-generate poster frame. The animation will still work, but may have a brief loading delay.',
 									'rive-block'
 								) }
 							</Notice>
