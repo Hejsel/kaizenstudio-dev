@@ -19,6 +19,7 @@ if ( empty( $attributes['riveFileUrl'] ) ) {
 $width = $attributes['width'] ?? '100%';
 $height = $attributes['height'] ?? 'auto';
 $rive_file_url = $attributes['riveFileUrl'];
+$poster_frame_url = $attributes['posterFrameUrl'] ?? '';
 $enable_autoplay = $attributes['enableAutoplay'] ?? false;
 $respect_reduced_motion = $attributes['respectReducedMotion'] ?? true;
 $aria_label = $attributes['ariaLabel'] ?? '';
@@ -33,6 +34,11 @@ $wrapper_attributes = [
 	'data-respect-reduced-motion' => $respect_reduced_motion ? 'true' : 'false',
 	'data-loading-priority' => esc_attr($loading_priority),
 ];
+
+// Add poster frame URL if provided
+if ( ! empty( $poster_frame_url ) ) {
+	$wrapper_attributes['data-poster-frame'] = esc_url( $poster_frame_url );
+}
 
 // Add ARIA attributes if provided
 if ( ! empty( $aria_label ) ) {
@@ -67,9 +73,20 @@ if ( $width !== 'auto' && $height !== 'auto' && is_numeric( str_replace( ['px', 
 	<?php endif; ?>
 <?php endif; ?>
 <div class="rive-block-container" style="position: relative; width: <?php echo esc_attr( $width ); ?>; padding-bottom: <?php echo esc_attr( $aspect_ratio ); ?>;">
+	<?php if ( ! empty( $poster_frame_url ) ) : ?>
+		<!-- Poster frame: Shows instantly for perceived 0ms load time -->
+		<img
+			class="rive-poster-frame"
+			src="<?php echo esc_url( $poster_frame_url ); ?>"
+			alt="<?php echo ! empty( $aria_label ) ? esc_attr( $aria_label ) : esc_attr__( 'Animation preview', 'rive-block' ); ?>"
+			loading="<?php echo $loading_priority === 'high' ? 'eager' : 'lazy'; ?>"
+			decoding="async"
+			style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 0.3s ease-out;">
+	<?php endif; ?>
+	<!-- Rive canvas: Initially hidden if poster frame exists, fades in when ready -->
 	<canvas
 		<?php echo get_block_wrapper_attributes( array_merge( $wrapper_attributes, [
-			'style' => 'position: absolute; top: 0; left: 0; width: 100%; height: 100%;'
+			'style' => 'position: absolute; top: 0; left: 0; width: 100%; height: 100%;' . ( ! empty( $poster_frame_url ) ? ' opacity: 0; transition: opacity 0.3s ease-in;' : '' )
 		] ) ); ?>>
 	</canvas>
 </div>

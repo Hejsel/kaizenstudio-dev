@@ -28,6 +28,12 @@ return array(
 			'riveFileId' => array(
 				'type' => 'number'
 			),
+			'posterFrameUrl' => array(
+				'type' => 'string'
+			),
+			'posterFrameId' => array(
+				'type' => 'number'
+			),
 			'enableAutoplay' => array(
 				'type' => 'boolean',
 				'default' => false

@@ -23,6 +23,12 @@
     "riveFileId": {
       "type": "number"
     },
+    "posterFrameUrl": {
+      "type": "string"
+    },
+    "posterFrameId": {
+      "type": "number"
+    },
     "enableAutoplay": {
       "type": "boolean",
       "default": false

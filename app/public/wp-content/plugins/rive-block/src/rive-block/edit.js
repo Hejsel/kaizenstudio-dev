@@ -61,6 +61,8 @@ export default function Edit( { attributes, setAttributes } ) {
 	const {
 		riveFileUrl,
 		riveFileId,
+		posterFrameUrl,
+		posterFrameId,
 		width = metadata.attributes.width.default,
 		height = metadata.attributes.height.default,
 		enableAutoplay = metadata.attributes.enableAutoplay.default,
@@ -83,6 +85,30 @@ export default function Edit( { attributes, setAttributes } ) {
 		setAttributes( {
 			riveFileUrl: media.url,
 			riveFileId: media.id,
+		} );
+	};
+
+	// Handle Poster Frame selection from Media Library or Upload
+	const onSelectPosterFrame = ( media ) => {
+		if ( ! media || ! media.url ) {
+			setAttributes( {
+				posterFrameUrl: undefined,
+				posterFrameId: undefined,
+			} );
+			return;
+		}
+
+		setAttributes( {
+			posterFrameUrl: media.url,
+			posterFrameId: media.id,
+		} );
+	};
+
+	// Remove poster frame
+	const onRemovePosterFrame = () => {
+		setAttributes( {
+			posterFrameUrl: undefined,
+			posterFrameId: undefined,
 		} );
 	};
 
@@ -213,6 +239,109 @@ export default function Edit( { attributes, setAttributes } ) {
 							) }
 						/>
 					</MediaUploadCheck>
+				</PanelBody>
+				<PanelBody
+					title={ __( 'Poster Frame (Instant Loading)', 'rive-block' ) }
+					initialOpen={ false }
+				>
+					<p>
+						{ __(
+							'Upload a static image to show instantly while the Rive animation loads. This creates a perceived instant load time.',
+							'rive-block'
+						) }
+					</p>
+					{ posterFrameUrl ? (
+						<>
+							<div
+								style={ {
+									marginBottom: '12px',
+									border: '1px solid #ddd',
+									borderRadius: '4px',
+									overflow: 'hidden',
+								} }
+							>
+								<img
+									src={ posterFrameUrl }
+									alt={ __(
+										'Poster frame preview',
+										'rive-block'
+									) }
+									style={ {
+										width: '100%',
+										height: 'auto',
+										display: 'block',
+									} }
+								/>
+							</div>
+							<div
+								style={ {
+									display: 'flex',
+									gap: '8px',
+								} }
+							>
+								<MediaUploadCheck>
+									<MediaUpload
+										onSelect={ onSelectPosterFrame }
+										allowedTypes={ [ 'image' ] }
+										value={ posterFrameId }
+										render={ ( { open } ) => (
+											<Button
+												onClick={ open }
+												variant="secondary"
+												__next40pxDefaultSize
+											>
+												{ __(
+													'Replace Image',
+													'rive-block'
+												) }
+											</Button>
+										) }
+									/>
+								</MediaUploadCheck>
+								<Button
+									onClick={ onRemovePosterFrame }
+									variant="secondary"
+									isDestructive
+									__next40pxDefaultSize
+								>
+									{ __( 'Remove', 'rive-block' ) }
+								</Button>
+							</div>
+						</>
+					) : (
+						<MediaUploadCheck>
+							<MediaUpload
+								onSelect={ onSelectPosterFrame }
+								allowedTypes={ [ 'image' ] }
+								value={ posterFrameId }
+								render={ ( { open } ) => (
+									<Button
+										onClick={ open }
+										variant="primary"
+										__next40pxDefaultSize
+									>
+										{ __(
+											'Upload Poster Frame',
+											'rive-block'
+										) }
+									</Button>
+								) }
+							/>
+						</MediaUploadCheck>
+					) }
+					{ posterFrameUrl && (
+						<div
+							className="rive-block-notice"
+							style={ { marginTop: '12px' } }
+						>
+							<Notice status="success" isDismissible={ false }>
+								{ __(
+									'✓ Poster frame will display instantly while Rive animation loads.',
+									'rive-block'
+								) }
+							</Notice>
+						</div>
+					) }
 				</PanelBody>
 				<PanelBody
 					title={ __( 'Accessibility', 'rive-block' ) }

@@ -598,6 +598,10 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 			renderFrame( instanceData );
 		}
 
+		// Handle poster frame fade transition (if poster frame exists)
+		// This creates perceived instant load time
+		handlePosterFrameFade( canvas );
+
 		// Log success in development
 		if (
 			window.location.hostname === 'localhost' ||
@@ -804,6 +808,51 @@ function renderFrame( instanceData ) {
 
 	// Flush renderer (required for WebGL2)
 	renderer.flush();
+}
+
+/**
+ * Handle poster frame to Rive canvas fade transition
+ * Creates perceived instant load by showing static poster frame first,
+ * then crossfading to live Rive animation
+ *
+ * @param {HTMLCanvasElement} canvas - The Rive canvas element
+ */
+function handlePosterFrameFade( canvas ) {
+	// Check if poster frame exists
+	const posterFrameUrl = canvas.dataset.posterFrame;
+	if ( ! posterFrameUrl ) {
+		return; // No poster frame, nothing to fade
+	}
+
+	// Find poster frame element (sibling img in same container)
+	const container = canvas.parentElement;
+	const posterFrame = container?.querySelector( '.rive-poster-frame' );
+
+	if ( ! posterFrame ) {
+		return; // Poster frame not found
+	}
+
+	// Fade canvas in and poster frame out
+	// Canvas starts at opacity: 0 (set in render.php)
+	canvas.style.opacity = '1';
+
+	// Fade out poster frame
+	posterFrame.style.opacity = '0';
+
+	// Remove poster frame from DOM after transition completes (300ms)
+	setTimeout( () => {
+		if ( posterFrame && posterFrame.parentElement ) {
+			posterFrame.remove();
+		}
+	}, 300 ); // Match transition duration in render.php (0.3s)
+
+	// Log in development
+	if (
+		window.location.hostname === 'localhost' ||
+		window.location.hostname.includes( 'local' )
+	) {
+		console.log( '[Rive Block] Poster frame → Rive canvas transition initiated' );
+	}
 }
 
 /**
