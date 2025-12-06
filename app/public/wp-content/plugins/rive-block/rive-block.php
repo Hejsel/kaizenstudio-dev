@@ -180,3 +180,116 @@ function rive_block_add_cache_headers( $headers, $wp_object ) {
 	return $headers;
 }
 add_filter( 'wp_headers', 'rive_block_add_cache_headers', 10, 2 );
+
+/**
+ * Register REST API endpoint for auto-generated poster frame upload
+ */
+function rive_block_register_rest_routes() {
+	register_rest_route(
+		'rive-block/v1',
+		'/upload-poster-frame',
+		array(
+			'methods'             => 'POST',
+			'callback'            => 'rive_block_upload_poster_frame',
+			'permission_callback' => function() {
+				// Only allow users who can upload files
+				return current_user_can( 'upload_files' );
+			},
+		)
+	);
+}
+add_action( 'rest_api_init', 'rive_block_register_rest_routes' );
+
+/**
+ * Handle poster frame upload from base64 data
+ *
+ * @param WP_REST_Request $request The REST request object.
+ * @return WP_REST_Response|WP_Error Response object or error.
+ */
+function rive_block_upload_poster_frame( $request ) {
+	// Get parameters
+	$base64_data = $request->get_param( 'imageData' );
+	$rive_file_id = $request->get_param( 'riveFileId' );
+	$block_id = $request->get_param( 'blockId' );
+
+	// Validate required parameters
+	if ( empty( $base64_data ) ) {
+		return new WP_Error(
+			'missing_image_data',
+			__( 'Image data is required.', 'rive-block' ),
+			array( 'status' => 400 )
+		);
+	}
+
+	// Remove data URI scheme if present (data:image/webp;base64,)
+	$base64_data = preg_replace( '/^data:image\/\w+;base64,/', '', $base64_data );
+
+	// Decode base64 data
+	$image_data = base64_decode( $base64_data );
+	if ( $image_data === false ) {
+		return new WP_Error(
+			'invalid_image_data',
+			__( 'Invalid base64 image data.', 'rive-block' ),
+			array( 'status' => 400 )
+		);
+	}
+
+	// Generate unique filename
+	$upload_dir = wp_upload_dir();
+	$filename = 'rive-poster-' . $block_id . '-' . time() . '.webp';
+	$filepath = $upload_dir['path'] . '/' . $filename;
+
+	// Save image data to temporary file
+	$saved = file_put_contents( $filepath, $image_data );
+	if ( $saved === false ) {
+		return new WP_Error(
+			'upload_failed',
+			__( 'Failed to save poster frame image.', 'rive-block' ),
+			array( 'status' => 500 )
+		);
+	}
+
+	// Prepare file array for media_handle_sideload
+	$file_array = array(
+		'name'     => $filename,
+		'tmp_name' => $filepath,
+	);
+
+	// Import file into Media Library
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	// Upload file to Media Library
+	$attachment_id = media_handle_sideload(
+		$file_array,
+		0, // No parent post
+		__( 'Auto-generated Rive poster frame', 'rive-block' )
+	);
+
+	// Check for upload errors
+	if ( is_wp_error( $attachment_id ) ) {
+		// Clean up temporary file
+		@unlink( $filepath );
+		return $attachment_id;
+	}
+
+	// Add custom meta to link poster frame to Rive file
+	if ( ! empty( $rive_file_id ) ) {
+		update_post_meta( $attachment_id, '_rive_source_file_id', intval( $rive_file_id ) );
+	}
+	update_post_meta( $attachment_id, '_rive_auto_generated', true );
+
+	// Get attachment URL
+	$attachment_url = wp_get_attachment_url( $attachment_id );
+
+	// Return success response
+	return new WP_REST_Response(
+		array(
+			'success' => true,
+			'id'      => $attachment_id,
+			'url'     => $attachment_url,
+		),
+		200
+	);
+}

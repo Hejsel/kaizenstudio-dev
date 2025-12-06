@@ -74,12 +74,17 @@ async function loadRiveFile( rive, url ) {
 
 export default function RiveCanvas( {
 	riveFileUrl,
+	riveFileId,
 	width,
 	height,
 	enableAutoplay,
 	respectReducedMotion,
 	ariaLabel,
 	ariaDescription,
+	posterFrameUrl,
+	posterFrameId,
+	blockId,
+	onPosterFrameGenerated,
 } ) {
 	const canvasRef = useRef( null );
 	const riveInstanceRef = useRef( null );
@@ -90,6 +95,8 @@ export default function RiveCanvas( {
 	const resizeObserverRef = useRef( null );
 	const [ isLoading, setIsLoading ] = useState( true );
 	const [ loadError, setLoadError ] = useState( null );
+	const [ isGeneratingPoster, setIsGeneratingPoster ] = useState( false );
+	const hasGeneratedPosterRef = useRef( false );
 
 	/**
 	 * Set canvas internal resolution to match display size and device pixel ratio
@@ -389,6 +396,112 @@ export default function RiveCanvas( {
 	};
 
 	/**
+	 * Auto-generate poster frame from first rendered frame
+	 * Captures canvas as WebP and uploads to WordPress Media Library
+	 */
+	const generatePosterFrame = async () => {
+		// Skip if already generated or no callback provided
+		if ( hasGeneratedPosterRef.current || ! onPosterFrameGenerated ) {
+			return;
+		}
+
+		// Skip if manually set poster frame already exists
+		if ( posterFrameUrl && posterFrameId ) {
+			if ( window.riveBlockData?.debug ) {
+				console.log( '[Rive Editor] Manual poster frame exists, skipping auto-generation' );
+			}
+			return;
+		}
+
+		// Skip if canvas isn't ready
+		if ( ! canvasRef.current || ! riveInstanceRef.current ) {
+			return;
+		}
+
+		hasGeneratedPosterRef.current = true;
+		setIsGeneratingPoster( true );
+
+		try {
+			if ( window.riveBlockData?.debug ) {
+				console.log( '[Rive Editor] Auto-generating poster frame...' );
+			}
+
+			// Convert canvas to Blob (WebP format for optimal size/quality)
+			const blob = await new Promise( ( resolve, reject ) => {
+				canvasRef.current.toBlob(
+					( result ) => {
+						if ( result ) {
+							resolve( result );
+						} else {
+							reject( new Error( 'Failed to convert canvas to blob' ) );
+						}
+					},
+					'image/webp',
+					0.9 // High quality
+				);
+			} );
+
+			// Convert Blob to base64 for REST API upload
+			const base64Data = await new Promise( ( resolve, reject ) => {
+				const reader = new FileReader();
+				reader.onloadend = () => resolve( reader.result );
+				reader.onerror = reject;
+				reader.readAsDataURL( blob );
+			} );
+
+			// Upload to WordPress via REST API
+			const response = await fetch( '/wp-json/rive-block/v1/upload-poster-frame', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.wpApiSettings?.nonce || '',
+				},
+				body: JSON.stringify( {
+					imageData: base64Data,
+					riveFileId,
+					blockId,
+				} ),
+			} );
+
+			if ( ! response.ok ) {
+				throw new Error( `Upload failed: ${ response.statusText }` );
+			}
+
+			const result = await response.json();
+
+			if ( result.success && result.url && result.id ) {
+				if ( window.riveBlockData?.debug ) {
+					console.log( '[Rive Editor] Poster frame generated successfully:', result.url );
+				}
+
+				// Notify parent component of new poster frame
+				onPosterFrameGenerated( result.url, result.id );
+			} else {
+				throw new Error( 'Invalid response from upload endpoint' );
+			}
+
+			setIsGeneratingPoster( false );
+		} catch ( error ) {
+			console.error( '[Rive Block] Error generating poster frame:', error );
+			setIsGeneratingPoster( false );
+			hasGeneratedPosterRef.current = false; // Allow retry
+		}
+	};
+
+	// Auto-generate poster frame after first successful render
+	useEffect( () => {
+		// Wait for loading to complete and ensure no errors
+		if ( ! isLoading && ! loadError && riveInstanceRef.current ) {
+			// Small delay to ensure canvas is fully rendered
+			const timeoutId = setTimeout( () => {
+				generatePosterFrame();
+			}, 100 );
+
+			return () => clearTimeout( timeoutId );
+		}
+	}, [ isLoading, loadError ] );
+
+	/**
 	 * Cleanup Rive resources
 	 */
 	const cleanup = () => {
@@ -449,6 +562,29 @@ export default function RiveCanvas( {
 					} }
 				>
 					<Spinner />
+				</div>
+			) }
+
+			{ /* Poster frame generation indicator */ }
+			{ isGeneratingPoster && (
+				<div
+					style={ {
+						position: 'absolute',
+						bottom: '8px',
+						right: '8px',
+						padding: '4px 8px',
+						backgroundColor: 'rgba(0, 0, 0, 0.7)',
+						color: 'white',
+						fontSize: '12px',
+						borderRadius: '4px',
+						zIndex: 999,
+						display: 'flex',
+						alignItems: 'center',
+						gap: '6px',
+					} }
+				>
+					<Spinner style={ { width: '14px', height: '14px' } } />
+					{ __( 'Generating poster...', 'rive-block' ) }
 				</div>
 			) }
 
