@@ -9,50 +9,6 @@
 import RiveWebGL2 from '@rive-app/webgl2-advanced';
 
 /**
- * Register Service Worker for caching and offline support
- * Provides ~30% faster loads after first visit via Cache Storage API
- *
- * Service Worker is at plugin root for broader scope - can cache:
- * - Plugin assets (/wp-content/plugins/rive-block/)
- * - Media Library .riv files (/wp-content/uploads/)
- */
-if ( 'serviceWorker' in navigator ) {
-	// Get plugin URL from localized data
-	const pluginUrl = window.riveBlockData?.pluginUrl || '';
-	const swUrl = `${ pluginUrl }rive-sw.js`;
-
-	window.addEventListener( 'load', () => {
-		navigator.serviceWorker
-			.register( swUrl, { scope: '/wp-content/plugins/rive-block/' } )
-			.then( ( registration ) => {
-				if ( window.riveBlockData?.debug ) {
-					console.log( '[Rive Block] Service Worker registered:', registration.scope );
-				}
-
-				// Listen for updates
-				registration.addEventListener( 'updatefound', () => {
-					const newWorker = registration.installing;
-					if ( window.riveBlockData?.debug ) {
-						console.log( '[Rive Block] Service Worker update found' );
-					}
-
-					newWorker.addEventListener( 'statechange', () => {
-						if ( newWorker.state === 'activated' && window.riveBlockData?.debug ) {
-							console.log( '[Rive Block] Service Worker activated' );
-						}
-					} );
-				} );
-			} )
-			.catch( ( error ) => {
-				// SW registration failure is non-critical - page still works
-				if ( window.riveBlockData?.debug ) {
-					console.log( '[Rive Block] Service Worker registration failed:', error );
-				}
-			} );
-	} );
-}
-
-/**
  * IndexedDB Helper: Open or create database for WASM bytes caching
  * Stores raw WASM bytes (ArrayBuffer) to skip network download
  * Note: WebAssembly.Module cannot be stored due to browser security restrictions

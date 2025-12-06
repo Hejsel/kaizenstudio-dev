@@ -20,19 +20,6 @@ module.exports = {
 						'build/rive-block/webgl2_advanced.wasm'
 					),
 				},
-				{
-					// Copy Service Worker to plugin root for broader scope
-					// Allows SW to cache assets from entire /wp-content/plugins/rive-block/ path
-					// including .riv files from Media Library (/wp-content/uploads/)
-					from: path.resolve(
-						__dirname,
-						'src/rive-sw.js'
-					),
-					to: path.resolve(
-						__dirname,
-						'rive-sw.js'
-					),
-				},
 			],
 		} ),
 	],
