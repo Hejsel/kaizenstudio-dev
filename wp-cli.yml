@@ -1,0 +1,4 @@
+# WP-CLI Configuration for KaizenStudio Dev
+# This tells WP-CLI where to find the WordPress installation
+
+path: app/public

@@ -20,7 +20,7 @@ import './style.scss';
 import Edit from './edit';
 import metadata from './block.json';
 import riveIcon from './icon';
-import { riveRuntime } from './utils/RiveRuntime';
+import { riveRuntime } from './runtime/RiveRuntime';
 
 /**
  * Set WASM URL for editor from localized script data

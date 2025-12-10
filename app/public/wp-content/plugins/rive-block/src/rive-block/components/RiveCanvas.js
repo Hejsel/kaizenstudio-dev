@@ -10,7 +10,11 @@
 import { useEffect, useState, useRef } from '@wordpress/element';
 import { Spinner, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { riveRuntime } from '../utils/RiveRuntime';
+import { riveRuntime } from '../runtime/RiveRuntime';
+import { setCanvasDPIAwareSize } from '../utils/CanvasUtils';
+
+// Log prefix for editor context
+const CANVAS_LOG_PREFIX = '[Rive Editor]';
 
 // In-memory cache for Rive files to avoid duplicate fetching and decoding
 // Key: file URL, Value: decoded Rive file object
@@ -91,51 +95,6 @@ export default function RiveCanvas( {
 	const [ isLoading, setIsLoading ] = useState( true );
 	const [ loadError, setLoadError ] = useState( null );
 
-	/**
-	 * Set canvas internal resolution to match display size and device pixel ratio
-	 * This ensures crisp rendering and optimal GPU usage in the editor
-	 *
-	 * PERFORMANCE: Uses adaptive DPR scaling to reduce GPU load on large canvas
-	 *
-	 * @param {HTMLCanvasElement} canvas - The canvas element to resize
-	 * @returns {boolean} True if canvas was resized, false if no change
-	 */
-	const setCanvasDPIAwareSize = ( canvas ) => {
-		if ( ! canvas ) return false;
-
-		// Get the display size of the canvas (CSS pixels)
-		const rect = canvas.getBoundingClientRect();
-		const displayWidth = rect.width;
-		const displayHeight = rect.height;
-
-		// Use full device pixel ratio for crisp rendering
-		const dpr = window.devicePixelRatio || 1;
-
-		// Calculate target internal resolution
-		const targetWidth = Math.round( displayWidth * dpr );
-		const targetHeight = Math.round( displayHeight * dpr );
-
-		// CRITICAL: Only resize if dimensions actually changed
-		// Setting canvas.width/height clears the canvas and triggers expensive reflow
-		if ( canvas.width === targetWidth && canvas.height === targetHeight ) {
-			return false; // No resize needed
-		}
-
-		// Set canvas internal resolution to match display size × DPI
-		// This prevents blurry rendering and reduces GPU scaling overhead
-		canvas.width = targetWidth;
-		canvas.height = targetHeight;
-
-		// Debug log when WP_DEBUG is active
-		if ( window.riveBlockData?.debug ) {
-			console.log(
-				`[Rive Editor] Canvas DPI sizing: ${ displayWidth }×${ displayHeight } CSS → ${ canvas.width }×${ canvas.height } internal (DPR: ${ dpr })`
-			);
-		}
-
-		return true; // Canvas was resized
-	};
-
 	// Initialize Rive animation when canvas is ready
 	useEffect( () => {
 		if ( ! canvasRef.current || ! riveFileUrl ) return;
@@ -162,7 +121,7 @@ export default function RiveCanvas( {
 				artboardRef.current = artboard;
 
 				// Set canvas to DPI-aware size for crisp rendering
-				setCanvasDPIAwareSize( canvasRef.current );
+				setCanvasDPIAwareSize( canvasRef.current, CANVAS_LOG_PREFIX );
 
 				// Create renderer
 				const renderer = rive.makeRenderer( canvasRef.current, true );
@@ -197,7 +156,7 @@ export default function RiveCanvas( {
 					// Debounce resize operations to avoid layout thrashing
 					resizeTimeout = setTimeout( () => {
 						if ( canvasRef.current ) {
-							const didResize = setCanvasDPIAwareSize( canvasRef.current );
+							const didResize = setCanvasDPIAwareSize( canvasRef.current, CANVAS_LOG_PREFIX );
 							// Re-render current frame with new canvas size (only if actually resized)
 							if ( didResize && riveInstanceRef.current ) {
 								renderFrame( rive );

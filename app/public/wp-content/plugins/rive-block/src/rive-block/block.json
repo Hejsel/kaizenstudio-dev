@@ -25,7 +25,7 @@
 		},
 		"enableAutoplay": {
 			"type": "boolean",
-			"default": false
+			"default": true
 		},
 		"respectReducedMotion": {
 			"type": "boolean",

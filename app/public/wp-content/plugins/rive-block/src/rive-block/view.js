@@ -7,125 +7,12 @@
  */
 
 import RiveWebGL2 from '@rive-app/webgl2-advanced';
+import { saveWASMBytes, loadWASMBytes } from './storage/indexeddb/WasmCache';
+import { setCanvasDPIAwareSize } from './utils/CanvasUtils';
 
-/**
- * IndexedDB Helper: Open or create database for WASM bytes caching
- * Stores raw WASM bytes (ArrayBuffer) to skip network download
- * Note: WebAssembly.Module cannot be stored due to browser security restrictions
- */
-const DB_NAME = 'rive-block-wasm-cache';
-const DB_VERSION = 2;
-const STORE_NAME = 'wasm-bytes';
-
-async function openWASMDatabase() {
-	return new Promise( ( resolve, reject ) => {
-		const request = indexedDB.open( DB_NAME, DB_VERSION );
-
-		request.onerror = () => reject( request.error );
-		request.onsuccess = () => resolve( request.result );
-
-		request.onupgradeneeded = ( event ) => {
-			const db = event.target.result;
-
-			// Delete old store from v1 (if exists)
-			if ( db.objectStoreNames.contains( 'compiled-modules' ) ) {
-				db.deleteObjectStore( 'compiled-modules' );
-			}
-
-			// Create new store for v2
-			if ( ! db.objectStoreNames.contains( STORE_NAME ) ) {
-				// Create object store with filename as key
-				db.createObjectStore( STORE_NAME, { keyPath: 'filename' } );
-				if ( window.riveBlockData?.debug ) {
-					console.log( '[Rive Block IDB] Database upgraded to v2 (raw bytes storage)' );
-				}
-			}
-		};
-	} );
-}
-
-/**
- * IndexedDB Helper: Save WASM bytes
- * @param {string} filename - WASM filename (e.g., 'webgl2_advanced.wasm')
- * @param {ArrayBuffer} wasmBytes - Raw WASM bytes
- */
-async function saveWASMBytes( filename, wasmBytes ) {
-	if ( window.riveBlockData?.debug ) {
-		console.log( `[Rive Block IDB] Starting save: ${ filename }` );
-	}
-
-	try {
-		const db = await openWASMDatabase();
-		const transaction = db.transaction( [ STORE_NAME ], 'readwrite' );
-		const store = transaction.objectStore( STORE_NAME );
-
-		const data = {
-			filename,
-			bytes: wasmBytes, // ArrayBuffer is structured-cloneable
-			timestamp: Date.now(),
-		};
-
-		// Wait for the put operation to complete
-		const request = store.put( data );
-
-		await new Promise( ( resolve, reject ) => {
-			request.onsuccess = () => {
-				// Request succeeded, now wait for transaction to commit
-			};
-			request.onerror = () => reject( request.error );
-
-			transaction.oncomplete = () => resolve();
-			transaction.onerror = () => reject( transaction.error );
-		} );
-
-		if ( window.riveBlockData?.debug ) {
-			const sizeKB = Math.round( wasmBytes.byteLength / 1024 );
-			console.log( `[Rive Block IDB] Saved WASM bytes: ${ filename } (${ sizeKB } KB)` );
-		}
-
-		db.close();
-	} catch ( error ) {
-		console.error( '[Rive Block IDB] Failed to save WASM bytes:', error );
-	}
-}
-
-/**
- * IndexedDB Helper: Load WASM bytes
- * @param {string} filename - WASM filename
- * @returns {ArrayBuffer|null} Raw WASM bytes or null if not cached
- */
-async function loadWASMBytes( filename ) {
-	try {
-		const db = await openWASMDatabase();
-		const transaction = db.transaction( [ STORE_NAME ], 'readonly' );
-		const store = transaction.objectStore( STORE_NAME );
-
-		const data = await new Promise( ( resolve, reject ) => {
-			const request = store.get( filename );
-			request.onsuccess = () => resolve( request.result );
-			request.onerror = () => reject( request.error );
-		} );
-
-		db.close();
-
-		if ( data && data.bytes ) {
-			if ( window.riveBlockData?.debug ) {
-				const age = Math.round( ( Date.now() - data.timestamp ) / 1000 );
-				const sizeKB = Math.round( data.bytes.byteLength / 1024 );
-				console.log( `[Rive Block IDB] Loaded WASM bytes: ${ filename } (${ sizeKB } KB, cached ${ age }s ago)` );
-			}
-			return data.bytes;
-		}
-
-		if ( window.riveBlockData?.debug ) {
-			console.log( '[Rive Block IDB] WASM bytes not found in cache:', filename );
-		}
-		return null;
-	} catch ( error ) {
-		console.error( '[Rive Block IDB] Failed to load WASM bytes:', error );
-		return null;
-	}
-}
+// Log prefix for frontend context
+const LOG_PREFIX = '[Rive Block IDB]';
+const CANVAS_LOG_PREFIX = '[Rive Block]';
 
 // Rive runtime instance (singleton)
 let riveRuntime = null;
@@ -172,7 +59,7 @@ async function loadRiveRuntime() {
 		const wasmUrl = `${ baseUrl }/build/rive-block/${ wasmFilename }`;
 
 		// Try to load WASM bytes from IndexedDB
-		const cachedBytes = await loadWASMBytes( wasmFilename );
+		const cachedBytes = await loadWASMBytes( wasmFilename, LOG_PREFIX );
 
 		const startTime = performance.now();
 
@@ -190,14 +77,14 @@ async function loadRiveRuntime() {
 					if ( cachedBytes ) {
 						// IDB Cache hit: Compile from cached bytes + instantiate
 						if ( window.riveBlockData?.debug ) {
-							console.log( '[Rive Block IDB] Compiling from cached WASM bytes' );
+							console.log( `${ LOG_PREFIX } Compiling from cached WASM bytes` );
 						}
 						module = await WebAssembly.compile( cachedBytes );
 						instance = await WebAssembly.instantiate( module, imports );
 					} else {
 						// IDB Cache miss: Fetch + compile + instantiate + cache bytes
 						if ( window.riveBlockData?.debug ) {
-							console.log( '[Rive Block IDB] Fetching and compiling WASM (first load)' );
+							console.log( `${ LOG_PREFIX } Fetching and compiling WASM (first load)` );
 						}
 
 						const response = await fetch( wasmUrl );
@@ -208,13 +95,13 @@ async function loadRiveRuntime() {
 						instance = await WebAssembly.instantiate( module, imports );
 
 						// Save WASM bytes to IndexedDB for next load (await to ensure transaction completes)
-						await saveWASMBytes( wasmFilename, wasmBytes );
+						await saveWASMBytes( wasmFilename, wasmBytes, LOG_PREFIX );
 					}
 
 					successCallback( instance, module );
 					return instance.exports;
 				} catch ( error ) {
-					console.error( '[Rive Block IDB] WASM instantiation failed:', error );
+					console.error( `${ LOG_PREFIX } WASM instantiation failed:`, error );
 					throw error;
 				}
 			},
@@ -425,52 +312,6 @@ async function initRiveAnimations() {
 }
 
 /**
- * Set canvas internal resolution to match display size and device pixel ratio
- * This ensures crisp rendering and optimal GPU usage
- *
- * PERFORMANCE: Only resizes if size actually changed to avoid expensive canvas resets
- *
- * @param {HTMLCanvasElement} canvas - The canvas element to resize
- * @returns {boolean} True if canvas was resized, false if no change
- */
-function setCanvasDPIAwareSize( canvas ) {
-	// Get the display size of the canvas (CSS pixels)
-	const rect = canvas.getBoundingClientRect();
-	const displayWidth = rect.width;
-	const displayHeight = rect.height;
-
-	// Use full device pixel ratio for crisp rendering
-	const dpr = window.devicePixelRatio || 1;
-
-	// Calculate target internal resolution
-	const targetWidth = Math.round( displayWidth * dpr );
-	const targetHeight = Math.round( displayHeight * dpr );
-
-	// CRITICAL: Only resize if dimensions actually changed
-	// Setting canvas.width/height clears the canvas and triggers expensive reflow
-	if ( canvas.width === targetWidth && canvas.height === targetHeight ) {
-		return false; // No resize needed
-	}
-
-	// Set canvas internal resolution to match display size × DPI
-	// This prevents blurry rendering and reduces GPU scaling overhead
-	canvas.width = targetWidth;
-	canvas.height = targetHeight;
-
-	// Log in development
-	if (
-		window.location.hostname === 'localhost' ||
-		window.location.hostname.includes( 'local' )
-	) {
-		console.log(
-			`[Rive Block] Canvas DPI sizing: ${ displayWidth }×${ displayHeight } CSS → ${ canvas.width }×${ canvas.height } internal (DPR: ${ dpr })`
-		);
-	}
-
-	return true; // Canvas was resized
-}
-
-/**
  * Initialize a single Rive instance
  */
 async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
@@ -501,7 +342,7 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 		const artboard = file.defaultArtboard();
 
 		// Set canvas to DPI-aware size for crisp rendering and optimal GPU usage
-		setCanvasDPIAwareSize( canvas );
+		setCanvasDPIAwareSize( canvas, CANVAS_LOG_PREFIX );
 
 		// Create renderer
 		const renderer = rive.makeRenderer( canvas, true );
@@ -570,7 +411,7 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 				for ( const entry of entries ) {
 					if ( entry.target === canvas ) {
 						// Update canvas DPI-aware size (only if actually changed)
-						const didResize = setCanvasDPIAwareSize( canvas );
+						const didResize = setCanvasDPIAwareSize( canvas, CANVAS_LOG_PREFIX );
 
 						// If canvas was resized, re-render current frame
 						if ( didResize && ! instanceData.shouldAutoplay ) {

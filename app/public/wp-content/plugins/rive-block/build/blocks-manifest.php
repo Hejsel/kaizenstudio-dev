@@ -30,7 +30,7 @@ return array(
 			),
 			'enableAutoplay' => array(
 				'type' => 'boolean',
-				'default' => false
+				'default' => true
 			),
 			'respectReducedMotion' => array(
 				'type' => 'boolean',
