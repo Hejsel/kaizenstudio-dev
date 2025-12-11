@@ -16,10 +16,19 @@ import {
 	clearCache,
 } from './storage/memory/RiveFileCache';
 import { startRenderLoop, pauseRenderLoop, resumeRenderLoop, renderFrame } from './rendering/RiveRenderingEngine';
+import { RiveFileLoader } from './modules/RiveFileLoader';
 
 // Log prefix for frontend context
 const LOG_PREFIX = '[Rive Block IDB]';
 const CANVAS_LOG_PREFIX = '[Rive Block]';
+
+// Initialize file loader with frontend cache and URL tracking
+const fileLoader = new RiveFileLoader(
+	getCachedFile,
+	setCachedFile,
+	isUrlLoaded,
+	CANVAS_LOG_PREFIX
+);
 
 // Rive runtime instance (singleton)
 let riveRuntime = null;
@@ -129,89 +138,6 @@ async function loadRiveRuntime() {
 	}
 }
 
-/**
- * Load and cache a Rive file
- * Uses in-memory cache to avoid duplicate fetching and decoding of the same file
- *
- * @param {object} rive - Rive runtime instance
- * @param {string} url - URL to the .riv file
- * @param {string} priority - Loading priority ('high' or 'low')
- * @returns {Promise<object>} Decoded Rive file object
- */
-async function loadRiveFile( rive, url, priority = 'low' ) {
-	// Check in-memory cache first
-	const cachedFile = getCachedFile( url );
-	if ( cachedFile ) {
-		// Log cache hit in development
-		if (
-			window.location.hostname === 'localhost' ||
-			window.location.hostname.includes( 'local' )
-		) {
-			console.log( `[Rive Block] Cache hit: ${ url }` );
-		}
-		return cachedFile;
-	}
-
-	// In-memory cache miss - will fetch (but may use HTTP browser cache)
-	const isFirstLoad = ! isUrlLoaded( url );
-
-	if (
-		window.location.hostname === 'localhost' ||
-		window.location.hostname.includes( 'local' )
-	) {
-		console.log( `[Rive Block] In-memory cache miss, fetching: ${ url }` );
-		console.log(
-			`[Rive Block] Note: Browser HTTP cache may serve this without network transfer`
-		);
-	}
-
-	// Choose cache mode based on loading priority AND whether file has been loaded before:
-	// - First time loading URL: 'default' (respect HTTP cache, may download)
-	// - Subsequent loads: 'force-cache' (use browser HTTP cache aggressively)
-	// This ensures browser cache is used after first load, maximizing performance
-	let cacheMode;
-	if ( isFirstLoad ) {
-		cacheMode = 'default';
-	} else {
-		cacheMode = 'force-cache';
-	}
-
-	const response = await fetch( url, { cache: cacheMode } );
-	if ( ! response.ok ) {
-		throw new Error( `Failed to fetch: ${ response.statusText }` );
-	}
-
-	// Check if HTTP cache was used by examining response timing
-	// Note: DevTools may show "200" but Performance API reveals if bytes were transferred
-	if (
-		window.location.hostname === 'localhost' ||
-		window.location.hostname.includes( 'local' )
-	) {
-		// Use Performance API to check if cached (transferSize = 0 means cached)
-		const perfEntries = performance.getEntriesByName( url, 'resource' );
-		const latestEntry = perfEntries[ perfEntries.length - 1 ];
-		if ( latestEntry && latestEntry.transferSize === 0 ) {
-			console.log(
-				`[Rive Block] ✓ HTTP cache hit (0 bytes transferred): ${ url }`
-			);
-		} else if ( latestEntry ) {
-			console.log(
-				`[Rive Block] ↓ Downloaded ${ latestEntry.transferSize } bytes: ${ url }`
-			);
-		}
-	}
-
-	const arrayBuffer = await response.arrayBuffer();
-	const fileBytes = new Uint8Array( arrayBuffer );
-
-	// Decode Rive file
-	const file = await rive.load( fileBytes );
-
-	// Store in cache for future reuse
-	setCachedFile( url, file );
-
-	return file;
-}
 
 /**
  * Initialize all Rive animations on the page
@@ -335,7 +261,7 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 	try {
 		// Load Rive file (uses in-memory cache if available)
 		// Pass loadingPriority to optimize HTTP cache behavior
-		const file = await loadRiveFile( rive, riveSrc, loadingPriority );
+		const file = await fileLoader.load( rive, riveSrc, loadingPriority );
 
 		// Get default artboard
 		const artboard = file.defaultArtboard();
