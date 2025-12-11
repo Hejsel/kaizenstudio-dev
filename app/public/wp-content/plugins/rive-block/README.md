@@ -1,5 +1,18 @@
 # Rive Block for WordPress
 
+⚠️ **DEVELOPMENT STATUS WARNING**
+
+This plugin is currently under active development. The API, features, and behavior may change without notice between releases. This documentation reflects the current state of the codebase but may become outdated as the plugin evolves. Before using this plugin in production environments, please:
+
+1. Test thoroughly in a staging environment
+2. Review recent commits and changelog for breaking changes
+3. Be prepared to update documentation and integration code as new versions are released
+4. Report any documentation inaccuracies or missing features via the project repository
+
+Thank you for your understanding.
+
+---
+
 A high-performance WordPress Gutenberg block plugin for embedding interactive Rive animations (.riv files) in your posts and pages.
 
 ## Features

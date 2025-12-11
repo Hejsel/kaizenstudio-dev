@@ -8,7 +8,21 @@ Requires PHP:      7.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
+⚠️ DEVELOPMENT STATUS: This plugin is currently under active development.
+
 Embed interactive Rive animations (.riv files) in your WordPress posts and pages with a custom Gutenberg block.
+
+== ⚠️ IMPORTANT: DEVELOPMENT STATUS ==
+
+This plugin is currently under active development. The API, features, and behavior may change without notice between releases. This documentation reflects the current state of the codebase but may become outdated as the plugin evolves.
+
+**Before using this plugin in production environments, please:**
+- Test thoroughly in a staging environment first
+- Review recent commits and changelog for breaking changes
+- Be prepared to update your integration code as new versions are released
+- Report any documentation inaccuracies or missing features via the project repository
+
+Thank you for your understanding as we continue to improve this plugin.
 
 == Description ==
 
