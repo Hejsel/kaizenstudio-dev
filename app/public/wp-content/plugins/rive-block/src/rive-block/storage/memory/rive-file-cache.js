@@ -7,7 +7,7 @@
  * Uses MemoryCacheUtils for generic cache operations.
  */
 
-import { MemoryCache, LoadedTracker } from '../../utils/MemoryCacheUtils';
+import { MemoryCache, LoadedTracker } from '../../utils/memory-cache-utils';
 
 const fileCache = new MemoryCache( 'rive-files' );
 const loadedUrls = new LoadedTracker( 'rive-urls' );

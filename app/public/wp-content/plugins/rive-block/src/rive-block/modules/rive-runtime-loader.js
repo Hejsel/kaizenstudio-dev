@@ -7,7 +7,7 @@
  */
 
 import RiveWebGL2 from '@rive-app/webgl2-advanced';
-import { saveWASMBytes, loadWASMBytes } from '../storage/indexeddb/WasmCache';
+import { saveWASMBytes, loadWASMBytes } from '../storage/indexeddb/wasm-cache';
 
 /**
  * RiveRuntimeLoader - Singleton pattern for Rive runtime initialization

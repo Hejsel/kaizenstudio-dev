@@ -8,7 +8,7 @@
  * Note: WebAssembly.Module cannot be stored due to browser security restrictions.
  */
 
-import { openDatabase, saveToStore, loadFromStore } from '../../utils/IndexedDBUtils';
+import { openDatabase, saveToStore, loadFromStore } from '../../utils/indexed-db-utils';
 
 const DB_NAME = 'rive-block-wasm-cache';
 const DB_VERSION = 2;

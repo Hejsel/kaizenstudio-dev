@@ -10,11 +10,11 @@
 import { useEffect, useState, useRef } from '@wordpress/element';
 import { Spinner, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { setCanvasDPIAwareSize } from '../utils/CanvasUtils';
-import { getCachedFile, setCachedFile } from '../storage/memory/RiveEditorFileCache';
-import { startRenderLoop, renderFrame } from '../rendering/RiveRenderingEngine';
-import { RiveFileLoader } from '../modules/RiveFileLoader';
-import { riveRuntimeLoader } from '../modules/RiveRuntimeLoader';
+import { setCanvasDPIAwareSize } from '../utils/canvas-utils';
+import { getCachedFile, setCachedFile } from '../storage/memory/rive-editor-file-cache';
+import { startRenderLoop, renderFrame } from '../rendering/rive-rendering-engine';
+import { RiveFileLoader } from '../modules/rive-file-loader';
+import { riveRuntimeLoader } from '../modules/rive-runtime-loader';
 
 // Log prefix for editor context
 const CANVAS_LOG_PREFIX = '[Rive Editor]';

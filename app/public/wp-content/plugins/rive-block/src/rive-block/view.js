@@ -6,10 +6,10 @@
  * Supports vector feathering and advanced rendering features.
  */
 
-import { getCachedFile, setCachedFile, isUrlLoaded, } from './storage/memory/RiveFileCache';
-import { RiveFileLoader } from './modules/RiveFileLoader';
-import { RiveAnimationManager } from './modules/RiveAnimationManager';
-import { riveRuntimeLoader } from './modules/RiveRuntimeLoader';
+import { getCachedFile, setCachedFile, isUrlLoaded, } from './storage/memory/rive-file-cache';
+import { RiveFileLoader } from './modules/rive-file-loader';
+import { RiveAnimationManager } from './modules/rive-animation-manager';
+import { riveRuntimeLoader } from './modules/rive-runtime-loader';
 
 // Set log prefix for runtime loader (frontend context)
 riveRuntimeLoader.setLogPrefix( '[Rive Block IDB]' );

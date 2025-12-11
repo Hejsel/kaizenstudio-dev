@@ -5,14 +5,14 @@
  * Handles eager/lazy loading, viewport visibility, and proper resource cleanup.
  */
 
-import { setCanvasDPIAwareSize } from '../utils/CanvasUtils';
+import { setCanvasDPIAwareSize } from '../utils/canvas-utils';
 import {
 	clearCache,
-} from '../storage/memory/RiveFileCache';
-import { startRenderLoop, renderFrame } from '../rendering/RiveRenderingEngine';
-import { setupViewportObserver, showErrorMessage } from './RiveViewportObserver';
-import { RiveFileLoader } from './RiveFileLoader';
-import { riveRuntimeLoader } from './RiveRuntimeLoader';
+} from '../storage/memory/rive-file-cache';
+import { startRenderLoop, renderFrame } from '../rendering/rive-rendering-engine';
+import { setupViewportObserver, showErrorMessage } from './rive-viewport-observer';
+import { RiveFileLoader } from './rive-file-loader';
+import { riveRuntimeLoader } from './rive-runtime-loader';
 
 const CANVAS_LOG_PREFIX = '[Rive Block]';
 

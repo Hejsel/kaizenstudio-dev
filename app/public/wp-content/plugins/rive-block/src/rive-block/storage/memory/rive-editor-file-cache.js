@@ -10,7 +10,7 @@
  * Uses MemoryCacheUtils for generic cache operations.
  */
 
-import { MemoryCache } from '../../utils/MemoryCacheUtils';
+import { MemoryCache } from '../../utils/memory-cache-utils';
 
 const fileCache = new MemoryCache( 'rive-editor-files' );
 
