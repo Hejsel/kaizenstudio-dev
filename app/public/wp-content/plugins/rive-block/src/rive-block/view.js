@@ -38,10 +38,7 @@ if ( document.readyState === 'loading' ) {
 window.addEventListener( 'pageshow', ( event ) => {
 	if ( event.persisted ) {
 		// Page was restored from bfcache
-		if (
-			window.location.hostname === 'localhost' ||
-			window.location.hostname.includes( 'local' )
-		) {
+		if ( window.riveBlockData?.debug ) {
 			console.log(
 				'[Rive Block] Page restored from bfcache, re-initializing animations'
 			);

@@ -259,11 +259,8 @@ export class RiveAnimationManager {
 				renderFrame( instanceData );
 			}
 
-			// Log success in development
-			if (
-				window.location.hostname === 'localhost' ||
-				window.location.hostname.includes( 'local' )
-			) {
+			// Log success when WP_DEBUG is enabled
+			if ( window.riveBlockData?.debug ) {
 				console.log( `[Rive Block] Successfully loaded: ${ riveSrc }` );
 			}
 		} catch ( error ) {

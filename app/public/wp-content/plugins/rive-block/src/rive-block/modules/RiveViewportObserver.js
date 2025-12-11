@@ -26,10 +26,7 @@ export function setupViewportObserver( canvas, instanceData ) {
 		entries.forEach( ( entry ) => {
 			if ( entry.isIntersecting ) {
 				// Animation entered viewport - resume rendering
-				if (
-					window.location.hostname === 'localhost' ||
-					window.location.hostname.includes( 'local' )
-				) {
+				if ( window.riveBlockData?.debug ) {
 					console.log(
 						`[Rive Block] Resuming animation (entered viewport): ${ canvas.dataset.riveSrc }`
 					);
@@ -37,10 +34,7 @@ export function setupViewportObserver( canvas, instanceData ) {
 				resumeRenderLoop( instanceData );
 			} else {
 				// Animation left viewport - pause rendering to save GPU
-				if (
-					window.location.hostname === 'localhost' ||
-					window.location.hostname.includes( 'local' )
-				) {
+				if ( window.riveBlockData?.debug ) {
 					console.log(
 						`[Rive Block] Pausing animation (left viewport): ${ canvas.dataset.riveSrc }`
 					);

@@ -41,8 +41,8 @@ export class RiveFileLoader {
 		// Check in-memory cache first
 		const cachedFile = this.getCachedFile( url );
 		if ( cachedFile ) {
-			// Log cache hit in development
-			if ( this._isDevelopment() ) {
+			// Log cache hit when WP_DEBUG is enabled
+			if ( window.riveBlockData?.debug ) {
 				console.log( `${ this.logPrefix } Cache hit: ${ url }` );
 			}
 			return cachedFile;
@@ -51,7 +51,7 @@ export class RiveFileLoader {
 		// In-memory cache miss - will fetch (but may use HTTP browser cache)
 		const isFirstLoad = ! this.isUrlLoaded ? true : ! this.isUrlLoaded( url );
 
-		if ( this._isDevelopment() ) {
+		if ( window.riveBlockData?.debug ) {
 			console.log( `${ this.logPrefix } In-memory cache miss, fetching: ${ url }` );
 			if ( this.isUrlLoaded ) {
 				console.log(
@@ -75,7 +75,7 @@ export class RiveFileLoader {
 		}
 
 		// Check if HTTP cache was used by examining response timing
-		if ( this._isDevelopment() ) {
+		if ( window.riveBlockData?.debug ) {
 			// Use Performance API to check if cached (transferSize = 0 means cached)
 			const perfEntries = performance.getEntriesByName( url, 'resource' );
 			const latestEntry = perfEntries[ perfEntries.length - 1 ];
@@ -99,23 +99,10 @@ export class RiveFileLoader {
 		// Store in cache for future reuse
 		this.setCachedFile( url, file );
 
-		if ( this._isDevelopment() ) {
+		if ( window.riveBlockData?.debug ) {
 			console.log( `${ this.logPrefix } Successfully loaded: ${ url }` );
 		}
 
 		return file;
-	}
-
-	/**
-	 * Helper: Check if we're in development environment
-	 *
-	 * @returns {boolean} True if running on localhost or local domain
-	 * @private
-	 */
-	_isDevelopment() {
-		return (
-			window.location.hostname === 'localhost' ||
-			window.location.hostname.includes( 'local' )
-		);
 	}
 }
