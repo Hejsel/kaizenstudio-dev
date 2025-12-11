@@ -12,13 +12,11 @@ import { Spinner, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { riveRuntime } from '../runtime/RiveRuntime';
 import { setCanvasDPIAwareSize } from '../utils/CanvasUtils';
+import { getCachedFile, setCachedFile } from '../storage/memory/RiveEditorFileCache';
+import { startRenderLoop, renderFrame } from '../rendering/RiveRenderingEngine';
 
 // Log prefix for editor context
 const CANVAS_LOG_PREFIX = '[Rive Editor]';
-
-// In-memory cache for Rive files to avoid duplicate fetching and decoding
-// Key: file URL, Value: decoded Rive file object
-const riveFileCache = new Map();
 
 /**
  * Load and cache a Rive file for the editor
@@ -30,14 +28,15 @@ const riveFileCache = new Map();
  */
 async function loadRiveFile( rive, url ) {
 	// Check cache first
-	if ( riveFileCache.has( url ) ) {
+	const cachedFile = getCachedFile( url );
+	if ( cachedFile ) {
 		if (
 			window.location.hostname === 'localhost' ||
 			window.location.hostname.includes( 'local' )
 		) {
 			console.log( `[Rive Editor] Cache hit: ${ url }` );
 		}
-		return riveFileCache.get( url );
+		return cachedFile;
 	}
 
 	// Cache miss - fetch and decode the file
@@ -64,7 +63,7 @@ async function loadRiveFile( rive, url ) {
 	const file = await rive.load( fileBytes );
 
 	// Store in cache for future use
-	riveFileCache.set( url, file );
+	setCachedFile( url, file );
 
 	if (
 		window.location.hostname === 'localhost' ||
@@ -94,6 +93,25 @@ export default function RiveCanvas( {
 	const resizeObserverRef = useRef( null );
 	const [ isLoading, setIsLoading ] = useState( true );
 	const [ loadError, setLoadError ] = useState( null );
+
+	/**
+	 * Render context helper - builds context object for RiveRenderingEngine
+	 */
+	const buildRenderContext = () => {
+		if ( ! riveInstanceRef.current ) return null;
+		const { rive, artboard, renderer, animation, animationFPS } = riveInstanceRef.current;
+		return {
+			rive,
+			artboard,
+			renderer,
+			animation,
+			canvas: canvasRef.current,
+			animationFPS,
+			animationFrameIdRef,
+			logPrefix: CANVAS_LOG_PREFIX,
+			onFrameCheck: () => riveInstanceRef.current !== null,
+		};
+	};
 
 	// Initialize Rive animation when canvas is ready
 	useEffect( () => {
@@ -159,7 +177,10 @@ export default function RiveCanvas( {
 							const didResize = setCanvasDPIAwareSize( canvasRef.current, CANVAS_LOG_PREFIX );
 							// Re-render current frame with new canvas size (only if actually resized)
 							if ( didResize && riveInstanceRef.current ) {
-								renderFrame( rive );
+								const context = buildRenderContext();
+								if ( context ) {
+									renderFrame( context );
+								}
 							}
 						}
 					}, 150 ); // 150ms debounce - balances responsiveness vs performance
@@ -209,10 +230,16 @@ export default function RiveCanvas( {
 
 				// Start render loop if autoplay is enabled
 				if ( shouldAutoplay && animationInstance ) {
-					startRenderLoop( rive );
+					const context = buildRenderContext();
+					if ( context ) {
+						startRenderLoop( context );
+					}
 				} else {
 					// Just render one frame
-					renderFrame( rive );
+					const context = buildRenderContext();
+					if ( context ) {
+						renderFrame( context );
+					}
 				}
 
 				setIsLoading( false );
@@ -242,113 +269,10 @@ export default function RiveCanvas( {
 	}, [ riveFileUrl, enableAutoplay, respectReducedMotion ] );
 
 	/**
-	 * Start the render loop for animation
-	 * Respects animation's native FPS from .riv file to avoid wasted GPU cycles
-	 */
-	const startRenderLoop = ( rive ) => {
-		let lastTime = 0;
-		let lastRenderTime = 0;
-
-		// Use animation's native FPS from .riv file (set in Rive Editor)
-		// This prevents wasted GPU cycles from rendering identical frames
-		const targetFPS = riveInstanceRef.current?.animationFPS || 60; // Fallback to 60 if not available
-		const frameInterval = 1000 / targetFPS; // ms between frames
-
-		// Debug log target FPS
-		if ( window.riveBlockData?.debug ) {
-			console.log( `[Rive Editor] Render loop FPS: ${ targetFPS } (matching animation FPS)` );
-		}
-
-		const draw = ( time ) => {
-			if ( ! riveInstanceRef.current ) return;
-
-			// Frame rate limiting to match animation's native FPS
-			if ( time - lastRenderTime < frameInterval ) {
-				// Skip this frame to maintain target FPS
-				animationFrameIdRef.current = rive.requestAnimationFrame( draw );
-				return;
-			}
-
-			lastRenderTime = time;
-
-			const { artboard, renderer, animation } = riveInstanceRef.current;
-			const elapsed = lastTime ? ( time - lastTime ) / 1000 : 0;
-			lastTime = time;
-
-			// Clear canvas
-			renderer.clear();
-			renderer.save();
-
-			// Advance animation
-			if ( animation ) {
-				animation.advance( elapsed );
-				animation.apply( 1.0 ); // Full mix
-			}
-
-			// Advance artboard
-			artboard.advance( elapsed );
-
-			// Align to canvas
-			renderer.align(
-				rive.Fit.contain,
-				rive.Alignment.center,
-				{
-					minX: 0,
-					minY: 0,
-					maxX: canvasRef.current.width,
-					maxY: canvasRef.current.height,
-				},
-				artboard.bounds
-			);
-
-			// Draw artboard
-			artboard.draw( renderer );
-			renderer.restore();
-
-			// Flush renderer (required for WebGL2)
-			renderer.flush();
-
-			// Request next frame
-			animationFrameIdRef.current = rive.requestAnimationFrame( draw );
-		};
-
-		animationFrameIdRef.current = rive.requestAnimationFrame( draw );
-	};
-
-	/**
-	 * Render a single frame (for static display)
-	 */
-	const renderFrame = ( rive ) => {
-		if ( ! riveInstanceRef.current ) return;
-
-		const { artboard, renderer } = riveInstanceRef.current;
-
-		renderer.clear();
-		renderer.save();
-
-		// Align to canvas
-		renderer.align(
-			rive.Fit.contain,
-			rive.Alignment.center,
-			{
-				minX: 0,
-				minY: 0,
-				maxX: canvasRef.current.width,
-				maxY: canvasRef.current.height,
-			},
-			artboard.bounds
-		);
-
-		// Draw artboard
-		artboard.draw( renderer );
-		renderer.restore();
-
-		// Flush renderer (required for WebGL2)
-		renderer.flush();
-	};
-
-	/**
 	 * Cleanup Rive resources
+	 * NOTE: Files are NOT unreffed here because they're stored in RiveEditorFileCache
+	 * and may be reused by other block instances in the editor.
+	 * Files remain cached for optimal performance across multiple blocks.
 	 */
 	const cleanup = () => {
 		// Disconnect resize observer
@@ -379,11 +303,7 @@ export default function RiveCanvas( {
 			}
 		}
 
-		// NOTE: We don't unref files here because they're stored in riveFileCache
-		// and may be reused by other block instances in the editor.
-		// Files remain cached for optimal performance across multiple blocks.
 		riveFileRef.current = null;
-
 		riveInstanceRef.current = null;
 		artboardRef.current = null;
 		rendererRef.current = null;

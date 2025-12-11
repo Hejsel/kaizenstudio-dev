@@ -45,29 +45,30 @@ class RiveRuntimeLoader {
 					// Fallback to default path
 					return file;
 				},
-				// Custom WASM instantiation for IndexedDB caching
+				// Custom WASM instantiation with IndexedDB caching
+				// Handles both cache hits (compile from cached bytes) and misses (fetch from network)
 				instantiateWasm: async ( imports, successCallback ) => {
 					try {
 						let instance;
 						let module;
 
 						if ( cachedBytes ) {
-							// IDB Cache hit: Compile from cached bytes + instantiate
+							// IDB Cache hit: Compile bytes to module + instantiate
 							if ( window.riveBlockData?.debug ) {
-								console.log( `${ LOG_PREFIX } Compiling from cached WASM bytes` );
+								console.log( `${ LOG_PREFIX } Compiling cached WASM bytes to module` );
 							}
 							module = await WebAssembly.compile( cachedBytes );
 							instance = await WebAssembly.instantiate( module, imports );
 						} else {
-							// IDB Cache miss: Fetch + compile + instantiate + cache bytes
+							// IDB Cache miss: Fetch bytes from network, compile to module, instantiate, then cache bytes
 							if ( window.riveBlockData?.debug ) {
-								console.log( `${ LOG_PREFIX } Fetching and compiling WASM (first load)` );
+								console.log( `${ LOG_PREFIX } Fetching WASM bytes from network (first load)` );
 							}
 
 							const response = await fetch( wasmUrl );
 							const wasmBytes = await response.arrayBuffer();
 
-							// Compile and instantiate
+							// Compile bytes to WASM module and instantiate with imports
 							module = await WebAssembly.compile( wasmBytes );
 							instance = await WebAssembly.instantiate( module, imports );
 

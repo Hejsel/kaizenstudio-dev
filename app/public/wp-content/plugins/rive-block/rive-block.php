@@ -174,7 +174,6 @@ function rive_block_add_cache_headers( $headers, $wp_object ) {
 	if ( strpos( $request_uri, '.riv' ) !== false ) {
 		// Set caching headers for immutable .riv files (7 days, matching Nginx config)
 		$headers['Cache-Control'] = 'public, max-age=604800, immutable';
-		$headers['Expires'] = gmdate( 'D, d M Y H:i:s', time() + 604800 ) . ' GMT';
 	}
 
 	return $headers;

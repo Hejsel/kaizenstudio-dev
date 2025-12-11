@@ -9,6 +9,13 @@
 import RiveWebGL2 from '@rive-app/webgl2-advanced';
 import { saveWASMBytes, loadWASMBytes } from './storage/indexeddb/WasmCache';
 import { setCanvasDPIAwareSize } from './utils/CanvasUtils';
+import {
+	getCachedFile,
+	setCachedFile,
+	isUrlLoaded,
+	clearCache,
+} from './storage/memory/RiveFileCache';
+import { startRenderLoop, pauseRenderLoop, resumeRenderLoop, renderFrame } from './rendering/RiveRenderingEngine';
 
 // Log prefix for frontend context
 const LOG_PREFIX = '[Rive Block IDB]';
@@ -21,13 +28,6 @@ let runtimeCallbacks = [];
 
 // Track all Rive instances for proper cleanup
 const riveInstances = new Map();
-
-// In-memory cache for Rive files to avoid duplicate decoding
-// Key: file URL, Value: decoded Rive file object
-const riveFileCache = new Map();
-
-// Track which URLs have been loaded at least once (for cache optimization)
-const riveFileLoadedOnce = new Set();
 
 // Track current page URL to detect actual navigation (not just reloads)
 let currentPageUrl = window.location.href;
@@ -68,29 +68,30 @@ async function loadRiveRuntime() {
 				// Serve WASM files from plugin's build directory
 				return `${ baseUrl }/build/rive-block/${ file }`;
 			},
-			// Custom WASM instantiation for IndexedDB caching
+			// Custom WASM instantiation with IndexedDB caching
+			// Handles both cache hits (compile from cached bytes) and misses (fetch from network)
 			instantiateWasm: async ( imports, successCallback ) => {
 				try {
 					let instance;
 					let module;
 
 					if ( cachedBytes ) {
-						// IDB Cache hit: Compile from cached bytes + instantiate
+						// IDB Cache hit: Compile bytes to module + instantiate
 						if ( window.riveBlockData?.debug ) {
-							console.log( `${ LOG_PREFIX } Compiling from cached WASM bytes` );
+							console.log( `${ LOG_PREFIX } Compiling cached WASM bytes to module` );
 						}
 						module = await WebAssembly.compile( cachedBytes );
 						instance = await WebAssembly.instantiate( module, imports );
 					} else {
-						// IDB Cache miss: Fetch + compile + instantiate + cache bytes
+						// IDB Cache miss: Fetch bytes from network, compile to module, instantiate, then cache bytes
 						if ( window.riveBlockData?.debug ) {
-							console.log( `${ LOG_PREFIX } Fetching and compiling WASM (first load)` );
+							console.log( `${ LOG_PREFIX } Fetching WASM bytes from network (first load)` );
 						}
 
 						const response = await fetch( wasmUrl );
 						const wasmBytes = await response.arrayBuffer();
 
-						// Compile and instantiate
+						// Compile bytes to WASM module and instantiate with imports
 						module = await WebAssembly.compile( wasmBytes );
 						instance = await WebAssembly.instantiate( module, imports );
 
@@ -139,7 +140,8 @@ async function loadRiveRuntime() {
  */
 async function loadRiveFile( rive, url, priority = 'low' ) {
 	// Check in-memory cache first
-	if ( riveFileCache.has( url ) ) {
+	const cachedFile = getCachedFile( url );
+	if ( cachedFile ) {
 		// Log cache hit in development
 		if (
 			window.location.hostname === 'localhost' ||
@@ -147,11 +149,11 @@ async function loadRiveFile( rive, url, priority = 'low' ) {
 		) {
 			console.log( `[Rive Block] Cache hit: ${ url }` );
 		}
-		return riveFileCache.get( url );
+		return cachedFile;
 	}
 
 	// In-memory cache miss - will fetch (but may use HTTP browser cache)
-	const isFirstLoad = ! riveFileLoadedOnce.has( url );
+	const isFirstLoad = ! isUrlLoaded( url );
 
 	if (
 		window.location.hostname === 'localhost' ||
@@ -206,10 +208,7 @@ async function loadRiveFile( rive, url, priority = 'low' ) {
 	const file = await rive.load( fileBytes );
 
 	// Store in cache for future reuse
-	riveFileCache.set( url, file );
-
-	// Mark this URL as loaded once for future cache optimization
-	riveFileLoadedOnce.add( url );
+	setCachedFile( url, file );
 
 	return file;
 }
@@ -459,115 +458,6 @@ async function initRiveInstance( rive, canvas, prefersReducedMotion ) {
 }
 
 /**
- * Start the render loop for a single instance
- * Respects animation's native FPS from .riv file to avoid wasted GPU cycles
- */
-function startRenderLoop( instanceData ) {
-	const { rive, artboard, renderer, animation, canvas, animationFPS } = instanceData;
-	let lastTime = 0;
-	let lastRenderTime = 0;
-
-	// Use animation's native FPS from .riv file (set in Rive Editor)
-	// This prevents wasted GPU cycles from rendering identical frames
-	const targetFPS = animationFPS || 60; // Fallback to 60 if not available
-	const frameInterval = 1000 / targetFPS; // ms between frames
-
-	// Debug log target FPS
-	if ( window.riveBlockData?.debug ) {
-		console.log( `[Rive Block] Render loop FPS: ${ targetFPS } (matching animation FPS)` );
-	}
-
-	const draw = ( time ) => {
-		// Check if instance still exists
-		if ( ! riveInstances.has( canvas ) ) {
-			return;
-		}
-
-		// Frame rate limiting for large canvas to reduce GPU load
-		if ( time - lastRenderTime < frameInterval ) {
-			// Skip this frame to maintain target FPS
-			instanceData.animationFrameId = rive.requestAnimationFrame( draw );
-			return;
-		}
-
-		lastRenderTime = time;
-		const elapsed = lastTime ? ( time - lastTime ) / 1000 : 0;
-		lastTime = time;
-
-		// Clear canvas
-		renderer.clear();
-		renderer.save();
-
-		// Advance animation
-		if ( animation ) {
-			animation.advance( elapsed );
-			animation.apply( 1.0 ); // Full mix
-		}
-
-		// Advance artboard
-		artboard.advance( elapsed );
-
-		// Align to canvas
-		renderer.align(
-			rive.Fit.contain,
-			rive.Alignment.center,
-			{
-				minX: 0,
-				minY: 0,
-				maxX: canvas.width,
-				maxY: canvas.height,
-			},
-			artboard.bounds
-		);
-
-		// Draw artboard
-		artboard.draw( renderer );
-		renderer.restore();
-
-		// Flush renderer (required for WebGL2)
-		renderer.flush();
-
-		// Request next frame
-		instanceData.animationFrameId = rive.requestAnimationFrame( draw );
-	};
-
-	instanceData.animationFrameId = rive.requestAnimationFrame( draw );
-}
-
-/**
- * Pause the render loop for a single instance
- * Used when animation is not in viewport to save GPU resources
- */
-function pauseRenderLoop( instanceData ) {
-	if ( ! instanceData ) {
-		return;
-	}
-
-	const { rive, animationFrameId } = instanceData;
-
-	// Cancel animation frame if running
-	if ( animationFrameId ) {
-		rive.cancelAnimationFrame( animationFrameId );
-		instanceData.animationFrameId = null;
-	}
-}
-
-/**
- * Resume the render loop for a single instance
- * Called when animation enters viewport
- */
-function resumeRenderLoop( instanceData ) {
-	if ( ! instanceData || instanceData.animationFrameId ) {
-		return; // Already running
-	}
-
-	// Only resume if autoplay is enabled
-	if ( instanceData.shouldAutoplay ) {
-		startRenderLoop( instanceData );
-	}
-}
-
-/**
  * Setup Intersection Observer to pause/resume animation based on viewport visibility
  * Implements Rive's best practice: "Pause when scrolled out of view; resume when needed"
  *
@@ -615,36 +505,6 @@ function setupViewportObserver( canvas, instanceData ) {
 
 	// Store observer reference for cleanup
 	instanceData.viewportObserver = observer;
-}
-
-/**
- * Render a single frame (for static display)
- */
-function renderFrame( instanceData ) {
-	const { rive, artboard, renderer, canvas } = instanceData;
-
-	renderer.clear();
-	renderer.save();
-
-	// Align to canvas
-	renderer.align(
-		rive.Fit.contain,
-		rive.Alignment.center,
-		{
-			minX: 0,
-			minY: 0,
-			maxX: canvas.width,
-			maxY: canvas.height,
-		},
-		artboard.bounds
-	);
-
-	// Draw artboard
-	artboard.draw( renderer );
-	renderer.restore();
-
-	// Flush renderer (required for WebGL2)
-	renderer.flush();
 }
 
 /**
@@ -738,20 +598,7 @@ function cleanupRiveInstances() {
 
 	// Clear the file cache to prevent stale WASM references
 	// After artboards are deleted, cached file references become invalid
-	riveFileCache.forEach( ( file, url ) => {
-		try {
-			// Explicitly unref to be safe (may already be unrefed by artboard.delete)
-			file.unref();
-		} catch ( error ) {
-			// Ignore errors if already unrefed
-			console.warn(
-				`[Rive Block] Error unreffing cached file ${ url }:`,
-				error
-			);
-		}
-	} );
-
-	riveFileCache.clear();
+	clearCache();
 }
 
 // Initialize when DOM is ready
