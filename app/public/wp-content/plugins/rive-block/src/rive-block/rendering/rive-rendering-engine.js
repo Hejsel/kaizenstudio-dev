@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * RiveRenderingEngine - Shared Rive rendering implementation
  *
@@ -13,15 +14,15 @@
  * Respects animation's native FPS from .riv file to avoid wasted GPU cycles
  *
  * @param {Object} context - Rendering context with:
- *   - rive: Rive runtime instance
- *   - artboard: Rive artboard object
- *   - renderer: Rive renderer instance
- *   - animation: Rive animation instance (or null for static)
- *   - canvas: HTMLCanvasElement
- *   - animationFPS: Native animation FPS from .riv file
- *   - animationFrameIdRef: Object with .current property OR direct property to store frame ID
- *   - logPrefix: Log prefix for debug messages (default: '[Rive]')
- *   - onFrameCheck: Optional callback to check if instance still exists (for cleanup)
+ *                         - rive: Rive runtime instance
+ *                         - artboard: Rive artboard object
+ *                         - renderer: Rive renderer instance
+ *                         - animation: Rive animation instance (or null for static)
+ *                         - canvas: HTMLCanvasElement
+ *                         - animationFPS: Native animation FPS from .riv file
+ *                         - animationFrameIdRef: Object with .current property OR direct property to store frame ID
+ *                         - logPrefix: Log prefix for debug messages (default: '[Rive]')
+ *                         - onFrameCheck: Optional callback to check if instance still exists (for cleanup)
  */
 export function startRenderLoop( context ) {
 	const {
@@ -119,14 +120,13 @@ export function startRenderLoop( context ) {
  * Render a single frame (for static display or when autoplay is disabled)
  *
  * @param {Object} context - Rendering context with:
- *   - rive: Rive runtime instance
- *   - artboard: Rive artboard object
- *   - renderer: Rive renderer instance
- *   - canvas: HTMLCanvasElement
- *   - logPrefix: Log prefix for debug messages (default: '[Rive]')
+ *                         - rive: Rive runtime instance
+ *                         - artboard: Rive artboard object
+ *                         - renderer: Rive renderer instance
+ *                         - canvas: HTMLCanvasElement
  */
 export function renderFrame( context ) {
-	const { rive, artboard, renderer, canvas, logPrefix = '[Rive]' } = context;
+	const { rive, artboard, renderer, canvas } = context;
 
 	renderer.clear();
 	renderer.save();
@@ -157,16 +157,15 @@ export function renderFrame( context ) {
  * Used when animation is not in viewport to save GPU resources
  *
  * @param {Object} context - Rendering context with:
- *   - rive: Rive runtime instance
- *   - animationFrameIdRef: Object with .current property OR direct property storing frame ID
- *   - logPrefix: Log prefix for debug messages (default: '[Rive]')
+ *                         - rive: Rive runtime instance
+ *                         - animationFrameIdRef: Object with .current property OR direct property storing frame ID
  */
 export function pauseRenderLoop( context ) {
 	if ( ! context ) {
 		return;
 	}
 
-	const { rive, animationFrameIdRef, logPrefix = '[Rive]' } = context;
+	const { rive, animationFrameIdRef } = context;
 
 	// Use context itself as ref if animationFrameIdRef not provided
 	const frameIdRef = animationFrameIdRef || context;
@@ -184,16 +183,15 @@ export function pauseRenderLoop( context ) {
  * Called when animation enters viewport
  *
  * @param {Object} context - Rendering context with:
- *   - rive: Rive runtime instance
- *   - artboard: Rive artboard object
- *   - renderer: Rive renderer instance
- *   - animation: Rive animation instance
- *   - canvas: HTMLCanvasElement
- *   - animationFPS: Native animation FPS from .riv file
- *   - animationFrameIdRef: Object with .current property OR direct property
- *   - shouldAutoplay: Boolean to check if autoplay is enabled
- *   - logPrefix: Log prefix for debug messages (default: '[Rive]')
- *   - renderLoopState: Object with { lastTime, lastRenderTime } for continuing from pause
+ *                         - rive: Rive runtime instance
+ *                         - artboard: Rive artboard object
+ *                         - renderer: Rive renderer instance
+ *                         - animation: Rive animation instance
+ *                         - canvas: HTMLCanvasElement
+ *                         - animationFPS: Native animation FPS from .riv file
+ *                         - animationFrameIdRef: Object with .current property OR direct property
+ *                         - shouldAutoplay: Boolean to check if autoplay is enabled
+ *                         - renderLoopState: Object with { lastTime, lastRenderTime } for continuing from pause
  */
 export function resumeRenderLoop( context ) {
 	if ( ! context ) {
@@ -222,10 +220,12 @@ export function resumeRenderLoop( context ) {
  *
  * @private
  * @param {Object} ref - Reference object
- * @returns {number|null} Animation frame ID or null
+ * @return {number|null} Animation frame ID or null
  */
 function getAnimationFrameId( ref ) {
-	if ( ! ref ) return null;
+	if ( ! ref ) {
+		return null;
+	}
 	// Support both React refs (.current) and plain properties
 	return ref.current !== undefined ? ref.current : ref.animationFrameId;
 }
@@ -235,11 +235,13 @@ function getAnimationFrameId( ref ) {
  * Handles both React refs (.current) and plain properties
  *
  * @private
- * @param {Object} ref - Reference object
- * @param {number|null} id - Animation frame ID or null
+ * @param {Object}      ref - Reference object
+ * @param {number|null} id  - Animation frame ID or null
  */
 function setAnimationFrameId( ref, id ) {
-	if ( ! ref ) return;
+	if ( ! ref ) {
+		return;
+	}
 	// Support both React refs (.current) and plain properties
 	if ( ref.current !== undefined ) {
 		ref.current = id;

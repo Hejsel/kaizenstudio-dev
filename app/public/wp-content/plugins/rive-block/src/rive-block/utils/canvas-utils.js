@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * CanvasUtils - Shared canvas utility functions
  *
@@ -10,9 +11,9 @@
  *
  * PERFORMANCE: Only resizes if size actually changed to avoid expensive canvas resets.
  *
- * @param {HTMLCanvasElement} canvas - The canvas element to resize
- * @param {string} logPrefix - Prefix for debug logs (default: '[Rive]')
- * @returns {boolean} True if canvas was resized, false if no change
+ * @param {HTMLCanvasElement} canvas    - The canvas element to resize
+ * @param {string}            logPrefix - Prefix for debug logs (default: '[Rive]')
+ * @return {boolean} True if canvas was resized, false if no change
  */
 export function setCanvasDPIAwareSize( canvas, logPrefix = '[Rive]' ) {
 	if ( ! canvas ) {

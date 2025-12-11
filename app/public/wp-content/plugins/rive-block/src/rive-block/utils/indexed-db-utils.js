@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* global indexedDB */
 /**
  * IndexedDBUtils - Generelle IndexedDB hjælpefunktioner
  *
@@ -7,10 +9,10 @@
 
 /**
  * Open or create IndexedDB database
- * @param {string} dbName - Database name
- * @param {number} dbVersion - Database version
+ * @param {string}   dbName          - Database name
+ * @param {number}   dbVersion       - Database version
  * @param {Function} onUpgradeNeeded - Callback for schema upgrade (receives db instance and event)
- * @returns {Promise<IDBDatabase>} Database instance
+ * @return {Promise<IDBDatabase>} Database instance
  */
 export async function openDatabase( dbName, dbVersion, onUpgradeNeeded ) {
 	return new Promise( ( resolve, reject ) => {
@@ -29,11 +31,11 @@ export async function openDatabase( dbName, dbVersion, onUpgradeNeeded ) {
 
 /**
  * Save data to object store
- * @param {IDBDatabase} db - Database instance
- * @param {string} storeName - Object store name
- * @param {Object} data - Data to save
- * @param {string} logPrefix - Log prefix for debug messages (default: '[IDB]')
- * @returns {Promise<void>}
+ * @param {IDBDatabase} db        - Database instance
+ * @param {string}      storeName - Object store name
+ * @param {Object}      data      - Data to save
+ * @param {string}      logPrefix - Log prefix for debug messages (default: '[IDB]')
+ * @return {Promise<void>}
  */
 export async function saveToStore( db, storeName, data, logPrefix = '[IDB]' ) {
 	if ( window.riveBlockData?.debug ) {
@@ -67,11 +69,11 @@ export async function saveToStore( db, storeName, data, logPrefix = '[IDB]' ) {
 
 /**
  * Load data from object store
- * @param {IDBDatabase} db - Database instance
- * @param {string} storeName - Object store name
- * @param {string} key - Key to retrieve
- * @param {string} logPrefix - Log prefix for debug messages (default: '[IDB]')
- * @returns {Promise<any|null>} Retrieved data or null if not found
+ * @param {IDBDatabase} db        - Database instance
+ * @param {string}      storeName - Object store name
+ * @param {string}      key       - Key to retrieve
+ * @param {string}      logPrefix - Log prefix for debug messages (default: '[IDB]')
+ * @return {Promise<any|null>} Retrieved data or null if not found
  */
 export async function loadFromStore( db, storeName, key, logPrefix = '[IDB]' ) {
 	try {

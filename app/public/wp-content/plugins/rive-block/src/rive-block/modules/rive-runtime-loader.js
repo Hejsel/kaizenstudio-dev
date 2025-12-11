@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * RiveRuntimeLoader Module
  *
@@ -52,7 +53,7 @@ export class RiveRuntimeLoader {
 	/**
 	 * Get or initialize Rive runtime (singleton)
 	 *
-	 * @returns {Promise<object>} Rive runtime instance
+	 * @return {Promise<object>} Rive runtime instance
 	 */
 	async load() {
 		if ( this.riveRuntime ) {

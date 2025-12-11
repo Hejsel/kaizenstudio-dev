@@ -1,3 +1,5 @@
+/* global ResizeObserver, IntersectionObserver */
+/* eslint-disable no-console */
 /**
  * RiveAnimationManager Module
  *
@@ -15,7 +17,6 @@ import {
 	setupViewportObserver,
 	showErrorMessage,
 } from './rive-viewport-observer';
-import { RiveFileLoader } from './rive-file-loader';
 import { riveRuntimeLoader } from './rive-runtime-loader';
 
 const CANVAS_LOG_PREFIX = '[Rive Block]';
@@ -134,9 +135,9 @@ export class RiveAnimationManager {
 	/**
 	 * Initialize a single Rive instance
 	 *
-	 * @param {object} rive - Rive runtime instance
-	 * @param {HTMLCanvasElement} canvas - Canvas element to initialize
-	 * @param {boolean} prefersReducedMotion - User's motion preference
+	 * @param {Object}            rive                 - Rive runtime instance
+	 * @param {HTMLCanvasElement} canvas               - Canvas element to initialize
+	 * @param {boolean}           prefersReducedMotion - User's motion preference
 	 */
 	async initInstance( rive, canvas, prefersReducedMotion ) {
 		const riveSrc = canvas.dataset.riveSrc;
@@ -153,7 +154,6 @@ export class RiveAnimationManager {
 		const enableAutoplay = canvas.dataset.enableAutoplay === 'true';
 		const respectReducedMotion =
 			canvas.dataset.respectReducedMotion !== 'false'; // Default to true
-		const loadingPriority = canvas.dataset.loadingPriority || 'low';
 
 		// Determine if autoplay should be enabled based on settings and user preference
 		const shouldAutoplay =
@@ -162,12 +162,7 @@ export class RiveAnimationManager {
 
 		try {
 			// Load Rive file (uses in-memory cache if available)
-			// Pass loadingPriority to optimize HTTP cache behavior
-			const file = await this.fileLoader.load(
-				rive,
-				riveSrc,
-				loadingPriority
-			);
+			const file = await this.fileLoader.load( rive, riveSrc );
 
 			// Get default artboard
 			const artboard = file.defaultArtboard();
@@ -304,7 +299,7 @@ export class RiveAnimationManager {
 	 * For cross-page caching, use HTTP cache headers (see README.md).
 	 */
 	cleanup() {
-		this.riveInstances.forEach( ( instanceData, canvas ) => {
+		this.riveInstances.forEach( ( instanceData ) => {
 			try {
 				const {
 					rive,

@@ -1,3 +1,5 @@
+/* global ResizeObserver */
+/* eslint-disable no-console */
 /**
  * RiveCanvas Component
  *
@@ -59,7 +61,9 @@ export default function RiveCanvas( {
 	 * Render context helper - builds context object for RiveRenderingEngine
 	 */
 	const buildRenderContext = () => {
-		if ( ! riveInstanceRef.current ) return null;
+		if ( ! riveInstanceRef.current ) {
+			return null;
+		}
 		const { rive, artboard, renderer, animation, animationFPS } =
 			riveInstanceRef.current;
 		return {
@@ -77,7 +81,9 @@ export default function RiveCanvas( {
 
 	// Initialize Rive animation when canvas is ready
 	useEffect( () => {
-		if ( ! canvasRef.current || ! riveFileUrl ) return;
+		if ( ! canvasRef.current || ! riveFileUrl ) {
+			return;
+		}
 
 		let mounted = true;
 		setIsLoading( true );
@@ -88,13 +94,17 @@ export default function RiveCanvas( {
 				// Get Rive runtime instance
 				const rive = await riveRuntimeLoader.load();
 
-				if ( ! mounted ) return;
+				if ( ! mounted ) {
+					return;
+				}
 
 				// Load Rive file (uses in-memory cache if available)
 				const file = await fileLoader.load( rive, riveFileUrl );
 				riveFileRef.current = file;
 
-				if ( ! mounted ) return;
+				if ( ! mounted ) {
+					return;
+				}
 
 				// Get default artboard
 				const artboard = file.defaultArtboard();

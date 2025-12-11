@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * RiveFileCache - In-memory cache for decoded Rive files
  *
@@ -17,7 +18,7 @@ const LOG_PREFIX = '[Rive Memory Cache]';
 /**
  * Get cached Rive file (if exists)
  * @param {string} url - File URL
- * @returns {Object|null} Decoded Rive file or null
+ * @return {Object|null} Decoded Rive file or null
  */
 export function getCachedFile( url ) {
 	return fileCache.get( url ) || null;
@@ -25,7 +26,7 @@ export function getCachedFile( url ) {
 
 /**
  * Cache a decoded Rive file
- * @param {string} url - File URL
+ * @param {string} url  - File URL
  * @param {Object} file - Decoded Rive file object
  */
 export function setCachedFile( url, file ) {
@@ -42,7 +43,7 @@ export function setCachedFile( url, file ) {
 /**
  * Check if URL has been loaded before
  * @param {string} url - File URL
- * @returns {boolean}
+ * @return {boolean} Whether the URL has been loaded
  */
 export function isUrlLoaded( url ) {
 	return loadedUrls.has( url );
@@ -74,7 +75,7 @@ export function clearCache() {
 
 /**
  * Get cache statistics (for debugging)
- * @returns {Object} Cache stats object
+ * @return {Object} Cache stats object
  */
 export function getCacheStats() {
 	return {

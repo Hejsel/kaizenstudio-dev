@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * MemoryCacheUtils - Generelle in-memory cache helpers
  *
@@ -18,7 +19,7 @@ export class MemoryCache {
 	/**
 	 * Check if key exists in cache
 	 * @param {string} key
-	 * @returns {boolean}
+	 * @return {boolean} True if key exists in cache
 	 */
 	has( key ) {
 		return this.cache.has( key );
@@ -27,7 +28,7 @@ export class MemoryCache {
 	/**
 	 * Get value from cache
 	 * @param {string} key
-	 * @returns {*}
+	 * @return {*} Cached value or undefined
 	 */
 	get( key ) {
 		return this.cache.get( key );
@@ -36,7 +37,7 @@ export class MemoryCache {
 	/**
 	 * Set value in cache
 	 * @param {string} key
-	 * @param {*} value
+	 * @param {*}      value
 	 */
 	set( key, value ) {
 		this.cache.set( key, value );
@@ -45,7 +46,7 @@ export class MemoryCache {
 	/**
 	 * Delete value from cache
 	 * @param {string} key
-	 * @returns {boolean}
+	 * @return {boolean} True if key was deleted
 	 */
 	delete( key ) {
 		return this.cache.delete( key );
@@ -60,7 +61,7 @@ export class MemoryCache {
 
 	/**
 	 * Get number of cached items
-	 * @returns {number}
+	 * @return {number} Number of items in cache
 	 */
 	size() {
 		return this.cache.size;
@@ -80,7 +81,7 @@ export class LoadedTracker {
 	/**
 	 * Check if key has been loaded before
 	 * @param {string} key
-	 * @returns {boolean}
+	 * @return {boolean} True if key has been loaded
 	 */
 	has( key ) {
 		return this.loaded.has( key );
@@ -103,7 +104,7 @@ export class LoadedTracker {
 
 	/**
 	 * Get number of tracked keys
-	 * @returns {number}
+	 * @return {number} Number of tracked keys
 	 */
 	size() {
 		return this.loaded.size;

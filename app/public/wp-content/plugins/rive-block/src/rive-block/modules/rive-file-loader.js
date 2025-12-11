@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * RiveFileLoader Module
  *
@@ -18,8 +19,8 @@ export class RiveFileLoader {
 	 *
 	 * @param {Function} getCachedFile - Function to retrieve cached files
 	 * @param {Function} setCachedFile - Function to store files in cache
-	 * @param {Function} isUrlLoaded - Optional: Function to check if URL was previously loaded (for HTTP cache optimization)
-	 * @param {string} logPrefix - Log prefix for console messages (e.g., '[Rive Block]')
+	 * @param {Function} isUrlLoaded   - Optional: Function to check if URL was previously loaded (for HTTP cache optimization)
+	 * @param {string}   logPrefix     - Log prefix for console messages (e.g., '[Rive Block]')
 	 */
 	constructor(
 		getCachedFile,
@@ -37,12 +38,11 @@ export class RiveFileLoader {
 	 * Load and cache a Rive file
 	 * Uses in-memory cache to avoid duplicate fetching and decoding of the same file
 	 *
-	 * @param {object} rive - Rive runtime instance
-	 * @param {string} url - URL of the Rive file to load
-	 * @param {string} priority - Loading priority for HTTP cache optimization ('high' or 'low')
-	 * @returns {Promise<object>} Decoded Rive file object
+	 * @param {Object} rive - Rive runtime instance
+	 * @param {string} url  - URL of the Rive file to load
+	 * @return {Promise<object>} Decoded Rive file object
 	 */
-	async load( rive, url, priority = 'low' ) {
+	async load( rive, url ) {
 		// Check in-memory cache first
 		const cachedFile = this.getCachedFile( url );
 		if ( cachedFile ) {

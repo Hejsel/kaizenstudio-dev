@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Frontend JavaScript for Rive Block
  *

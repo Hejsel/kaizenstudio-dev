@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * WasmCache - IndexedDB helper for WASM bytes caching
  *
@@ -23,7 +24,7 @@ let dbInstance = null;
 
 /**
  * Get database instance (singleton pattern)
- * @returns {Promise<IDBDatabase>}
+ * @return {Promise<IDBDatabase>} Database instance
  */
 async function getDatabase() {
 	if ( dbInstance ) {
@@ -52,9 +53,9 @@ async function getDatabase() {
 
 /**
  * Save WASM bytes to IndexedDB
- * @param {string} filename - WASM filename (e.g., 'webgl2_advanced.wasm')
+ * @param {string}      filename  - WASM filename (e.g., 'webgl2_advanced.wasm')
  * @param {ArrayBuffer} wasmBytes - Raw WASM bytes
- * @param {string} logPrefix - Prefix for debug logs (default: '[Rive IDB]')
+ * @param {string}      logPrefix - Prefix for debug logs (default: '[Rive IDB]')
  */
 export async function saveWASMBytes(
 	filename,
@@ -85,9 +86,9 @@ export async function saveWASMBytes(
 
 /**
  * Load WASM bytes from IndexedDB
- * @param {string} filename - WASM filename
+ * @param {string} filename  - WASM filename
  * @param {string} logPrefix - Prefix for debug logs (default: '[Rive IDB]')
- * @returns {Promise<ArrayBuffer|null>} Raw WASM bytes or null if not cached
+ * @return {Promise<ArrayBuffer|null>} Raw WASM bytes or null if not cached
  */
 export async function loadWASMBytes( filename, logPrefix = '[Rive IDB]' ) {
 	try {

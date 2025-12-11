@@ -1,3 +1,4 @@
+/* eslint-disable @wordpress/no-unsafe-wp-apis */
 /**
  * Retrieves the translation of text.
  *
@@ -53,11 +54,16 @@ import RiveCanvas from './components/RiveCanvas';
  * The edit function describes the structure of your block in the context of the
  * editor. This represents what the editor will render when the block is used.
  *
+ * @param {Object}   root0               - Block edit props
+ * @param {Object}   root0.attributes    - Block attributes
+ * @param {Function} root0.setAttributes - Function to update attributes
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  *
  * @return {Element} Element to render.
  */
 export default function Edit( { attributes, setAttributes } ) {
+	const blockProps = useBlockProps();
+
 	const {
 		riveFileUrl,
 		riveFileId,
@@ -89,7 +95,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	// Show placeholder if no Rive file is selected
 	if ( ! riveFileUrl ) {
 		return (
-			<div { ...useBlockProps() }>
+			<div { ...blockProps }>
 				<MediaPlaceholder
 					icon={ <BlockIcon icon={ riveIcon } /> }
 					onSelect={ onSelectRiveFile }
@@ -311,7 +317,7 @@ export default function Edit( { attributes, setAttributes } ) {
 							setAttributes( { ariaDescription: value } )
 						}
 						placeholder={ __(
-							'e.g., An animated illustration showing...',
+							'e.g., An animated illustration showing…',
 							'rive-block'
 						) }
 						rows={ 3 }
@@ -360,7 +366,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 
-			<div { ...useBlockProps() }>
+			<div { ...blockProps }>
 				<RiveCanvas
 					riveFileUrl={ riveFileUrl }
 					width={ width }

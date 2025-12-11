@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* global IntersectionObserver */
 /**
  * RiveViewportObserver Module
  *
@@ -14,8 +16,8 @@ import {
  * Setup Intersection Observer to pause/resume animation based on viewport visibility
  * Implements Rive's best practice: "Pause when scrolled out of view; resume when needed"
  *
- * @param {HTMLCanvasElement} canvas - The canvas element to observe
- * @param {object} instanceData - Rive instance data
+ * @param {HTMLCanvasElement} canvas       - The canvas element to observe
+ * @param {Object}            instanceData - Rive instance data
  * @see https://rive.app/docs/getting-started/best-practices#runtime-considerations
  */
 export function setupViewportObserver( canvas, instanceData ) {
@@ -57,8 +59,8 @@ export function setupViewportObserver( canvas, instanceData ) {
 /**
  * Display user-friendly error message when Rive fails to load
  *
- * @param {HTMLCanvasElement} canvas - Canvas element to replace
- * @param {string} message - Error message to display
+ * @param {HTMLCanvasElement} canvas  - Canvas element to replace
+ * @param {string}            message - Error message to display
  */
 export function showErrorMessage( canvas, message ) {
 	// Create error message container
