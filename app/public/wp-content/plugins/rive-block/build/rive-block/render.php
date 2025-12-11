@@ -16,60 +16,60 @@ if ( empty( $attributes['riveFileUrl'] ) ) {
 }
 
 // Get block attributes with defaults
-$width = $attributes['width'] ?? '100%';
-$height = $attributes['height'] ?? 'auto';
-$rive_file_url = $attributes['riveFileUrl'];
-$enable_autoplay = $attributes['enableAutoplay'] ?? false;
-$respect_reduced_motion = $attributes['respectReducedMotion'] ?? true;
-$aria_label = $attributes['ariaLabel'] ?? '';
-$aria_description = $attributes['ariaDescription'] ?? '';
-$loading_priority = $attributes['loadingPriority'] ?? 'low';
+$rive_block_width = $attributes['width'] ?? '100%';
+$rive_block_height = $attributes['height'] ?? 'auto';
+$rive_block_rive_file_url = $attributes['riveFileUrl'];
+$rive_block_enable_autoplay = $attributes['enableAutoplay'] ?? false;
+$rive_block_respect_reduced_motion = $attributes['respectReducedMotion'] ?? true;
+$rive_block_aria_label = $attributes['ariaLabel'] ?? '';
+$rive_block_aria_description = $attributes['ariaDescription'] ?? '';
+$rive_block_loading_priority = $attributes['loadingPriority'] ?? 'low';
 
 // Build wrapper attributes
-$wrapper_attributes = [
-	'style' => 'width: ' . esc_attr($width) . '; height: ' . esc_attr($height) . ';',
-	'data-rive-src' => esc_url($rive_file_url),
-	'data-enable-autoplay' => $enable_autoplay ? 'true' : 'false',
-	'data-respect-reduced-motion' => $respect_reduced_motion ? 'true' : 'false',
-	'data-loading-priority' => esc_attr($loading_priority),
+$rive_block_wrapper_attributes = [
+	'style' => 'width: ' . esc_attr($rive_block_width) . '; height: ' . esc_attr($rive_block_height) . ';',
+	'data-rive-src' => esc_url($rive_block_rive_file_url),
+	'data-enable-autoplay' => $rive_block_enable_autoplay ? 'true' : 'false',
+	'data-respect-reduced-motion' => $rive_block_respect_reduced_motion ? 'true' : 'false',
+	'data-loading-priority' => esc_attr($rive_block_loading_priority),
 ];
 
 // Add ARIA attributes if provided
-if ( ! empty( $aria_label ) ) {
-	$wrapper_attributes['role'] = 'img';
-	$wrapper_attributes['aria-label'] = esc_attr( $aria_label );
+if ( ! empty( $rive_block_aria_label ) ) {
+	$rive_block_wrapper_attributes['role'] = 'img';
+	$rive_block_wrapper_attributes['aria-label'] = esc_attr( $rive_block_aria_label );
 }
 
-if ( ! empty( $aria_description ) ) {
-	$wrapper_attributes['aria-description'] = esc_attr( $aria_description );
+if ( ! empty( $rive_block_aria_description ) ) {
+	$rive_block_wrapper_attributes['aria-description'] = esc_attr( $rive_block_aria_description );
 }
 
 // Calculate aspect ratio for placeholder (prevent layout shift during lazy load)
 // Default to 16:9 if dimensions are not set or auto
-$aspect_ratio = '56.25%'; // 16:9 default
-if ( $width !== 'auto' && $height !== 'auto' && is_numeric( str_replace( ['px', '%', 'em', 'rem'], '', $width ) ) && is_numeric( str_replace( ['px', '%', 'em', 'rem'], '', $height ) ) ) {
-	$width_val = floatval( str_replace( ['px', '%', 'em', 'rem'], '', $width ) );
-	$height_val = floatval( str_replace( ['px', '%', 'em', 'rem'], '', $height ) );
-	if ( $width_val > 0 ) {
-		$aspect_ratio = ( $height_val / $width_val * 100 ) . '%';
+$rive_block_aspect_ratio = '56.25%'; // 16:9 default
+if ( $rive_block_width !== 'auto' && $rive_block_height !== 'auto' && is_numeric( str_replace( ['px', '%', 'em', 'rem'], '', $rive_block_width ) ) && is_numeric( str_replace( ['px', '%', 'em', 'rem'], '', $rive_block_height ) ) ) {
+	$rive_block_width_val = floatval( str_replace( ['px', '%', 'em', 'rem'], '', $rive_block_width ) );
+	$rive_block_height_val = floatval( str_replace( ['px', '%', 'em', 'rem'], '', $rive_block_height ) );
+	if ( $rive_block_width_val > 0 ) {
+		$rive_block_aspect_ratio = ( $rive_block_height_val / $rive_block_width_val * 100 ) . '%';
 	}
 }
 ?>
-<?php if ( $loading_priority === 'high' ) : ?>
+<?php if ( $rive_block_loading_priority === 'high' ) : ?>
 	<?php
 	// Prevent duplicate preload tags for the same Rive file
-	static $preloaded_riv_files = [];
-	if ( ! in_array( $rive_file_url, $preloaded_riv_files, true ) ) :
-		$preloaded_riv_files[] = $rive_file_url;
+	static $rive_block_preloaded_riv_files = [];
+	if ( ! in_array( $rive_block_rive_file_url, $rive_block_preloaded_riv_files, true ) ) :
+		$rive_block_preloaded_riv_files[] = $rive_block_rive_file_url;
 	?>
 <!-- Preload Rive animation file for faster initialization (high priority) -->
-<link rel="preload" href="<?php echo esc_url( $rive_file_url ); ?>" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="<?php echo esc_url( $rive_block_rive_file_url ); ?>" as="fetch" crossorigin="anonymous">
 	<?php endif; ?>
 <?php endif; ?>
-<div class="rive-block-container" style="position: relative; width: <?php echo esc_attr( $width ); ?>; padding-bottom: <?php echo esc_attr( $aspect_ratio ); ?>;">
+<div class="rive-block-container" style="position: relative; width: <?php echo esc_attr( $rive_block_width ); ?>; padding-bottom: <?php echo esc_attr( $rive_block_aspect_ratio ); ?>;">
 	<canvas
-		<?php echo get_block_wrapper_attributes( array_merge( $wrapper_attributes, [
+		<?php echo wp_kses_post( get_block_wrapper_attributes( array_merge( $rive_block_wrapper_attributes, [
 			'style' => 'position: absolute; top: 0; left: 0; width: 100%; height: 100%;'
-		] ) ); ?>>
+		] ) ) ); ?>>
 	</canvas>
 </div>

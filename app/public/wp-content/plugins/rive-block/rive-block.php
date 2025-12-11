@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
  * @see https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/
  */
-function create_block_rive_block_block_init() {
+function rive_block_init() {
 	/**
 	 * Registers the block(s) metadata from the `blocks-manifest.php` and registers the block type(s)
 	 * based on the registered block metadata.
@@ -56,7 +56,7 @@ function create_block_rive_block_block_init() {
 		register_block_type( __DIR__ . "/build/{$block_type}" );
 	}
 }
-add_action( 'init', 'create_block_rive_block_block_init' );
+add_action( 'init', 'rive_block_init' );
 
 /**
  * Allow .riv file uploads to WordPress Media Library
@@ -170,7 +170,7 @@ function rive_block_add_cache_headers( $headers, $wp_object ) {
 	}
 
 	// Check if this is a .riv file request
-	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 	if ( strpos( $request_uri, '.riv' ) !== false ) {
 		// Set caching headers for immutable .riv files (7 days, matching Nginx config)
 		$headers['Cache-Control'] = 'public, max-age=604800, immutable';

@@ -1,8 +1,8 @@
 === Rive Block ===
 Contributors:      KaizenStudio
 Tags:              block, rive, animation, gutenberg, interactive
-Requires at least: 6.3
-Tested up to:      6.8
+Requires at least: 6.7
+Tested up to:      6.9
 Stable tag:        0.1.0
 Requires PHP:      7.4
 License:           GPL-2.0-or-later
