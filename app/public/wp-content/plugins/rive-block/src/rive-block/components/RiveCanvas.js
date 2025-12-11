@@ -10,14 +10,17 @@
 import { useEffect, useState, useRef } from '@wordpress/element';
 import { Spinner, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { riveRuntime } from '../runtime/RiveRuntime';
 import { setCanvasDPIAwareSize } from '../utils/CanvasUtils';
 import { getCachedFile, setCachedFile } from '../storage/memory/RiveEditorFileCache';
 import { startRenderLoop, renderFrame } from '../rendering/RiveRenderingEngine';
 import { RiveFileLoader } from '../modules/RiveFileLoader';
+import { riveRuntimeLoader } from '../modules/RiveRuntimeLoader';
 
 // Log prefix for editor context
 const CANVAS_LOG_PREFIX = '[Rive Editor]';
+
+// Set log prefix for runtime loader (editor context)
+riveRuntimeLoader.setLogPrefix( `${ CANVAS_LOG_PREFIX } IDB` );
 
 // Initialize file loader with editor cache
 const fileLoader = new RiveFileLoader(
@@ -76,7 +79,7 @@ export default function RiveCanvas( {
 		( async () => {
 			try {
 				// Get Rive runtime instance
-				const rive = await riveRuntime.awaitInstance();
+				const rive = await riveRuntimeLoader.load();
 
 				if ( ! mounted ) return;
 

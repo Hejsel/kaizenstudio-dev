@@ -20,7 +20,7 @@ import './style.scss';
 import Edit from './edit';
 import metadata from './block.json';
 import riveIcon from './icon';
-import { riveRuntime } from './runtime/RiveRuntime';
+import { riveRuntimeLoader } from './modules/RiveRuntimeLoader';
 
 /**
  * Set WASM URL for editor from localized script data
@@ -28,7 +28,7 @@ import { riveRuntime } from './runtime/RiveRuntime';
  */
 if ( window.riveBlockData?.pluginUrl ) {
 	const baseUrl = window.riveBlockData.pluginUrl.replace( /\/$/, '' );
-	riveRuntime.setWasmUrl( `${ baseUrl }/build/rive-block` );
+	riveRuntimeLoader.setWasmUrl( `${ baseUrl }/build/rive-block` );
 }
 
 /**
