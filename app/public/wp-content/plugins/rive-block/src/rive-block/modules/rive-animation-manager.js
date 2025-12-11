@@ -6,11 +6,15 @@
  */
 
 import { setCanvasDPIAwareSize } from '../utils/canvas-utils';
+import { clearCache } from '../storage/memory/rive-file-cache';
 import {
-	clearCache,
-} from '../storage/memory/rive-file-cache';
-import { startRenderLoop, renderFrame } from '../rendering/rive-rendering-engine';
-import { setupViewportObserver, showErrorMessage } from './rive-viewport-observer';
+	startRenderLoop,
+	renderFrame,
+} from '../rendering/rive-rendering-engine';
+import {
+	setupViewportObserver,
+	showErrorMessage,
+} from './rive-viewport-observer';
 import { RiveFileLoader } from './rive-file-loader';
 import { riveRuntimeLoader } from './rive-runtime-loader';
 
@@ -139,7 +143,9 @@ export class RiveAnimationManager {
 
 		// Skip if no Rive source URL is provided
 		if ( ! riveSrc ) {
-			console.warn( '[Rive Block] Canvas missing data-rive-src attribute' );
+			console.warn(
+				'[Rive Block] Canvas missing data-rive-src attribute'
+			);
 			return;
 		}
 
@@ -151,12 +157,17 @@ export class RiveAnimationManager {
 
 		// Determine if autoplay should be enabled based on settings and user preference
 		const shouldAutoplay =
-			enableAutoplay && ! ( respectReducedMotion && prefersReducedMotion );
+			enableAutoplay &&
+			! ( respectReducedMotion && prefersReducedMotion );
 
 		try {
 			// Load Rive file (uses in-memory cache if available)
 			// Pass loadingPriority to optimize HTTP cache behavior
-			const file = await this.fileLoader.load( rive, riveSrc, loadingPriority );
+			const file = await this.fileLoader.load(
+				rive,
+				riveSrc,
+				loadingPriority
+			);
 
 			// Get default artboard
 			const artboard = file.defaultArtboard();
@@ -197,7 +208,10 @@ export class RiveAnimationManager {
 
 				// Debug log animation FPS
 				if ( window.riveBlockData?.debug ) {
-					console.log( '[Rive Block] Animation FPS (from .riv):', animationFPS );
+					console.log(
+						'[Rive Block] Animation FPS (from .riv):',
+						animationFPS
+					);
 				}
 			}
 
@@ -231,7 +245,10 @@ export class RiveAnimationManager {
 					for ( const entry of entries ) {
 						if ( entry.target === canvas ) {
 							// Update canvas DPI-aware size (only if actually changed)
-							const didResize = setCanvasDPIAwareSize( canvas, CANVAS_LOG_PREFIX );
+							const didResize = setCanvasDPIAwareSize(
+								canvas,
+								CANVAS_LOG_PREFIX
+							);
 
 							// If canvas was resized, re-render current frame
 							if ( didResize && ! instanceData.shouldAutoplay ) {
@@ -328,7 +345,10 @@ export class RiveAnimationManager {
 				// NOTE: We don't explicitly unref files here because deleting artboards
 				// already unrefs them in WASM. But we MUST clear the cache below.
 			} catch ( error ) {
-				console.warn( '[Rive Block] Error cleaning up instance:', error );
+				console.warn(
+					'[Rive Block] Error cleaning up instance:',
+					error
+				);
 			}
 		} );
 

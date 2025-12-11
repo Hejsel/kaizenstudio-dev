@@ -51,7 +51,9 @@ export function clearCache() {
 	fileCache.clear();
 
 	if ( window.riveBlockData?.debug ) {
-		console.log( `${ LOG_PREFIX } Cache cleared (${ count } files freed by GC)` );
+		console.log(
+			`${ LOG_PREFIX } Cache cleared (${ count } files freed by GC)`
+		);
 	}
 }
 

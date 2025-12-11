@@ -5,7 +5,10 @@
  * and user-friendly error message display for Rive animation failures.
  */
 
-import { pauseRenderLoop, resumeRenderLoop } from '../rendering/rive-rendering-engine';
+import {
+	pauseRenderLoop,
+	resumeRenderLoop,
+} from '../rendering/rive-rendering-engine';
 
 /**
  * Setup Intersection Observer to pause/resume animation based on viewport visibility

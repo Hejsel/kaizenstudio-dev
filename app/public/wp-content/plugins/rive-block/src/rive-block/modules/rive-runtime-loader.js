@@ -88,7 +88,10 @@ export class RiveRuntimeLoader {
 				: `build/rive-block/${ wasmFilename }`;
 
 			// Try to load WASM bytes from IndexedDB
-			const cachedBytes = await loadWASMBytes( wasmFilename, this.logPrefix );
+			const cachedBytes = await loadWASMBytes(
+				wasmFilename,
+				this.logPrefix
+			);
 
 			const startTime = performance.now();
 
@@ -110,14 +113,21 @@ export class RiveRuntimeLoader {
 						if ( cachedBytes ) {
 							// IDB Cache hit: Compile bytes to module + instantiate
 							if ( window.riveBlockData?.debug ) {
-								console.log( `${ this.logPrefix } Compiling cached WASM bytes to module` );
+								console.log(
+									`${ this.logPrefix } Compiling cached WASM bytes to module`
+								);
 							}
 							module = await WebAssembly.compile( cachedBytes );
-							instance = await WebAssembly.instantiate( module, imports );
+							instance = await WebAssembly.instantiate(
+								module,
+								imports
+							);
 						} else {
 							// IDB Cache miss: Fetch bytes from network, compile to module, instantiate, then cache bytes
 							if ( window.riveBlockData?.debug ) {
-								console.log( `${ this.logPrefix } Fetching WASM bytes from network (first load)` );
+								console.log(
+									`${ this.logPrefix } Fetching WASM bytes from network (first load)`
+								);
 							}
 
 							const response = await fetch( wasmUrl );
@@ -125,16 +135,26 @@ export class RiveRuntimeLoader {
 
 							// Compile bytes to WASM module and instantiate with imports
 							module = await WebAssembly.compile( wasmBytes );
-							instance = await WebAssembly.instantiate( module, imports );
+							instance = await WebAssembly.instantiate(
+								module,
+								imports
+							);
 
 							// Save WASM bytes to IndexedDB for next load (await to ensure transaction completes)
-							await saveWASMBytes( wasmFilename, wasmBytes, this.logPrefix );
+							await saveWASMBytes(
+								wasmFilename,
+								wasmBytes,
+								this.logPrefix
+							);
 						}
 
 						successCallback( instance, module );
 						return instance.exports;
 					} catch ( error ) {
-						console.error( `${ this.logPrefix } WASM instantiation failed:`, error );
+						console.error(
+							`${ this.logPrefix } WASM instantiation failed:`,
+							error
+						);
 						throw error;
 					}
 				},
@@ -144,13 +164,19 @@ export class RiveRuntimeLoader {
 
 			// Debug logging when WP_DEBUG is active
 			if ( window.riveBlockData?.debug ) {
-				console.log( `[Rive Block] Rive runtime loaded in ${ loadTime }ms` );
+				console.log(
+					`[Rive Block] Rive runtime loaded in ${ loadTime }ms`
+				);
 				console.log( '[Rive Block] Renderer: WebGL2-Advanced' );
-				console.log( '[Rive Block] WASM caching: IndexedDB (raw bytes)' );
+				console.log(
+					'[Rive Block] WASM caching: IndexedDB (raw bytes)'
+				);
 			}
 
 			// Resolve any waiting callbacks
-			this.callbacks.forEach( ( callback ) => callback( this.riveRuntime ) );
+			this.callbacks.forEach( ( callback ) =>
+				callback( this.riveRuntime )
+			);
 			this.callbacks = [];
 
 			return this.riveRuntime;

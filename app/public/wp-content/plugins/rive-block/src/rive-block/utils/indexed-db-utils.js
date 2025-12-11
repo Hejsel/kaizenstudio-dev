@@ -86,13 +86,17 @@ export async function loadFromStore( db, storeName, key, logPrefix = '[IDB]' ) {
 
 		if ( data ) {
 			if ( window.riveBlockData?.debug ) {
-				console.log( `${ logPrefix } Loaded from store: ${ storeName }` );
+				console.log(
+					`${ logPrefix } Loaded from store: ${ storeName }`
+				);
 			}
 			return data;
 		}
 
 		if ( window.riveBlockData?.debug ) {
-			console.log( `${ logPrefix } Data not found in store: ${ storeName }` );
+			console.log(
+				`${ logPrefix } Data not found in store: ${ storeName }`
+			);
 		}
 		return null;
 	} catch ( error ) {

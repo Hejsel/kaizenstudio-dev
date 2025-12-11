@@ -11,8 +11,14 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 import { Spinner, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { setCanvasDPIAwareSize } from '../utils/canvas-utils';
-import { getCachedFile, setCachedFile } from '../storage/memory/rive-editor-file-cache';
-import { startRenderLoop, renderFrame } from '../rendering/rive-rendering-engine';
+import {
+	getCachedFile,
+	setCachedFile,
+} from '../storage/memory/rive-editor-file-cache';
+import {
+	startRenderLoop,
+	renderFrame,
+} from '../rendering/rive-rendering-engine';
 import { RiveFileLoader } from '../modules/rive-file-loader';
 import { riveRuntimeLoader } from '../modules/rive-runtime-loader';
 
@@ -54,7 +60,8 @@ export default function RiveCanvas( {
 	 */
 	const buildRenderContext = () => {
 		if ( ! riveInstanceRef.current ) return null;
-		const { rive, artboard, renderer, animation, animationFPS } = riveInstanceRef.current;
+		const { rive, artboard, renderer, animation, animationFPS } =
+			riveInstanceRef.current;
 		return {
 			rive,
 			artboard,
@@ -129,7 +136,10 @@ export default function RiveCanvas( {
 					// Debounce resize operations to avoid layout thrashing
 					resizeTimeout = setTimeout( () => {
 						if ( canvasRef.current ) {
-							const didResize = setCanvasDPIAwareSize( canvasRef.current, CANVAS_LOG_PREFIX );
+							const didResize = setCanvasDPIAwareSize(
+								canvasRef.current,
+								CANVAS_LOG_PREFIX
+							);
 							// Re-render current frame with new canvas size (only if actually resized)
 							if ( didResize && riveInstanceRef.current ) {
 								const context = buildRenderContext();
@@ -169,7 +179,10 @@ export default function RiveCanvas( {
 
 					// Debug log animation FPS
 					if ( window.riveBlockData?.debug ) {
-						console.log( '[Rive Editor] Animation FPS (from .riv):', animationFPS );
+						console.log(
+							'[Rive Editor] Animation FPS (from .riv):',
+							animationFPS
+						);
 					}
 				}
 

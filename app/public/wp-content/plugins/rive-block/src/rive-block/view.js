@@ -6,7 +6,11 @@
  * Supports vector feathering and advanced rendering features.
  */
 
-import { getCachedFile, setCachedFile, isUrlLoaded, } from './storage/memory/rive-file-cache';
+import {
+	getCachedFile,
+	setCachedFile,
+	isUrlLoaded,
+} from './storage/memory/rive-file-cache';
 import { RiveFileLoader } from './modules/rive-file-loader';
 import { RiveAnimationManager } from './modules/rive-animation-manager';
 import { riveRuntimeLoader } from './modules/rive-runtime-loader';
@@ -25,10 +29,11 @@ const fileLoader = new RiveFileLoader(
 // Initialize animation manager
 const animationManager = new RiveAnimationManager( fileLoader );
 
-
 // Initialize when DOM is ready
 if ( document.readyState === 'loading' ) {
-	document.addEventListener( 'DOMContentLoaded', () => animationManager.initialize() );
+	document.addEventListener( 'DOMContentLoaded', () =>
+		animationManager.initialize()
+	);
 } else {
 	animationManager.initialize();
 }

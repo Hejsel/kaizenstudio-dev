@@ -21,7 +21,12 @@ export class RiveFileLoader {
 	 * @param {Function} isUrlLoaded - Optional: Function to check if URL was previously loaded (for HTTP cache optimization)
 	 * @param {string} logPrefix - Log prefix for console messages (e.g., '[Rive Block]')
 	 */
-	constructor( getCachedFile, setCachedFile, isUrlLoaded = null, logPrefix = '[Rive]' ) {
+	constructor(
+		getCachedFile,
+		setCachedFile,
+		isUrlLoaded = null,
+		logPrefix = '[Rive]'
+	) {
 		this.getCachedFile = getCachedFile;
 		this.setCachedFile = setCachedFile;
 		this.isUrlLoaded = isUrlLoaded;
@@ -49,10 +54,14 @@ export class RiveFileLoader {
 		}
 
 		// In-memory cache miss - will fetch (but may use HTTP browser cache)
-		const isFirstLoad = ! this.isUrlLoaded ? true : ! this.isUrlLoaded( url );
+		const isFirstLoad = ! this.isUrlLoaded
+			? true
+			: ! this.isUrlLoaded( url );
 
 		if ( window.riveBlockData?.debug ) {
-			console.log( `${ this.logPrefix } In-memory cache miss, fetching: ${ url }` );
+			console.log(
+				`${ this.logPrefix } In-memory cache miss, fetching: ${ url }`
+			);
 			if ( this.isUrlLoaded ) {
 				console.log(
 					`${ this.logPrefix } Note: Browser HTTP cache may serve this without network transfer`

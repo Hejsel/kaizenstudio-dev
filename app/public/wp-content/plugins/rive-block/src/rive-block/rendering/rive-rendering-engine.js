@@ -50,7 +50,9 @@ export function startRenderLoop( context ) {
 
 	// Debug log target FPS
 	if ( window.riveBlockData?.debug ) {
-		console.log( `${ logPrefix } Render loop FPS: ${ targetFPS } (matching animation FPS)` );
+		console.log(
+			`${ logPrefix } Render loop FPS: ${ targetFPS } (matching animation FPS)`
+		);
 	}
 
 	const draw = ( time ) => {
@@ -62,7 +64,10 @@ export function startRenderLoop( context ) {
 		// Frame rate limiting to match animation's native FPS
 		if ( time - lastRenderTime < frameInterval ) {
 			// Skip this frame to maintain target FPS
-			setAnimationFrameId( frameIdRef, rive.requestAnimationFrame( draw ) );
+			setAnimationFrameId(
+				frameIdRef,
+				rive.requestAnimationFrame( draw )
+			);
 			return;
 		}
 

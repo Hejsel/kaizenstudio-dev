@@ -8,7 +8,11 @@
  * Note: WebAssembly.Module cannot be stored due to browser security restrictions.
  */
 
-import { openDatabase, saveToStore, loadFromStore } from '../../utils/indexed-db-utils';
+import {
+	openDatabase,
+	saveToStore,
+	loadFromStore,
+} from '../../utils/indexed-db-utils';
 
 const DB_NAME = 'rive-block-wasm-cache';
 const DB_VERSION = 2;
@@ -36,7 +40,9 @@ async function getDatabase() {
 		if ( ! db.objectStoreNames.contains( STORE_NAME ) ) {
 			db.createObjectStore( STORE_NAME, { keyPath: 'filename' } );
 			if ( window.riveBlockData?.debug ) {
-				console.log( `[Rive IDB] Database upgraded to v${ DB_VERSION } (raw bytes storage)` );
+				console.log(
+					`[Rive IDB] Database upgraded to v${ DB_VERSION } (raw bytes storage)`
+				);
 			}
 		}
 	} );
@@ -50,7 +56,11 @@ async function getDatabase() {
  * @param {ArrayBuffer} wasmBytes - Raw WASM bytes
  * @param {string} logPrefix - Prefix for debug logs (default: '[Rive IDB]')
  */
-export async function saveWASMBytes( filename, wasmBytes, logPrefix = '[Rive IDB]' ) {
+export async function saveWASMBytes(
+	filename,
+	wasmBytes,
+	logPrefix = '[Rive IDB]'
+) {
 	try {
 		const db = await getDatabase();
 
@@ -64,7 +74,9 @@ export async function saveWASMBytes( filename, wasmBytes, logPrefix = '[Rive IDB
 
 		if ( window.riveBlockData?.debug ) {
 			const sizeKB = Math.round( wasmBytes.byteLength / 1024 );
-			console.log( `${ logPrefix } Saved WASM bytes: ${ filename } (${ sizeKB } KB)` );
+			console.log(
+				`${ logPrefix } Saved WASM bytes: ${ filename } (${ sizeKB } KB)`
+			);
 		}
 	} catch ( error ) {
 		console.error( `${ logPrefix } Failed to save WASM bytes:`, error );
@@ -84,9 +96,13 @@ export async function loadWASMBytes( filename, logPrefix = '[Rive IDB]' ) {
 
 		if ( data && data.bytes ) {
 			if ( window.riveBlockData?.debug ) {
-				const age = Math.round( ( Date.now() - data.timestamp ) / 1000 );
+				const age = Math.round(
+					( Date.now() - data.timestamp ) / 1000
+				);
 				const sizeKB = Math.round( data.bytes.byteLength / 1024 );
-				console.log( `${ logPrefix } Loaded WASM bytes: ${ filename } (${ sizeKB } KB, cached ${ age }s ago)` );
+				console.log(
+					`${ logPrefix } Loaded WASM bytes: ${ filename } (${ sizeKB } KB, cached ${ age }s ago)`
+				);
 			}
 			return data.bytes;
 		}
